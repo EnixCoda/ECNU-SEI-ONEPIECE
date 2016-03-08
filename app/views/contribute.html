@@ -1,0 +1,19 @@
+<md-content layout-padding>
+    <div layout="column">
+        <h4>如何向本站提供资料？</h4>
+        <h3>1、</h3>确认你要提交的资料是高质量的、本站尚未拥有且值得拥有、大家不容错过的。<br>
+        <h3>2、</h3>将你的资料上传到你的网盘（最好是百度云），创建分享链接。<br>
+        <h3>3、</h3>将分享链接粘贴到下方文本框并提交。<br>
+        <h3>4、</h3>等待管理员审核。<br>
+    </div>
+    <div layout="row">
+        <md-input-container flex>
+            <label for="link">链接</label>
+            <input id="link" type="text" ng-model="link">
+        </md-input-container>
+        <div>
+            <md-button class="md-raised" ng-disabled="submitting || !link" ng-click="submitNewFileLink()">提交</md-button>
+        </div>
+        {{submitStatus}}
+    </div>
+</md-content>

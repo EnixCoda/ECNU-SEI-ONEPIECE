@@ -1,0 +1,23 @@
+{
+  "name": "ECNU SEI One Piece",
+  "authors": [
+    "Exin <ggaao1994@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#~1.5.0",
+    "angular-material": "~1.0.6"
+  }
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>*BETA* ECNU SEI One Piece</title>
+    <!--bower:css-->
+    <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css"/>
+    <!--endbower-->
+</head>
+<script>
+    function isMobile() {
+        var userAgent = navigator.userAgent;
+        var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
+        var isiPhone = userAgent.indexOf("iPhone") > -1;
+        var isiPad = userAgent.indexOf("iPad") > -1;
+        return isiPad || isiPhone || isAndroid;
+    }
+
+    if (isMobile()) {
+        window.location = ("blocked.html");
+    }
+</script>
+<style>
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important;}
+    md-content { z-index: 1; background-color: #fff; }
+    md-input-container .md-errors-spacer { min-height: 0; }
+    body { font-family: "黑体"; }
+</style>
+<body ng-cloak class="dontmove" ng-app="app" ng-controller="controller" layout="row">
+<div flex></div>
+<md-content layout="column" style="width: 960px;" class="md-whiteframe-3dp" layout-padding>
+    <div>
+        <md-subheader>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！—— <del>站长</del> Gol·D·Roger</md-subheader>
+        <md-divider></md-divider>
+    </div>
+    <div ng-show="currentPosition.length">
+        <div layout="row" layout-align="start center">
+            <md-button ng-click="goBack(currentPosition.length)">
+                根目录
+            </md-button>
+            >>
+            <div ng-repeat="dir in currentPosition track by $index">
+                <md-button ng-click="goBack(currentPosition.length - 1 - $index)">
+                    {{dir}}
+                </md-button>
+                >>
+            </div>
+        </div>
+        <md-divider ng-show="currentPosition.length"></md-divider>
+    </div>
+    <div layout flex layout-wrap>
+        <div ng-repeat="content in currentDirectory.content">
+            <md-button class="md-raised md-primary" ng-if="content.isDir" ng-click="goTo(content.name, $event)">
+                {{content.name}}
+            </md-button>
+            <md-button class="md-raised" ng-if="!content.isDir" ng-click="goTo(content.name, $event)">
+                {{content.name}}
+            </md-button>
+        </div>
+    </div>
+    <div>
+        <md-divider></md-divider>
+        <div layout="row" layout-align="space-around center">
+            <div>BETA</div>
+            <div flex></div>
+            <md-button class="md-raised" ng-click="showContribute($event)">我要贡献资源</md-button>
+            <md-button class="md-raised" ng-click="showAbout($event)">关于这个站点</md-button>
+        </div>
+    </div>
+</md-content>
+<div flex></div>
+</body>
+<!--bower:js-->
+<script src="../bower_components/angular/angular.js"></script>
+<script src="../bower_components/angular-animate/angular-animate.js"></script>
+<script src="../bower_components/angular-aria/angular-aria.js"></script>
+<script src="../bower_components/angular-material/angular-material.js"></script>
+<!--endbower-->
+<script src="scripts/app.js"></script>
+<script src="scripts/controller.js"></script>
+</html>
