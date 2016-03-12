@@ -1,0 +1,16 @@
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+md-content {
+    z-index: 1;
+    background-color: #fff;
+}
+
+md-input-container .md-errors-spacer {
+    min-height: 0;
+}
+
+body {
+    font-family: "黑体";
+}
