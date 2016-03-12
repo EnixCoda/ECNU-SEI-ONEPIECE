@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css"/>
     <!--endbower-->
     <link rel="stylesheet" href="style.css"/>
+    <link href="//fonts.useso.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <script>
     function isMobile() {
@@ -26,8 +27,7 @@
 <md-content layout="column" style="width: 960px;" class="md-whiteframe-3dp" layout-padding>
     <div>
         <md-subheader>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
-            <del>站长</del>
-            Gol·D·Roger
+            <del>站长</del>Gol·D·Roger
         </md-subheader>
         <md-divider></md-divider>
     </div>
@@ -37,8 +37,8 @@
                 根目录
             </md-button>
             >>
-            <div ng-repeat="dir in currentPosition track by $index">
-                <md-button ng-click="goBack(currentPosition.length - 1 - $index)">
+            <div ng-repeat="dir in currentPosition track by $index" layout layout-align="start center">
+                <md-button ng-click="goBack(currentPosition.length - 1 - $index)" layout layout-align="start center">
                     {{dir}}
                 </md-button>
                 >>
@@ -49,10 +49,14 @@
     <div flex>
         <md-list>
             <md-subheader class="md-no-sticky">当前目录</md-subheader>
-            <md-list-item ng-repeat="content in currentDirectory.content" ng-click="goTo(content.name, $event)">
-                <p ng-if="content.isDir">{{content.name}}</p>
-                <p><b ng-if="!content.isDir">{{content.name}}</b></p>
-                <md-button ng-click="moreInfo(content.name, $event)">？</md-button>
+            <md-list-item class="item-in-filelist" ng-repeat="content in currentDirectory.content" ng-click="goTo(content.name, $event)">
+                <p ng-if="content.isDir" layout layout-align="start center">
+                    <i class="material-icons">folder</i>{{content.name}}
+                </p>
+                <p ng-if="!content.isDir" layout layout-align="start center">
+                    <i class="material-icons">attach_file</i>{{content.name}}
+                </p>
+                <md-button style="z-index: 100;" ng-click="moreInfo(content.name, $event)">？</md-button>
                 <md-divider></md-divider>
             </md-list-item>
         </md-list>

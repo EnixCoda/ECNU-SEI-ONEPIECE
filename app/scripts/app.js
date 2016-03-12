@@ -5,9 +5,9 @@
 angular.module('app', [
     'ngMaterial'
   ])
-  .config(function ($mdThemingProvider) {
-    $mdThemingProvider.theme('default')
-      .primaryPalette('blue')
-      .accentPalette('orange')
-      .warnPalette('red');
-  });
+  //.config(function($mdThemingProvider) {
+  //  $mdThemingProvider.theme('default')
+  //    .primaryPalette('blue')
+  //    .accentPalette('orange');
+  //})
+;

@@ -57,9 +57,11 @@ angular.module("app").controller("controller", function ($scope, $http, $sce, $m
     }
   };
 
+  $scope.moreInfo = function(target, $e) {$e.stopPropagation()};
+
   $scope.showDownload = function (target, e) {
     function setLinkToBaiduYun() {
-      $scope.linkToBaiduYun = "http://pan.baidu.com/s/1jGZNyYU#path=/ONEPIECE/" +
+      $scope.linkToBaiduYun = "http://pan.baidu.com/s/1skhJUFz#path=/ONEPIECE/" +
         encodeURI(
           $scope.currentPosition.length == 0 ? "" : "" + $scope.currentPosition.join("/")
         );
