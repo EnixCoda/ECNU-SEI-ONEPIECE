@@ -16,12 +16,13 @@ body {
 }
 
 .material-icons {
+    vertical-align: middle;
+    display: inline-block;
     color: #02a8f3;
     font-family: 'Material Icons';
     font-weight: normal;
     font-style: normal;
     font-size: 24px;  /* Preferred icon size */
-    display: inline-block;
     line-height: 1;
     text-transform: none;
     letter-spacing: normal;
@@ -42,5 +43,17 @@ body {
 }
 
 .item-in-filelist{
-    padding-right: 100px;
+    /*padding-right: 100px;*/
+}
+
+.left-offset {
+    padding-left: 10px;
+}
+
+.no-padding-top {
+    padding-top: 0;
+}
+
+.no-padding-bottom {
+    padding-bottom: 0;
 }

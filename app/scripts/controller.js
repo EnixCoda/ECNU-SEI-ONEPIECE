@@ -2,7 +2,9 @@
  * Created by Exin on 2016/3/2.
  */
 
-angular.module("app").controller("controller", function ($scope, $http, $sce, $mdSidenav, $mdDialog) {
+angular.module("app").controller("controller",
+  function ($scope, $http, $sce, $mdSidenav, $mdDialog, $timeout) {
+  $scope.delay = 400;
 
   $http.get("index.json")
     .then(function (response) {
@@ -45,19 +47,24 @@ angular.module("app").controller("controller", function ($scope, $http, $sce, $m
       return false;
     }
 
-    var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
-    if (pos !== false) {
-      if (directoryStack[directoryStack.length - 1].content[pos].isDir) {
-        $scope.currentPosition.push(target);
-        directoryStack.push(directoryStack[directoryStack.length - 1].content[pos]);
-        $scope.currentDirectory = directoryStack[directoryStack.length - 1];
-      } else {
-        $scope.showDownload(target, e);
+    $timeout(function () {
+      var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
+      if (pos !== false) {
+        if (directoryStack[directoryStack.length - 1].content[pos].isDir) {
+          $scope.currentPosition.push(target);
+          directoryStack.push(directoryStack[directoryStack.length - 1].content[pos]);
+          $scope.currentDirectory = directoryStack[directoryStack.length - 1];
+        } else {
+          $scope.showDownload(target, e);
+        }
       }
-    }
+    }, $scope.delay);
   };
 
-  $scope.moreInfo = function(target, $e) {$e.stopPropagation()};
+  $scope.moreInfo = function(target, $mdOpenMenu, $e) {
+    $e.stopPropagation();
+    $mdOpenMenu($e);
+  };
 
   $scope.showDownload = function (target, e) {
     function setLinkToBaiduYun() {
