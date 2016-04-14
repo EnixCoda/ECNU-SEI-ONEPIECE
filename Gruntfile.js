@@ -1,6 +1,17 @@
 module.exports = function (grunt) {
 
   grunt.initConfig({
+    cssmin: {
+      target: {
+        files: [{
+          expand: true,
+          cwd: 'app',
+          src: ['*.css', '!*.min.css'],
+          dest: 'dist',
+          ext: '.min.css'
+        }]
+      }
+    },
     wiredep: {
       task: {
         src:     [
@@ -19,10 +30,10 @@ module.exports = function (grunt) {
         src:  ['app/scripts/*.js'],
         dest: 'dist/scripts.js'
       },
-      css: {
-        src: ['app/style.css'],
-        dest: 'dist/style.css'
-      }
+      //css: {
+      //  src: ['app/style.css'],
+      //  dest: 'dist/style.css'
+      //}
     },
     htmlmin: {
       dist: {
@@ -53,6 +64,26 @@ module.exports = function (grunt) {
           patterns: [
             {
               match: /<script src="scripts\/.*?.js"><\/script>/g,
+              replacement: ''
+            }
+          ]
+        },
+        files: [
+          {
+            src: ['dist/index.html'],
+            dest: './'
+          }
+        ]
+      },
+      css: {
+        options: {
+          patterns: [
+            {
+              match: /<\/head>/g,
+              replacement: "<style>" + grunt.file.read("dist/style.min.css") + "</style></head>"
+            },
+            {
+              match: /<link rel="stylesheet" href="style\.css"\/>/g,
               replacement: ''
             }
           ]
@@ -137,14 +168,16 @@ module.exports = function (grunt) {
           }
         ]
       }
-    }
+    },
   });
+
 
   grunt.loadNpmTasks('grunt-wiredep');
   grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-  grunt.registerTask('default', ['concat', 'htmlmin', 'replace']);
+  grunt.registerTask('default', ['cssmin', 'concat', 'htmlmin', 'replace']);
 
 };

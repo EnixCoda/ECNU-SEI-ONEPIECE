@@ -9,19 +9,6 @@
   <link rel="stylesheet" href="style.css"/>
   <link href="//fonts.lug.ustc.edu.cn/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<script>
-  function isMobile() {
-    var userAgent = navigator.userAgent;
-    var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
-    var isiPhone = userAgent.indexOf("iPhone") > -1;
-    var isiPad = userAgent.indexOf("iPad") > -1;
-    return isiPad || isiPhone || isAndroid;
-  }
-
-  if (isMobile()) {
-    window.location = ("blocked.html");
-  }
-</script>
 <body ng-cloak class="dontmove" ng-app="app" ng-controller="controller" layout="row">
 <div flex></div>
 <md-content layout="column" style="width: 960px;" class="md-whiteframe-3dp">
@@ -47,7 +34,7 @@
     </div>
     <md-divider ng-show="currentPosition.length"></md-divider>
   </div>
-  <div flex>
+  <div flex style="overflow: inherit;">
     <md-list class="no-padding-top">
       <md-subheader class="md-no-sticky">当前目录</md-subheader>
       <md-list-item class="item-in-filelist" ng-repeat="content in currentDirectory.content"
@@ -82,13 +69,11 @@
       </md-list-item>
     </md-list>
   </div>
-  <div>
-    <md-divider></md-divider>
-    <div layout="row" layout-align="space-around center">
+  <div style="background-color: rgba(0,0,0,0.03)">
+    <div layout="row" layout-align="space-around center" layout-margin>
       <div>BETA</div>
-      <div flex></div>
       <div flex="40">
-        <md-slider flex min="0" max="400" step="40" md-discrete ng-model="delay" aria-label="delay" id="delay-slider">
+        <md-slider class="md-warn" flex min="0" max="400" step="40" md-discrete ng-model="delay" aria-label="delay" id="delay-slider">
         </md-slider>
       </div>
       <span class="left-offset">animation delay on click</span>

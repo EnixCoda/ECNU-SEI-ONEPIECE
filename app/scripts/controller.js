@@ -2,6 +2,17 @@
  * Created by Exin on 2016/3/2.
  */
 
+function isMobile() {
+  var userAgent = navigator.userAgent;
+  var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
+  var isiPhone = userAgent.indexOf("iPhone") > -1;
+  var isiPad = userAgent.indexOf("iPad") > -1;
+  return isiPad || isiPhone || isAndroid;
+}
+if (isMobile()) {
+  window.location = ("blocked.html");
+}
+
 angular.module("app").controller("controller",
   function ($scope, $http, $sce, $mdSidenav, $mdDialog, $timeout) {
   $scope.delay = 400;
