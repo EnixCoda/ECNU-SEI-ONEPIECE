@@ -52,15 +52,17 @@
           </div>
         </div>
         <div flex></div>
+        <div ng-if="!content.isDir">{{formatSize(content.size)}}</div>
         <md-menu md-position-mode="target-right target">
           <md-button ng-click="moreInfo(content.name, $mdOpenMenu, $event)" layout-align="center center">
-            <i class="material-icons">more_vert</i>
+            <i class="material-icons adjust-icon-top-margin-up">more_vert</i>
           </md-button>
-          <md-menu-content width="4">
+          <md-menu-content width="3">
             <md-menu-item ng-repeat="x in [1, 2]">
-              <md-button>
-                <i class="material-icons">arrow_back</i>
-                <p md-menu-align-target>Action 1</p>
+              <md-button layout>
+                <i class="material-icons adjust-icon-top-margin-down">arrow_back</i>
+                <div flex></div>
+                <p md-menu-align-target>Action {{x}}</p>
               </md-button>
             </md-menu-item>
           </md-menu-content>

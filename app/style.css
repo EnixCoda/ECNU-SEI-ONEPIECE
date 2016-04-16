@@ -57,3 +57,11 @@ body {
 .no-padding-bottom {
     padding-bottom: 0;
 }
+
+.adjust-icon-top-margin-down {
+    margin-top: 5px;
+}
+
+.adjust-icon-top-margin-up {
+    margin-top: -5px;
+}
