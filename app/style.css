@@ -78,6 +78,14 @@ body, input {
     color: white;
 }
 
-md-fab-trigger, md-toolbar {
-    margin-top: -48px;
+.protect-overflow {
+    overflow: inherit;
+}
+
+.light-background {
+    background-color: rgba(0,0,0,0.03);
+}
+
+.set-height-to-ac {
+    height: 40px;
 }
