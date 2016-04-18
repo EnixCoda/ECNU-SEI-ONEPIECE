@@ -11,7 +11,7 @@
 </head>
 <body ng-cloak class="dontmove" ng-app="app" ng-controller="controller" layout="row">
 <div flex></div>
-<md-content layout="column" style="width: 960px;" class="md-whiteframe-3dp">
+<md-content layout="column" style="width: 960px;" class="md-whiteframe-4dp">
   <div>
     <md-subheader>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
       <del>站长</del>
@@ -19,28 +19,49 @@
     </md-subheader>
     <md-divider></md-divider>
   </div>
-  <div ng-show="currentPosition.length">
-    <div layout="row" layout-align="start center">
-      <md-button ng-click="goBack(currentPosition.length)">
-        根目录
+  <div layout="row">
+    <md-button ng-click="goBack(currentPositionStack.length)">
+      ONEPIECE
+    </md-button>
+    <div ng-repeat="dir in currentPositionStack track by $index" layout="row" layout-align="start center">
+      >>
+      <md-button ng-click="goBack(currentPositionStack.length - 1 - $index)">
+        {{dir}}
       </md-button>
-      <div ng-repeat="dir in currentPosition track by $index" layout layout-align="start center">
-        >>
-        <md-button ng-click="goBack(currentPosition.length - 1 - $index)">
-          {{dir}}
-        </md-button>
-      </div>
     </div>
-    <md-divider ng-show="currentPosition.length"></md-divider>
+    <!--<div flex></div>-->
+    <!--<md-button class="md-fab md-mini" ng-click="showSearch()">-->
+    <!--<i class="material-icons white">search</i>-->
+    <!--</md-button>-->
   </div>
+  <md-divider></md-divider>
+  <md-autocomplete
+          md-selected-item="lessonSearch.selectedItem"
+          md-search-text="lessonSearch.searchText"
+          md-selected-item-change="lessonSearch.selectedItemChange(item)"
+          md-items="item in lessonSearch.querySearch(lessonSearch.searchText)"
+          md-item-text="item.name"
+          md-min-length="0" md-no-cache="true" md-delay="100"
+          placeholder="课程搜索">
+    <!--<i class="material-icons adjust-icon-top-margin-up">search</i>-->
+    <md-item-template>
+      <span md-highlight-text="lessonSearch.searchText" md-highlight-flags="g">{{item.name}}</span>
+    </md-item-template>
+    <md-not-found>
+      找不到 "{{lessonSearch.searchText}}"
+    </md-not-found>
+  </md-autocomplete>
+  <md-subheader class="md-no-sticky">
+    <span>当前目录</span>
+  </md-subheader>
   <div ng-if="loadingIndex" flex layout="row" layout-align="center center" layout-padding>
     <md-progress-circular></md-progress-circular>
     <p>正在读取文件列表</p>
   </div>
   <div ng-if="!loadingIndex" flex style="overflow: inherit;">
+
     <md-list class="no-padding-top">
-      <md-subheader class="md-no-sticky">当前目录</md-subheader>
-      <md-list-item class="item-in-filelist" ng-repeat="content in currentDirectory.content"
+      <md-list-item ng-repeat="content in getCurrentDirectoryContent()"
                     ng-click="goTo(content.name, $event)">
         <div ng-if="content.isDir" layout layout-align="start center">
           <i class="material-icons">folder</i>
@@ -79,7 +100,7 @@
       <div>BETA</div>
       <div flex="40">
         <md-slider class="md-warn" flex aria-label="delay" id="delay-slider"
-                   min="100" max="300" step="20" md-discrete ng-model="delay">
+                   min="100" max="200" step="10" md-discrete ng-model="delay">
         </md-slider>
       </div>
       <span class="left-offset">animation delay on click</span>

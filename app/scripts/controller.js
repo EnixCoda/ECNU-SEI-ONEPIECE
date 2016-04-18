@@ -15,38 +15,57 @@ if (isMobile()) {
 
 angular.module("app").controller("controller",
   function ($scope, $http, $sce, $mdSidenav, $mdDialog, $timeout) {
-  $scope.delay = 400;
+    $scope.delay = 200;
 
-  $http.get("index.json")
-    .then(function (response) {
-      index = response.data;
-      directoryStack = [index];
-      $scope.currentPosition = [];
-      $scope.currentDirectory = directoryStack[directoryStack.length - 1];
-    });
+    $http.get("index.json")
+      .then(function (response) {
+        index = response.data;
+        directoryStack = [index];
+        $scope.currentPositionStack = [];
+        lessons = getLessonsFrom(index);
+      });
 
-  var index = {
-    "name": "",
-    "isDir": true,
-    "content": []
-  };
-  var directoryStack = [index];
-  $scope.currentPosition = [];
-  $scope.currentDirectory = index;
+    var index = {
+      "name": "",
+      "isDir": true,
+      "content": []
+    };
+    var directoryStack = [index];
+    var lessons = [];
 
-  $scope.goBack = function (step) {
-    var last;
-    for (var i = 0; i < step; i++) {
-      $scope.currentPosition.pop();
-      last = directoryStack.pop();
-      if (last == index) {
-        directoryStack.push(index);
+    function getLessonsFrom(index) {
+      var lessons = [];
+      for (var i = 0; i < index.content.length; i++) {
+        var contentI = index.content[i];
+        if (!contentI.isDir) continue;
+        for (var j = 0; j < contentI.content.length; j++) {
+          var contentJ = contentI.content[j];
+          if (contentJ.isDir)
+            lessons.push({
+              name: contentJ.name,
+              path: [contentI.name, contentJ.name]
+            })
+        }
       }
-      $scope.currentDirectory = directoryStack[directoryStack.length - 1];
+      return lessons;
     }
-  };
 
-  $scope.goTo = function (target, e) {
+    $scope.currentPositionStack = [];
+
+    $scope.goBack = function (step) {
+      var last;
+      if ($scope.currentPositionStack.length == 0) return false;
+      if (step > $scope.currentPositionStack.length) step = $scope.currentPositionStack.length;
+      for (var i = 0; i < step; i++) {
+        $scope.currentPositionStack.pop();
+        last = directoryStack.pop();
+        if (last == index) {
+          directoryStack.push(index);
+        }
+      }
+      return true;
+    };
+
     function fileInDirectory(filename, dir) {
       if (dir.isDir) {
         for (var i = 0; i < dir.content.length; i++) {
@@ -58,72 +77,76 @@ angular.module("app").controller("controller",
       return false;
     }
 
-    $timeout(function () {
-      var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
-      if (pos !== false) {
-        if (directoryStack[directoryStack.length - 1].content[pos].isDir) {
-          $scope.currentPosition.push(target);
-          directoryStack.push(directoryStack[directoryStack.length - 1].content[pos]);
-          $scope.currentDirectory = directoryStack[directoryStack.length - 1];
-        } else {
-          $scope.showDownload(target, e);
+    $scope.goTo = function (target, e) {
+      $timeout(function () {
+        var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
+        if (pos !== false) {
+          if (directoryStack[directoryStack.length - 1].content[pos].isDir) {
+            $scope.currentPositionStack.push(target);
+            directoryStack.push(directoryStack[directoryStack.length - 1].content[pos]);
+          } else {
+            $scope.showDownload(target, e);
+          }
         }
+      }, $scope.delay);
+    };
+
+    $scope.getCurrentDirectoryContent = function () {
+      return directoryStack[directoryStack.length - 1].content;
+    };
+
+    $scope.moreInfo = function (target, $mdOpenMenu, $e) {
+      $e.stopPropagation();
+      $mdOpenMenu($e);
+    };
+
+    $scope.showDownload = function (target, e) {
+      function setLinkToBaiduYun() {
+        $scope.linkToBaiduYun = "http://pan.baidu.com/s/1skhJUFz#path=/ONEPIECE/" +
+          encodeURI(
+            $scope.currentPositionStack.length == 0 ? "" : "" + $scope.currentPositionStack.join("/")
+          );
+        $scope.linkToBaiduYun = $sce.trustAsResourceUrl($scope.linkToBaiduYun);
       }
-    }, $scope.delay);
-  };
 
-  $scope.moreInfo = function(target, $mdOpenMenu, $e) {
-    $e.stopPropagation();
-    $mdOpenMenu($e);
-  };
+      setLinkToBaiduYun();
+      $mdDialog.show({
+        controller: DownloadController,
+        templateUrl: "views/file_preview.html",
+        parent: angular.element(document.body),
+        targetEvent: e,
+        locals: {
+          filename: target,
+          url: $scope.linkToBaiduYun,
+          positionStack: $scope.currentPositionStack
+        },
+        clickOutsideToClose: true
+      });
+    };
 
-  $scope.showDownload = function (target, e) {
-    function setLinkToBaiduYun() {
-      $scope.linkToBaiduYun = "http://pan.baidu.com/s/1skhJUFz#path=/ONEPIECE/" +
-        encodeURI(
-          $scope.currentPosition.length == 0 ? "" : "" + $scope.currentPosition.join("/")
-        );
-      $scope.linkToBaiduYun = $sce.trustAsResourceUrl($scope.linkToBaiduYun);
-    }
-
-    setLinkToBaiduYun();
-    $mdDialog.show({
-      controller: DownloadController,
-      templateUrl: "views/file_preview.html",
-      parent: angular.element(document.body),
-      targetEvent: e,
-      locals: {
-        filename: target,
-        url: $scope.linkToBaiduYun,
-        positionStack: $scope.currentPosition
-      },
-      clickOutsideToClose: true
-    });
-  };
-
-  $scope.showContribute = function (e) {
-    $mdDialog.show({
-      controller: ContributeController,
-      templateUrl: "views/contribute.html",
-      parent: angular.element(document.body),
-      targetEvent: e,
-      clickOutsideToClose: true
-    });
-  };
+    $scope.showContribute = function (e) {
+      $mdDialog.show({
+        controller: ContributeController,
+        templateUrl: "views/contribute.html",
+        parent: angular.element(document.body),
+        targetEvent: e,
+        clickOutsideToClose: true
+      });
+    };
 
     $scope.showAbout = function (e) {
       $mdDialog.show({
-        controller:          AboutController,
-        templateUrl:         "views/about.html",
-        parent:              angular.element(document.body),
-        targetEvent:         e,
+        controller: AboutController,
+        templateUrl: "views/about.html",
+        parent: angular.element(document.body),
+        targetEvent: e,
         clickOutsideToClose: true
       });
     };
 
     $scope.formatSize = function (size) {
       if (!size) return;
-      var sizers     = ["", "K", "M", "G", "T", "P"];
+      var sizers = ["", "K", "M", "G", "T", "P"];
       var countSizer = 0;
       while (size >= 1000) {
         countSizer++;
@@ -131,12 +154,39 @@ angular.module("app").controller("controller",
       }
       var sizeS = "";
       var tail = sizers[countSizer] + "B";
-      if (countSizer<=1) {
+      if (countSizer <= 1) {
         sizeS = size.toString().substring(0, size.toString().indexOf("."));
       } else {
-        sizeS = size.toString().substring(0, size.toString().indexOf(".") + 1);
+        sizeS = size.toString().substring(0, size.toString().indexOf(".") + 3);
       }
-      return sizeS+tail;
+      return sizeS + tail;
+    };
+
+    $scope.lessonSearch = {
+      querySearch: function(query) {
+        function createFilterFor(query) {
+          return function filterFn(lesson) {
+            return (lesson.name.indexOf(query) > -1);
+          };
+        }
+        return query ? lessons.filter(createFilterFor(query)) : lessons;
+      },
+      selectedItemChange: function(item) {
+        //goto
+        function goByRoute (route) {
+          while ($scope.goBack(1)) {}
+          while (route.length > 0) {
+            var target = route.shift();
+            var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
+            if (pos !== false) {
+              $scope.currentPositionStack.push(target);
+              directoryStack.push($scope.getCurrentDirectoryContent()[pos]);
+            }
+          }
+        }
+        if (!item) return;
+        goByRoute(item.path);
+      }
     };
 
     $scope.search = function (key) {
@@ -159,6 +209,7 @@ function DownloadController($scope, $mdDialog, $http, url, filename, positionSta
         $scope.avg_score = response.data.avg_score;
       });
   }
+
   getRates();
   $scope.comment = "";
   $scope.score = 5;

@@ -11,7 +11,7 @@ md-input-container .md-errors-spacer {
     min-height: 0;
 }
 
-body {
+body, input {
     font-family: "黑体";
 }
 
@@ -42,10 +42,6 @@ body {
     font-feature-settings: 'liga';
 }
 
-.item-in-filelist{
-    /*padding-right: 100px;*/
-}
-
 .left-offset {
     padding-left: 10px;
 }
@@ -68,4 +64,20 @@ body {
 
 .adjust-icon-top-margin-up {
     margin-top: -5px;
+}
+
+.pull-right {
+    float: right;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.white {
+    color: white;
+}
+
+md-fab-trigger, md-toolbar {
+    margin-top: -48px;
 }
