@@ -24,17 +24,20 @@
       <md-button ng-click="goBack(currentPosition.length)">
         根目录
       </md-button>
-      >>
       <div ng-repeat="dir in currentPosition track by $index" layout layout-align="start center">
-        <md-button ng-click="goBack(currentPosition.length - 1 - $index)" layout layout-align="start center">
+        >>
+        <md-button ng-click="goBack(currentPosition.length - 1 - $index)">
           {{dir}}
         </md-button>
-        >>
       </div>
     </div>
     <md-divider ng-show="currentPosition.length"></md-divider>
   </div>
-  <div flex style="overflow: inherit;">
+  <div ng-if="loadingIndex" flex layout="row" layout-align="center center" layout-padding>
+    <md-progress-circular></md-progress-circular>
+    <p>正在读取文件列表</p>
+  </div>
+  <div ng-if="!loadingIndex" flex style="overflow: inherit;">
     <md-list class="no-padding-top">
       <md-subheader class="md-no-sticky">当前目录</md-subheader>
       <md-list-item class="item-in-filelist" ng-repeat="content in currentDirectory.content"
@@ -72,10 +75,11 @@
     </md-list>
   </div>
   <div style="background-color: rgba(0,0,0,0.03)">
-    <div layout="row" layout-align="space-around center" layout-margin>
+    <div class="padding-x" layout="row" layout-align="space-around center">
       <div>BETA</div>
       <div flex="40">
-        <md-slider class="md-warn" flex min="0" max="400" step="40" md-discrete ng-model="delay" aria-label="delay" id="delay-slider">
+        <md-slider class="md-warn" flex aria-label="delay" id="delay-slider"
+                   min="100" max="300" step="20" md-discrete ng-model="delay">
         </md-slider>
       </div>
       <span class="left-offset">animation delay on click</span>

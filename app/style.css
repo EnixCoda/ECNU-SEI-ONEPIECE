@@ -58,6 +58,10 @@ body {
     padding-bottom: 0;
 }
 
+.padding-x {
+    padding: 5px 15px;
+}
+
 .adjust-icon-top-margin-down {
     margin-top: 5px;
 }
