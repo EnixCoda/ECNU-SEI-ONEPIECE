@@ -43,7 +43,6 @@ module.exports = function (grunt) {
         },
         files: {
           'dist/index.html': 'app/index.html',
-          'dist/blocked.html': 'app/blocked.html',
           'dist/views/about.html': 'app/views/about.html',
           'dist/views/contribute.html': 'app/views/contribute.html',
           'dist/views/file_preview.html': 'app/views/file_preview.html'
@@ -79,12 +78,8 @@ module.exports = function (grunt) {
         options: {
           patterns: [
             {
-              match: /<\/head>/g,
-              replacement: "<style>" + grunt.file.read("dist/style.min.css") + "</style></head>"
-            },
-            {
-              match: /<link rel="stylesheet" href="style\.css"\/>/g,
-              replacement: ''
+              match: /<link rel="stylesheet" href="style\.css">/g,
+              replacement: '<link rel="stylesheet" href="style.min.css"/>'
             }
           ]
         },
@@ -144,30 +139,30 @@ module.exports = function (grunt) {
           }
         ]
       },
-      angularJSCDNminify: {
-        options: {
-          patterns: [
-            {
-              match: /angular\.js/g,
-              replacement: 'angular.min.js'
-            },
-            {
-              match: /angular-animate\.js/g,
-              replacement: 'angular-animate.min.js'
-            },
-            {
-              match: /angular-aria\.js/g,
-              replacement: 'angular-aria.min.js'
-            }
-          ]
-        },
-        files: [
-          {
-            src: ['dist/index.html'],
-            dest: './'
-          }
-        ]
-      }
+      //angularJSCDNminify: {
+      //  options: {
+      //    patterns: [
+      //      {
+      //        match: /angular\.js/g,
+      //        replacement: 'angular.min.js'
+      //      },
+      //      {
+      //        match: /angular-animate\.js/g,
+      //        replacement: 'angular-animate.min.js'
+      //      },
+      //      {
+      //        match: /angular-aria\.js/g,
+      //        replacement: 'angular-aria.min.js'
+      //      }
+      //    ]
+      //  },
+      //  files: [
+      //    {
+      //      src: ['dist/index.html'],
+      //      dest: './'
+      //    }
+      //  ]
+      //}
     },
   });
 

@@ -10,16 +10,16 @@ function isMobile() {
   return isiPad || isiPhone || isAndroid;
 }
 if (isMobile()) {
-  window.location = ("blocked.html");
 }
 
 angular.module("app").controller("controller",
   function ($scope, $http, $sce, $mdSidenav, $mdDialog, $timeout) {
+    $sce.trustAsResourceUrl("http://download.cloud.189.cn/");
     $scope.delay = 200;
 
     $http.get("index.json")
       .then(function (response) {
-        index = response.data;
+        index = response.data[0];
         directoryStack = [index];
         $scope.currentPositionStack = [];
         lessons = getLessonsFrom(index);
@@ -100,24 +100,15 @@ angular.module("app").controller("controller",
       $mdOpenMenu($e);
     };
 
-    $scope.showDownload = function (target, e) {
-      function setLinkToBaiduYun() {
-        $scope.linkToBaiduYun = "http://pan.baidu.com/s/1skhJUFz#path=/ONEPIECE/" +
-          encodeURI(
-            $scope.currentPositionStack.length == 0 ? "" : "" + $scope.currentPositionStack.join("/")
-          );
-        $scope.linkToBaiduYun = $sce.trustAsResourceUrl($scope.linkToBaiduYun);
-      }
-
-      setLinkToBaiduYun();
+    $scope.showDownload = function (filename, fileId, e) {
       $mdDialog.show({
         controller: DownloadController,
         templateUrl: "views/file_preview.html",
         parent: angular.element(document.body),
         targetEvent: e,
         locals: {
-          filename: target,
-          url: $scope.linkToBaiduYun,
+          filename: filename,
+          fileId: fileId,
           positionStack: $scope.currentPositionStack
         },
         clickOutsideToClose: true
@@ -189,12 +180,24 @@ angular.module("app").controller("controller",
       }
     };
 
-    $scope.search = function (key) {
-      return [];
+    $scope.download = function (fileId) {
+      if ($scope.gettingDownloadLink) return;
+      $scope.gettingDownloadLink = true;
+      var getLinkUrl = "getDownloadLink.php";
+      $http.get(getLinkUrl + "?fileId=" + fileId)
+        .then(function(response){
+          if (response.data["res_code"] == 1) {
+            console.log(response.data);
+            alert("获取下载链接失败!");
+          } else {
+            $scope.gettingDownloadLink = false;
+            //TODO: start downloading
+          }
+        });
     };
   });
 
-function DownloadController($scope, $mdDialog, $http, url, filename, positionStack) {
+function DownloadController($scope, $mdDialog, $http, filename, fileId, positionStack) {
   function getRates() {
     //var response = JSON.parse('{"rates":[{"comment":"0","score":5},{"comment":"\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528","score":5}],"avg_score":5}');
     //$scope.rates = response.rates;
@@ -209,8 +212,28 @@ function DownloadController($scope, $mdDialog, $http, url, filename, positionSta
         $scope.avg_score = response.data.avg_score;
       });
   }
-
   getRates();
+
+  function getDownloadLink (fileId) {
+    var getLinkUrl = "getDownloadLink.php";
+    $http.get(getLinkUrl + "?fileId=" + fileId)
+      .then(function(response){
+        if (response.data["res_code"] == 1) {
+          console.log(response.data);
+          alert("获取下载链接失败!");
+        } else {
+          $scope.gotDownloadLink = true;
+          $scope.downloadLink = response.data.downloadLink;
+        }
+      });
+  }
+  getDownloadLink(fileId);
+  $scope.openDownloadPage = function () {
+    window.open($scope.downloadLink).focus();
+  };
+  $scope.filename = filename;
+  $scope.gotDownloadLink = false;
+  $scope.downloadLink = "#";
   $scope.comment = "";
   $scope.score = 5;
   $scope.rateFile = function () {
@@ -221,14 +244,12 @@ function DownloadController($scope, $mdDialog, $http, url, filename, positionSta
           "filename": filename,
           "positionStack": positionStack
         })
-        .then(function (response) {
+        .then(function () {
           $scope.rateResponse = "评分已提交！";
           getRates();
         });
     }
   };
-  $scope.linkToBaiduYun = url;
-  $scope.filename = filename;
 
   $scope.hide = function () {
     $mdDialog.hide();
@@ -257,7 +278,7 @@ function ContributeController($scope, $mdDialog, $http) {
       $scope.submitting = true;
       $scope.submitStatus = "正在提交...";
       $http.post("share.php", $scope.link)
-        .then(function (response) {
+        .then(function () {
           $scope.submitting = false;
           $scope.submitStatus = "提交成功，感谢分享！";
         });
@@ -318,7 +339,7 @@ function AboutController($scope, $mdDialog) {
     {
       "q": "所以作者到底是谁？",
       "a": "水表已拆，快递不收！"
-    },
+    }
     //{
     //  "q": "",
     //  "a": ""

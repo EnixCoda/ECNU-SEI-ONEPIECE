@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <title>*BETA* ECNU SEI One Piece</title>
   <!--bower:css-->
-  <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css"/>
+  <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css">
   <!--endbower-->
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css">
   <link href="//fonts.lug.ustc.edu.cn/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body ng-cloak class="dontmove" ng-app="app" ng-controller="controller" layout="row" layout-align="center">
@@ -64,10 +64,9 @@
     <p>正在读取文件列表</p>
   </div>
   <div ng-if="!loadingIndex" class="protect-overflow" flex>
-
     <md-list class="no-padding-top">
       <md-list-item ng-repeat="content in getCurrentDirectoryContent()"
-                    ng-click="goTo(content.name, $event)">
+                    ng-click="goTo(content.name, content.id, $event)">
         <div ng-if="content.isDir" layout layout-align="start center">
           <i class="material-icons">folder</i>
           <div class="left-offset">
@@ -82,16 +81,20 @@
         </div>
         <div flex></div>
         <div ng-if="!content.isDir">{{formatSize(content.size)}}</div>
+        <md-button ng-click="download(content.id)">
+          <p ng-show="!gettingDownloadLink">下载</p>
+          <md-progress-circular ng-show="gettingDownloadLink" md-diameter="20"></md-progress-circular>
+        </md-button>
         <md-menu md-position-mode="target-right target">
           <md-button ng-click="moreInfo(content.name, $mdOpenMenu, $event)" layout-align="center center">
             <i class="material-icons adjust-icon-top-margin-up">more_vert</i>
           </md-button>
           <md-menu-content width="3">
-            <md-menu-item ng-repeat="x in [1, 2]">
-              <md-button layout>
-                <i class="material-icons adjust-icon-top-margin-down">arrow_back</i>
+            <md-menu-item>
+              <md-button ng-click="getDownloadLink(content.id)">
+                <i class="material-icons adjust-icon-top-margin-down"></i>
                 <div flex></div>
-                <p md-menu-align-target>Action {{x}}</p>
+                <p md-menu-align-target>课程评价</p>
               </md-button>
             </md-menu-item>
           </md-menu-content>
@@ -110,8 +113,19 @@
       </div>
       <span class="left-offset">animation delay on click</span>
       <div flex></div>
-      <md-button class="md-raised" ng-click="showContribute($event)">我要贡献资源</md-button>
-      <md-button class="md-raised" ng-click="showAbout($event)">关于这个站点</md-button>
+      <md-menu>
+        <md-button class="md-fab md-mini background-white" ng-click="$mdOpenMenu($event)">
+          <i class="material-icons adjust-icon-top-margin-up">more_vert</i>
+        </md-button>
+        <md-menu-content>
+          <md-menu-item>
+            <md-button ng-click="showContribute($event)">我要贡献资源</md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button ng-click="showAbout($event)">关于这个站点</md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
     </div>
   </div>
 </md-content>

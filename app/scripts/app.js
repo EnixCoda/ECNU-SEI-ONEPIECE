@@ -8,5 +8,6 @@ angular.module('app', [
   .config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
       .primaryPalette('blue')
-      .accentPalette('orange');
+      .accentPalette('orange')
+      .warnPalette('red')
   });

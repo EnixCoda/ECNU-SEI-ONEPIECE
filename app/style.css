@@ -2,8 +2,9 @@
     display: none !important;
 }
 
+._md-track-ticks canvas { display: none; }
+
 md-content {
-    z-index: 1;
     background-color: #fff;
 }
 
@@ -74,8 +75,12 @@ body, input {
     margin: 0;
 }
 
-.white {
+.color-white {
     color: white;
+}
+
+.background-white {
+    background-color: white !important;
 }
 
 .protect-overflow {
