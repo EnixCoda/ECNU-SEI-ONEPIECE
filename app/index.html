@@ -30,58 +30,55 @@
     <p>正在读取文件列表</p>
   </div>
   <div ng-if="!loadingIndex" flex layout="column">
-    <div class="top-banner md-whiteframe-3dp">
+    <div class="top-banner md-whiteframe-3dp" layout layout-align="start center" layout-wrap>
+      <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)" ng-show="currentPositionStack.length">
+        <i class="material-icons color-white adjust-icon-top-margin-up-3">chevron_left</i>
+      </md-button>
+      <div flex></div>
       <div layout layout-align="start center">
-        <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)" ng-disabled="currentPositionStack.length==0">
-          <i class="material-icons color-white adjust-icon-top-margin-up-3">chevron_left</i>
-        </md-button>
-        <div flex></div>
-        <div layout layout-align="start center">
-          <md-autocomplete
-                    md-selected-item="lessonSearch.selectedItem"
-                    md-search-text="lessonSearch.searchText"
-                    md-selected-item-change="lessonSearch.selectedItemChange(item)"
-                    md-items="item in lessonSearch.querySearch(lessonSearch.searchText)"
-                    md-item-text="item.name"
-                    md-min-length="0" md-no-cache="true" md-delay="100"
-                    placeholder="课程搜索">
-              <!--<i class="material-icons adjust-icon-top-margin-up">search</i>-->
-              <md-item-template>
-                <span md-highlight-text="lessonSearch.searchText" md-highlight-flags="g">{{item.name}}</span>
-              </md-item-template>
-              <md-not-found>
-                找不到 "{{lessonSearch.searchText}}"
-              </md-not-found>
-            </md-autocomplete>
-          <div>
-            <md-menu md-position-mode="target-right target">
-              <!-- use target-up after Angular Material updates -->
-              <md-button class="md-fab md-mini background-white" ng-click="$mdOpenMenu($event)">
-                <i class="material-icons adjust-icon-top-margin-up-3">more_vert</i>
-              </md-button>
-              <md-menu-content width="3">
-                <md-menu-item>
-                  <md-button ng-click="showContribute($event)" layout layout-align="center center">
-                    <i class="material-icons adjust-icon-top-margin-down">cloud_upload</i>
-                    <div flex></div>
-                    <p>我要贡献资源</p>
-                  </md-button>
-                </md-menu-item>
-                <md-menu-item>
-                  <md-button ng-click="showAbout($event)">
-                    <i class="material-icons adjust-icon-top-margin-down">tag_faces</i>
-                    <div flex></div>
-                    <p md-menu-align-target>关于这个站点</p>
-                  </md-button>
-                </md-menu-item>
-              </md-menu-content>
-            </md-menu>
-          </div>
+        <md-autocomplete
+                md-selected-item="lessonSearch.selectedItem"
+                md-search-text="lessonSearch.searchText"
+                md-selected-item-change="lessonSearch.selectedItemChange(item)"
+                md-items="item in lessonSearch.querySearch(lessonSearch.searchText)"
+                md-item-text="item.name"
+                md-min-length="0" md-no-cache="true" md-delay="100"
+                placeholder="课程搜索">
+          <!--<i class="material-icons adjust-icon-top-margin-up">search</i>-->
+          <md-item-template>
+            <span md-highlight-text="lessonSearch.searchText" md-highlight-flags="g">{{item.name}}</span>
+          </md-item-template>
+          <md-not-found>
+            找不到 "{{lessonSearch.searchText}}"
+          </md-not-found>
+        </md-autocomplete>
+        <div>
+          <md-menu md-position-mode="target-right target">
+            <!-- use target-up after Angular Material updates -->
+            <md-button class="md-fab md-mini background-white" ng-click="$mdOpenMenu($event)">
+              <i class="material-icons adjust-icon-top-margin-up-3">more_vert</i>
+            </md-button>
+            <md-menu-content width="3">
+              <md-menu-item>
+                <md-button ng-click="showContribute($event)" layout layout-align="center center">
+                  <i class="material-icons adjust-icon-top-margin-down">cloud_upload</i>
+                  <div flex></div>
+                  <p>我要贡献资源</p>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item>
+                <md-button ng-click="showAbout($event)">
+                  <i class="material-icons adjust-icon-top-margin-down">tag_faces</i>
+                  <div flex></div>
+                  <p md-menu-align-target>关于这个站点</p>
+                </md-button>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
         </div>
       </div>
-      <md-divider></md-divider>
     </div>
-    <div class="protect-overflow" flex>
+    <div class="protect-overflow">
       <md-list class="no-padding-top">
         <md-subheader class="md-no-sticky">
           <span>当前目录</span>
