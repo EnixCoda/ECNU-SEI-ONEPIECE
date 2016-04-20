@@ -91,7 +91,7 @@ body, input {
 }
 
 .protect-overflow {
-    overflow: inherit;
+    overflow: auto;
 }
 
 .light-background-color {
@@ -109,4 +109,8 @@ md-progress-circular.spinner-white  path{
 
 md-dialog {
     min-width: 600px;
+}
+
+.top-banner {
+    min-height: 50px;
 }

@@ -10,111 +10,99 @@
   <link rel="stylesheet" href="style.css">
   <link href="//fonts.lug.ustc.edu.cn/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body ng-cloak class="dontmove" ng-app="app" ng-controller="controller" layout="row" layout-align="center">
-<div ng-if="$media('gt-xs')" flex></div>
-<md-content flex-gt-md="60" layout="column" class="md-whiteframe-4dp">
-  <div class="padding-x light-background-color" layout="row" layout-align="space-around center">
-      <div>BETA</div>
-      <!--<div>-->
-        <!--<div flex="40">-->
-          <!--<md-slider class="md-warn" flex aria-label="delay" id="delay-slider"-->
-                     <!--min="100" max="300" step="10" md-discrete ng-model="delay">-->
-          <!--</md-slider>-->
-        <!--</div>-->
-        <!--<span class="left-offset">animation delay on click</span>-->
-      <!--</div>-->
-      <div flex></div>
-      <md-menu md-position-mode="target-right target">
-        <!-- use target-up after Angular Material updates -->
-        <md-button class="md-fab md-mini background-white" ng-click="$mdOpenMenu($event)">
-          <i class="material-icons adjust-icon-top-margin-up-3">more_vert</i>
-        </md-button>
-        <md-menu-content width="3">
-          <md-menu-item>
-            <md-button ng-click="showContribute($event)" layout layout-align="center center">
-              <i class="material-icons adjust-icon-top-margin-down">cloud_upload</i>
-              <div flex></div>
-              <p>我要贡献资源</p>
-            </md-button>
-          </md-menu-item>
-          <md-menu-item>
-            <md-button ng-click="showAbout($event)">
-              <i class="material-icons adjust-icon-top-margin-down">tag_faces</i>
-              <div flex></div>
-              <p md-menu-align-target>关于这个站点</p>
-            </md-button>
-          </md-menu-item>
-        </md-menu-content>
-      </md-menu>
-    </div>
-  <md-divider></md-divider>
-  <div layout="row" layout-wrap>
-    <div layout="row" layout-wrap>
-      <div layout="row" layout-align="start center">
-        <md-button ng-click="goBack(currentPositionStack.length)">
-          ONEPIECE
-        </md-button>
-      </div>
-      <div ng-repeat="dir in currentPositionStack track by $index" layout="row" layout-align="start center">
-        >>
-        <md-button ng-click="goBack(currentPositionStack.length - 1 - $index)">
-          {{dir}}
-        </md-button>
-      </div>
-    </div>
-    <div flex></div>
-    <!--<div flex></div>-->
-    <!--<md-button class="md-fab md-mini" ng-click="showSearch()">-->
-    <!--<i class="material-icons white">search</i>-->
-    <!--</md-button>-->
-  </div>
-  <div>
-    <md-autocomplete
-            md-selected-item="lessonSearch.selectedItem"
-            md-search-text="lessonSearch.searchText"
-            md-selected-item-change="lessonSearch.selectedItemChange(item)"
-            md-items="item in lessonSearch.querySearch(lessonSearch.searchText)"
-            md-item-text="item.name"
-            md-min-length="0" md-no-cache="true" md-delay="100"
-            placeholder="课程搜索">
-      <!--<i class="material-icons adjust-icon-top-margin-up">search</i>-->
-      <md-item-template>
-        <span md-highlight-text="lessonSearch.searchText" md-highlight-flags="g">{{item.name}}</span>
-      </md-item-template>
-      <md-not-found>
-        找不到 "{{lessonSearch.searchText}}"
-      </md-not-found>
-    </md-autocomplete>
-  </div>
-  <md-divider></md-divider>
-  <md-subheader class="md-no-sticky">
-    <span>当前目录</span>
-  </md-subheader>
+<body ng-cloak ng-app="app" ng-controller="controller" layout="row" layout-align="center">
+<md-content class="md-whiteframe-4dp" flex-gt-md="60" layout="column">
+  <!--<div class="padding-x light-background-color" layout="row" layout-align="space-around center">-->
+  <!--<div>BETA</div>-->
+  <!--&lt;!&ndash;<div>&ndash;&gt;-->
+  <!--&lt;!&ndash;<div flex="40">&ndash;&gt;-->
+  <!--&lt;!&ndash;<md-slider class="md-warn" flex aria-label="delay" id="delay-slider"&ndash;&gt;-->
+  <!--&lt;!&ndash;min="100" max="300" step="10" md-discrete ng-model="delay">&ndash;&gt;-->
+  <!--&lt;!&ndash;</md-slider>&ndash;&gt;-->
+  <!--&lt;!&ndash;</div>&ndash;&gt;-->
+  <!--&lt;!&ndash;<span class="left-offset">animation delay on click</span>&ndash;&gt;-->
+  <!--&lt;!&ndash;</div>&ndash;&gt;-->
+  <!--<div flex></div>-->
+  <!--</div>-->
+  <!--<md-divider></md-divider>-->
   <div ng-if="loadingIndex" flex layout="row" layout-align="center center" layout-padding>
-    <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+    <md-progress-circular md-mode="indeterminate" md-diameter="40"></md-progress-circular>
     <p>正在读取文件列表</p>
   </div>
-  <div ng-if="!loadingIndex" class="protect-overflow" flex>
-    <md-list class="no-padding-top">
-      <md-list-item ng-repeat="content in getCurrentDirectoryContent()"
-                    ng-click="goTo(content.name, content.id, $event)">
+  <div ng-if="!loadingIndex" flex layout="column">
+    <div class="top-banner md-whiteframe-3dp">
+      <div layout layout-align="start center">
+        <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)" ng-disabled="currentPositionStack.length==0">
+          <i class="material-icons color-white adjust-icon-top-margin-up-3">chevron_left</i>
+        </md-button>
+        <div flex></div>
         <div layout layout-align="start center">
-          <i ng-if="content.isDir" class="material-icons">folder</i>
-          <i ng-if="!content.isDir" class="material-icons">{{getIcon(content.name)}}</i>
-          <div class="left-offset">
-            <p>{{content.name}}</p>
+          <md-autocomplete
+                    md-selected-item="lessonSearch.selectedItem"
+                    md-search-text="lessonSearch.searchText"
+                    md-selected-item-change="lessonSearch.selectedItemChange(item)"
+                    md-items="item in lessonSearch.querySearch(lessonSearch.searchText)"
+                    md-item-text="item.name"
+                    md-min-length="0" md-no-cache="true" md-delay="100"
+                    placeholder="课程搜索">
+              <!--<i class="material-icons adjust-icon-top-margin-up">search</i>-->
+              <md-item-template>
+                <span md-highlight-text="lessonSearch.searchText" md-highlight-flags="g">{{item.name}}</span>
+              </md-item-template>
+              <md-not-found>
+                找不到 "{{lessonSearch.searchText}}"
+              </md-not-found>
+            </md-autocomplete>
+          <div>
+            <md-menu md-position-mode="target-right target">
+              <!-- use target-up after Angular Material updates -->
+              <md-button class="md-fab md-mini background-white" ng-click="$mdOpenMenu($event)">
+                <i class="material-icons adjust-icon-top-margin-up-3">more_vert</i>
+              </md-button>
+              <md-menu-content width="3">
+                <md-menu-item>
+                  <md-button ng-click="showContribute($event)" layout layout-align="center center">
+                    <i class="material-icons adjust-icon-top-margin-down">cloud_upload</i>
+                    <div flex></div>
+                    <p>我要贡献资源</p>
+                  </md-button>
+                </md-menu-item>
+                <md-menu-item>
+                  <md-button ng-click="showAbout($event)">
+                    <i class="material-icons adjust-icon-top-margin-down">tag_faces</i>
+                    <div flex></div>
+                    <p md-menu-align-target>关于这个站点</p>
+                  </md-button>
+                </md-menu-item>
+              </md-menu-content>
+            </md-menu>
           </div>
         </div>
-        <div flex></div>
-        <!--<div ng-if="!content.isDir">{{formatSize(content.size)}}</div>-->
-        <div layout>
+      </div>
+      <md-divider></md-divider>
+    </div>
+    <div class="protect-overflow" flex>
+      <md-list class="no-padding-top">
+        <md-subheader class="md-no-sticky">
+          <span>当前目录</span>
+        </md-subheader>
+        <md-list-item ng-repeat="content in getCurrentDirectoryContent()"
+                      ng-click="goTo(content.name, content.id, $event)">
+          <div layout layout-align="start center">
+            <i class="material-icons">{{content.isDir?"folder":getIcon(content.name)}}</i>
+            <div class="left-offset">
+              <p>{{content.name}}</p>
+            </div>
+          </div>
+          <div flex></div>
           <md-button ng-if="!content.isDir" class="md-fab md-mini background-blue" ng-click="download(content)"
                      layout layout-align="center center">
-            <md-tooltip ng-if="!content.isDir" md-direction="left">
+            <md-tooltip md-direction="left">
               {{formatSize(content.size)}}
             </md-tooltip>
             <div>
-              <i ng-show="!content.gettingDownloadLink" class="material-icons adjust-icon-top-margin-up-3 color-white">cloud_download</i>
+              <i ng-show="!content.gettingDownloadLink"
+                 class="material-icons adjust-icon-top-margin-up-3 color-white">cloud_download</i>
             </div>
             <div layout layout-align="center center">
               <md-progress-circular ng-if="content.gettingDownloadLink" class="spinner-white" md-mode="indeterminate"
@@ -122,41 +110,44 @@
               </md-progress-circular>
             </div>
           </md-button>
-        </div>
-        <md-menu ng-if="content.isLesson" md-position-mode="target-right target">
-          <md-button class="md-fab md-mini background-blue" ng-click="moreInfo(content.name, $mdOpenMenu, $event)"
-                     layout-align="center center">
-            <i class="material-icons adjust-icon-top-margin-up-3 color-white">more_vert</i>
-          </md-button>
-          <md-menu-content width="3">
-            <md-menu-item>
-              <md-button ng-click="getLessonComments(content.id)">
-                <i class="material-icons adjust-icon-top-margin-down">feedback</i>
-                <div flex></div>
-                <p md-menu-align-target>课程评价</p>
-              </md-button>
-            </md-menu-item>
-            <md-menu-item>
-              <md-button>
-                <i class="material-icons adjust-icon-top-margin-down">add</i>
-                <div flex></div>
-                <p md-menu-align-target>其他功能</p>
-              </md-button>
-            </md-menu-item>
-          </md-menu-content>
-        </md-menu>
-        <md-divider></md-divider>
-      </md-list-item>
-    </md-list>
+          <md-menu ng-if="content.isLesson" md-position-mode="target-right target">
+            <md-button class="md-fab md-mini background-blue" ng-click="moreInfo(content.name, $mdOpenMenu, $event)"
+                       layout-align="center center">
+              <i class="material-icons adjust-icon-top-margin-up-3 color-white">more_vert</i>
+            </md-button>
+            <md-menu-content width="3">
+              <md-menu-item>
+                <md-button ng-click="getLessonComments(content.id)">
+                  <i class="material-icons adjust-icon-top-margin-down">feedback</i>
+                  <div flex></div>
+                  <p md-menu-align-target>课程评价</p>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item>
+                <md-button>
+                  <i class="material-icons adjust-icon-top-margin-down">add</i>
+                  <div flex></div>
+                  <p md-menu-align-target>其他功能</p>
+                </md-button>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+          <md-divider></md-divider>
+        </md-list-item>
+      </md-list>
+    </div>
   </div>
   <div>
-    <md-subheader>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
-      <del>站长</del>
-      Gol·D·Roger
+    <md-subheader>
+      <div>
+        <p>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
+          <del>站长</del>
+          Gol·D·Roger
+        </p>
+      </div>
     </md-subheader>
   </div>
 </md-content>
-<div ng-if="$media('gt-xs')" flex></div>
 </body>
 <!--bower:js-->
 <script src="../bower_components/angular/angular.js"></script>

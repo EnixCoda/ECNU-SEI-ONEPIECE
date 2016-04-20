@@ -139,31 +139,31 @@ module.exports = function (grunt) {
           }
         ]
       },
-      //angularJSCDNminify: {
-      //  options: {
-      //    patterns: [
-      //      {
-      //        match: /angular\.js/g,
-      //        replacement: 'angular.min.js'
-      //      },
-      //      {
-      //        match: /angular-animate\.js/g,
-      //        replacement: 'angular-animate.min.js'
-      //      },
-      //      {
-      //        match: /angular-aria\.js/g,
-      //        replacement: 'angular-aria.min.js'
-      //      }
-      //    ]
-      //  },
-      //  files: [
-      //    {
-      //      src: ['dist/index.html'],
-      //      dest: './'
-      //    }
-      //  ]
-      //}
-    },
+      angularJSCDNminify: {
+        options: {
+          patterns: [
+            {
+              match: /angular\.js/g,
+              replacement: 'angular.min.js'
+            },
+            {
+              match: /angular-animate\.js/g,
+              replacement: 'angular-animate.min.js'
+            },
+            {
+              match: /angular-aria\.js/g,
+              replacement: 'angular-aria.min.js'
+            }
+          ]
+        },
+        files: [
+          {
+            src: ['dist/index.html'],
+            dest: './'
+          }
+        ]
+      }
+    }
   });
 
 
