@@ -1,4 +1,4 @@
-<md-dialog style="overflow: hidden;" md-dynamic-width>
+<md-dialog md-dynamic-width>
   <md-toolbar>
     <div class="md-toolbar-tools">
       <h2>{{filename}}</h2>
@@ -54,8 +54,8 @@
         <h3>暂无评论</h3>
       </div>
       <div layout layout-align="start center" ng-show="avg_score === undefined">
-        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-        正在加载评论...
+        <md-progress-circular md-diameter="20" md-mode="indeterminate"></md-progress-circular>
+        <p class="left-offset"> 正在加载评论... </p>
       </div>
     </md-content>
   </md-dialog-content>

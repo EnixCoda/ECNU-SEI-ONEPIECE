@@ -9,13 +9,14 @@ function isMobile() {
   var isiPad = userAgent.indexOf("iPad") > -1;
   return isiPad || isiPhone || isAndroid;
 }
-if (isMobile()) {
-}
 
 angular.module("app").controller("controller",
-  function ($scope, $http, $sce, $mdSidenav, $mdDialog, $timeout) {
+  function ($scope, $http, $sce, $mdSidenav, $mdDialog, $timeout, $mdMedia) {
     $sce.trustAsResourceUrl("http://download.cloud.189.cn/");
     $scope.delay = 200;
+    if (isMobile()) {
+      $scope.delay = 300;
+    }
     $scope.loadingIndex= true;
     $http.get("index.json")
       .then(function (response) {
@@ -43,11 +44,13 @@ angular.module("app").controller("controller",
         if (!contentI.isDir) continue;
         for (var j = 0; j < contentI.content.length; j++) {
           var contentJ = contentI.content[j];
-          if (contentJ.isDir)
+          if (contentJ.isDir) {
             lessons.push({
               name: contentJ.name,
               path: [contentI.name, contentJ.name]
-            })
+            });
+            contentJ.isLesson = true;
+          }
         }
       }
       return lessons;
@@ -80,18 +83,18 @@ angular.module("app").controller("controller",
       return false;
     }
 
-    $scope.goTo = function (target, e) {
-      $timeout(function () {
-        var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
-        if (pos !== false) {
-          if (directoryStack[directoryStack.length - 1].content[pos].isDir) {
+    $scope.goTo = function (target, id, e) {
+      var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
+      if (pos !== false) {
+        if (directoryStack[directoryStack.length - 1].content[pos].isDir) {
+          $timeout(function () {
             $scope.currentPositionStack.push(target);
             directoryStack.push(directoryStack[directoryStack.length - 1].content[pos]);
-          } else {
-            $scope.showDownload(target, e);
-          }
+          }, $scope.delay);
+        } else {
+          $scope.showDownload(target, id, e);
         }
-      }, $scope.delay);
+      }
     };
 
     $scope.getCurrentDirectoryContent = function () {
@@ -101,6 +104,29 @@ angular.module("app").controller("controller",
     $scope.moreInfo = function (target, $mdOpenMenu, $e) {
       $e.stopPropagation();
       $mdOpenMenu($e);
+    };
+
+    $scope.getIcon = function (filename) {
+      if (filename.indexOf(".") > -1 && filename[-1] != ".") {
+        var fileType = filename.substr(filename.lastIndexOf(".") + 1);
+        switch (fileType) {
+          case "jpg":
+          case "png": return "image";
+          case "gif": return "gif";
+          case "doc":
+          case "docx":
+          case "rtf": return "description";
+          case "txt": return "description";
+          case "ppt":
+          case "pptx": return "slideshow";
+          case "pdf": return "picture_as_pdf";
+          case "mp3": return "mic";
+          case "mp4":
+          case "avi":
+          case "flv": return "movie";
+          default: return "attach_file";
+        }
+      }
     };
 
     $scope.showDownload = function (filename, fileId, e) {
@@ -114,6 +140,7 @@ angular.module("app").controller("controller",
           fileId: fileId,
           positionStack: $scope.currentPositionStack
         },
+        fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
       });
     };
@@ -124,6 +151,7 @@ angular.module("app").controller("controller",
         templateUrl: "views/contribute.html",
         parent: angular.element(document.body),
         targetEvent: e,
+        fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
       });
     };
@@ -134,6 +162,7 @@ angular.module("app").controller("controller",
         templateUrl: "views/about.html",
         parent: angular.element(document.body),
         targetEvent: e,
+        fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
       });
     };
@@ -198,6 +227,8 @@ angular.module("app").controller("controller",
           }
         });
     };
+
+    $scope.getLessonComments = function () {};
   });
 
 function DownloadController($scope, $mdDialog, $http, filename, fileId, positionStack) {
@@ -270,7 +301,7 @@ function ContributeController($scope, $mdDialog, $http) {
   $scope.hide = function () {
     $mdDialog.hide();
   };
-  $scope.cancel = function () {
+  $scope.close = function () {
     $mdDialog.cancel();
   };
   $scope.answer = function (answer) {
@@ -294,7 +325,7 @@ function AboutController($scope, $mdDialog) {
   $scope.hide = function () {
     $mdDialog.hide();
   };
-  $scope.cancel = function () {
+  $scope.close = function () {
     $mdDialog.cancel();
   };
   $scope.answer = function (answer) {

@@ -100,8 +100,13 @@ body, input {
 
 .set-height-to-ac {
     height: 40px;
+    min-height: 40px;
 }
 
 md-progress-circular.spinner-white  path{
     stroke: white;
+}
+
+md-dialog {
+    min-width: 600px;
 }
