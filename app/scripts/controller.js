@@ -16,13 +16,16 @@ angular.module("app").controller("controller",
   function ($scope, $http, $sce, $mdSidenav, $mdDialog, $timeout) {
     $sce.trustAsResourceUrl("http://download.cloud.189.cn/");
     $scope.delay = 200;
-
+    $scope.loadingIndex= true;
     $http.get("index.json")
       .then(function (response) {
-        index = response.data[0];
-        directoryStack = [index];
-        $scope.currentPositionStack = [];
-        lessons = getLessonsFrom(index);
+        $timeout(function(){
+          $scope.loadingIndex= false;
+          index = response.data[0];
+          directoryStack = [index];
+          $scope.currentPositionStack = [];
+          lessons = getLessonsFrom(index);
+        }, 1400);
       });
 
     var index = {
@@ -180,18 +183,18 @@ angular.module("app").controller("controller",
       }
     };
 
-    $scope.download = function (fileId) {
+    $scope.download = function (file) {
       if ($scope.gettingDownloadLink) return;
-      $scope.gettingDownloadLink = true;
+      file.gettingDownloadLink = true;
       var getLinkUrl = "getDownloadLink.php";
-      $http.get(getLinkUrl + "?fileId=" + fileId)
+      $http.get(getLinkUrl + "?fileId=" + file.id)
         .then(function(response){
           if (response.data["res_code"] == 1) {
             console.log(response.data);
             alert("获取下载链接失败!");
           } else {
-            $scope.gettingDownloadLink = false;
-            //TODO: start downloading
+            file.gettingDownloadLink = false;
+            window.location=response.data.downloadLink;
           }
         });
     };
@@ -229,7 +232,8 @@ function DownloadController($scope, $mdDialog, $http, filename, fileId, position
   }
   getDownloadLink(fileId);
   $scope.openDownloadPage = function () {
-    window.open($scope.downloadLink).focus();
+    //window.open($scope.downloadLink).focus();
+    window.location = $scope.downloadLink;
   };
   $scope.filename = filename;
   $scope.gotDownloadLink = false;

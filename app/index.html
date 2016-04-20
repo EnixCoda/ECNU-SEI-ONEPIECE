@@ -60,39 +60,46 @@
     <span>当前目录</span>
   </md-subheader>
   <div ng-if="loadingIndex" flex layout="row" layout-align="center center" layout-padding>
-    <md-progress-circular></md-progress-circular>
+    <md-progress-circular md-mode="indeterminate"></md-progress-circular>
     <p>正在读取文件列表</p>
   </div>
   <div ng-if="!loadingIndex" class="protect-overflow" flex>
     <md-list class="no-padding-top">
       <md-list-item ng-repeat="content in getCurrentDirectoryContent()"
                     ng-click="goTo(content.name, content.id, $event)">
-        <div ng-if="content.isDir" layout layout-align="start center">
-          <i class="material-icons">folder</i>
-          <div class="left-offset">
-            <p>{{content.name}}</p>
-          </div>
-        </div>
-        <div ng-if="!content.isDir" layout layout-align="start center">
-          <i class="material-icons">attach_file</i>
+        <div layout layout-align="start center">
+          <i ng-if="content.isDir" class="material-icons">folder</i>
+          <i ng-if="!content.isDir" class="material-icons">attach_file</i>
           <div class="left-offset">
             <p>{{content.name}}</p>
           </div>
         </div>
         <div flex></div>
-        <div ng-if="!content.isDir">{{formatSize(content.size)}}</div>
-        <md-button ng-click="download(content.id)">
-          <p ng-show="!gettingDownloadLink">下载</p>
-          <md-progress-circular ng-show="gettingDownloadLink" md-diameter="20"></md-progress-circular>
-        </md-button>
+        <!--<div ng-if="!content.isDir">{{formatSize(content.size)}}</div>-->
+        <div layout>
+          <md-button ng-if="!content.isDir" class="md-fab md-mini background-blue" ng-click="download(content)"
+                     layout layout-align="center center">
+            <md-tooltip ng-if="!content.isDir" md-direction="left">
+              {{formatSize(content.size)}}
+            </md-tooltip>
+            <div>
+              <i ng-show="!content.gettingDownloadLink" class="material-icons color-white">get_app</i>
+            </div>
+            <div layout layout-align="center center">
+              <md-progress-circular ng-if="content.gettingDownloadLink" class="spinner-white" md-mode="indeterminate" md-diameter="20">
+              </md-progress-circular>
+            </div>
+          </md-button>
+        </div>
         <md-menu md-position-mode="target-right target">
-          <md-button ng-click="moreInfo(content.name, $mdOpenMenu, $event)" layout-align="center center">
-            <i class="material-icons adjust-icon-top-margin-up">more_vert</i>
+          <md-button class="md-fab md-mini background-blue" ng-click="moreInfo(content.name, $mdOpenMenu, $event)"
+                     layout-align="center center">
+            <i class="material-icons adjust-icon-top-margin-up-3 color-white">more_vert</i>
           </md-button>
           <md-menu-content width="3">
             <md-menu-item>
               <md-button ng-click="getDownloadLink(content.id)">
-                <i class="material-icons adjust-icon-top-margin-down"></i>
+                <i class="material-icons adjust-icon-top-margin-down">feedback</i>
                 <div flex></div>
                 <p md-menu-align-target>课程评价</p>
               </md-button>

@@ -66,6 +66,9 @@ body, input {
 .adjust-icon-top-margin-up {
     margin-top: -5px;
 }
+.adjust-icon-top-margin-up-3 {
+    margin-top: -3px;
+}
 
 .pull-right {
     float: right;
@@ -76,11 +79,15 @@ body, input {
 }
 
 .color-white {
-    color: white;
+    color: white !important;
 }
 
 .background-white {
     background-color: white !important;
+}
+
+.background-blue {
+    background-color: #02a8f3 !important;
 }
 
 .protect-overflow {
@@ -93,4 +100,8 @@ body, input {
 
 .set-height-to-ac {
     height: 40px;
+}
+
+md-progress-circular.spinner-white  path{
+    stroke: white;
 }
