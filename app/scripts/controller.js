@@ -167,6 +167,23 @@ angular.module("app").controller("controller",
       });
     };
 
+    $scope.showSearch = function (e) {
+      $mdDialog.show({
+        controller: SearchController,
+        templateUrl: "views/search.html",
+        parent: angular.element(document.body),
+        targetEvent: e,
+        locals: {
+          lessons: lessons
+        },
+        fullscreen: $mdMedia('xs'),
+        clickOutsideToClose: true
+      }).then(
+        function(feedback) {
+
+        });
+    };
+
     $scope.formatSize = function (size) {
       if (!size) return;
       var sizers = ["", "K", "M", "G", "T", "P"];
@@ -230,6 +247,35 @@ angular.module("app").controller("controller",
 
     $scope.getLessonComments = function () {};
   });
+
+function SearchController($scope, $mdDialog, lessons) {
+  $scope.lessonSearch = {
+    querySearch: function(query) {
+      function createFilterFor(query) {
+        return function filterFn(lesson) {
+          return (lesson.name.indexOf(query) > -1);
+        };
+      }
+      return query ? lessons.filter(createFilterFor(query)) : lessons;
+    },
+    selectedItemChange: function(item) {
+      //goto
+      function goByRoute (route) {
+        while ($scope.goBack(1)) {}
+        while (route.length > 0) {
+          var target = route.shift();
+          var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
+          if (pos !== false) {
+            $scope.currentPositionStack.push(target);
+            directoryStack.push($scope.getCurrentDirectoryContent()[pos]);
+          }
+        }
+      }
+      if (!item) return;
+      goByRoute(item.path);
+    }
+  };
+}
 
 function DownloadController($scope, $mdDialog, $http, filename, fileId, positionStack) {
   function getRates() {

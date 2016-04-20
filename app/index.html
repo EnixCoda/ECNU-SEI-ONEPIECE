@@ -13,14 +13,42 @@
 <body ng-cloak class="dontmove" ng-app="app" ng-controller="controller" layout="row" layout-align="center">
 <div ng-if="$media('gt-xs')" flex></div>
 <md-content flex-gt-md="60" layout="column" class="md-whiteframe-4dp">
-  <div>
-    <md-subheader>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
-      <del>站长</del>
-      Gol·D·Roger
-    </md-subheader>
-    <md-divider></md-divider>
-  </div>
-  <div class="set-height-to-ac" layout="row" layout-wrap>
+  <div class="padding-x light-background-color" layout="row" layout-align="space-around center">
+      <div>BETA</div>
+      <!--<div>-->
+        <!--<div flex="40">-->
+          <!--<md-slider class="md-warn" flex aria-label="delay" id="delay-slider"-->
+                     <!--min="100" max="300" step="10" md-discrete ng-model="delay">-->
+          <!--</md-slider>-->
+        <!--</div>-->
+        <!--<span class="left-offset">animation delay on click</span>-->
+      <!--</div>-->
+      <div flex></div>
+      <md-menu md-position-mode="target-right target">
+        <!-- use target-up after Angular Material updates -->
+        <md-button class="md-fab md-mini background-white" ng-click="$mdOpenMenu($event)">
+          <i class="material-icons adjust-icon-top-margin-up-3">more_vert</i>
+        </md-button>
+        <md-menu-content width="3">
+          <md-menu-item>
+            <md-button ng-click="showContribute($event)" layout layout-align="center center">
+              <i class="material-icons adjust-icon-top-margin-down">cloud_upload</i>
+              <div flex></div>
+              <p>我要贡献资源</p>
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button ng-click="showAbout($event)">
+              <i class="material-icons adjust-icon-top-margin-down">tag_faces</i>
+              <div flex></div>
+              <p md-menu-align-target>关于这个站点</p>
+            </md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+    </div>
+  <md-divider></md-divider>
+  <div layout="row" layout-wrap>
     <div layout="row" layout-wrap>
       <div layout="row" layout-align="start center">
         <md-button ng-click="goBack(currentPositionStack.length)">
@@ -39,6 +67,8 @@
     <!--<md-button class="md-fab md-mini" ng-click="showSearch()">-->
     <!--<i class="material-icons white">search</i>-->
     <!--</md-button>-->
+  </div>
+  <div>
     <md-autocomplete
             md-selected-item="lessonSearch.selectedItem"
             md-search-text="lessonSearch.searchText"
@@ -87,7 +117,8 @@
               <i ng-show="!content.gettingDownloadLink" class="material-icons adjust-icon-top-margin-up-3 color-white">cloud_download</i>
             </div>
             <div layout layout-align="center center">
-              <md-progress-circular ng-if="content.gettingDownloadLink" class="spinner-white" md-mode="indeterminate" md-diameter="20">
+              <md-progress-circular ng-if="content.gettingDownloadLink" class="spinner-white" md-mode="indeterminate"
+                                    md-diameter="20">
               </md-progress-circular>
             </div>
           </md-button>
@@ -118,39 +149,11 @@
       </md-list-item>
     </md-list>
   </div>
-  <div class="light-background">
-    <div class="padding-x" layout="row" layout-align="space-around center">
-      <div>BETA</div>
-      <div flex="40">
-        <md-slider class="md-warn" flex aria-label="delay" id="delay-slider"
-                   min="100" max="300" step="10" md-discrete ng-model="delay">
-        </md-slider>
-      </div>
-      <span class="left-offset">animation delay on click</span>
-      <div flex></div>
-      <md-menu md-position-mode="target-right target">
-        <!-- use target-up after Angular Material updates -->
-        <md-button class="md-fab md-mini background-white" ng-click="$mdOpenMenu($event)">
-          <i class="material-icons adjust-icon-top-margin-up">more_vert</i>
-        </md-button>
-        <md-menu-content width="3">
-          <md-menu-item>
-            <md-button ng-click="showContribute($event)" layout layout-align="center center">
-              <i class="material-icons adjust-icon-top-margin-down">cloud_upload</i>
-              <div flex></div>
-              <p>我要贡献资源</p>
-            </md-button>
-          </md-menu-item>
-          <md-menu-item>
-            <md-button ng-click="showAbout($event)">
-              <i class="material-icons adjust-icon-top-margin-down">tag_faces</i>
-              <div flex></div>
-              <p md-menu-align-target>关于这个站点</p>
-            </md-button>
-          </md-menu-item>
-        </md-menu-content>
-      </md-menu>
-    </div>
+  <div>
+    <md-subheader>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
+      <del>站长</del>
+      Gol·D·Roger
+    </md-subheader>
   </div>
 </md-content>
 <div ng-if="$media('gt-xs')" flex></div>

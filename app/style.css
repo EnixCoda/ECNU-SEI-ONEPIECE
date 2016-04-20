@@ -94,7 +94,7 @@ body, input {
     overflow: inherit;
 }
 
-.light-background {
+.light-background-color {
     background-color: rgba(0,0,0,0.03);
 }
 
