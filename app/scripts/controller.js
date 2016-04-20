@@ -83,13 +83,17 @@ angular.module("app").controller("controller",
       return false;
     }
 
+    var disableGoTo = false; // prevent error which occurs folder double clicked
     $scope.goTo = function (target, id, e) {
+      if (disableGoTo) return;
       var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
-      if (pos !== false) {
+      if (pos !== false && directoryStack[directoryStack.length - 1].content[pos].id == id) {
         if (directoryStack[directoryStack.length - 1].content[pos].isDir) {
+          disableGoTo = true;
           $timeout(function () {
             $scope.currentPositionStack.push(target);
             directoryStack.push(directoryStack[directoryStack.length - 1].content[pos]);
+            disableGoTo = false;
           }, $scope.delay);
         } else {
           $scope.showDownload(target, id, e);
