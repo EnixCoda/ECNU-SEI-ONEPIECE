@@ -12,19 +12,6 @@
 </head>
 <body ng-cloak ng-app="app" ng-controller="controller" layout="row" layout-align="center">
 <md-content class="md-whiteframe-4dp" flex-gt-md="60" layout="column">
-  <!--<div class="padding-x light-background-color" layout="row" layout-align="space-around center">-->
-  <!--<div>BETA</div>-->
-  <!--&lt;!&ndash;<div>&ndash;&gt;-->
-  <!--&lt;!&ndash;<div flex="40">&ndash;&gt;-->
-  <!--&lt;!&ndash;<md-slider class="md-warn" flex aria-label="delay" id="delay-slider"&ndash;&gt;-->
-  <!--&lt;!&ndash;min="100" max="300" step="10" md-discrete ng-model="delay">&ndash;&gt;-->
-  <!--&lt;!&ndash;</md-slider>&ndash;&gt;-->
-  <!--&lt;!&ndash;</div>&ndash;&gt;-->
-  <!--&lt;!&ndash;<span class="left-offset">animation delay on click</span>&ndash;&gt;-->
-  <!--&lt;!&ndash;</div>&ndash;&gt;-->
-  <!--<div flex></div>-->
-  <!--</div>-->
-  <!--<md-divider></md-divider>-->
   <div ng-if="loadingIndex" flex layout="row" layout-align="center center" layout-padding>
     <md-progress-circular ng-if="!loadIndexFailed" md-mode="indeterminate" md-diameter="40"></md-progress-circular>
     <div><md-icon ng-if="loadIndexFailed" class="material-icons md-warn">report_problem</md-icon></div>
@@ -55,9 +42,8 @@
         </md-autocomplete>
         <div>
           <md-menu md-position-mode="target-right target">
-            <!-- use target-up after Angular Material updates -->
-            <md-button class="md-raised align-to-ac background-white" ng-click="$mdOpenMenu($event)">
-              <md-icon class="material-icons adjust-icon-top-margin-up-3">more_vert</md-icon>
+            <md-button class="md-raised top-right-menu background-white" ng-click="$mdOpenMenu($event)">
+              <md-icon class="material-icons adjust-icon-top-margin-up-3 color-grey">more_vert</md-icon>
             </md-button>
             <md-menu-content width="3">
               <md-menu-item>

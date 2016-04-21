@@ -116,7 +116,7 @@ md-progress-circular.color-white path {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
-.align-to-ac {
+.top-right-menu {
     height: 40px;
     width: 40px;
     min-width: 40px;
@@ -125,4 +125,8 @@ md-progress-circular.color-white path {
 
 body md-content{
     max-width:1000px !important;
+}
+
+.color-grey {
+    color: rgba(0, 0, 0, 0.54) !important;
 }
