@@ -122,3 +122,7 @@ md-progress-circular.color-white path {
     min-width: 40px;
     margin-left: 4px;
 }
+
+body md-content{
+    max-width:1000px !important;
+}
