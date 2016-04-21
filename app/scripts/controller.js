@@ -2,40 +2,36 @@
  * Created by Exin on 2016/3/2.
  */
 
-function isMobile() {
-  var userAgent = navigator.userAgent;
-  var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
-  var isiPhone = userAgent.indexOf("iPhone") > -1;
-  var isiPad = userAgent.indexOf("iPad") > -1;
-  return isiPad || isiPhone || isAndroid;
-}
 
 angular.module("app").controller("controller",
   function ($scope, $http, $sce, $mdSidenav, $mdDialog, $timeout, $mdMedia) {
     $sce.trustAsResourceUrl("http://download.cloud.189.cn/");
-    $scope.delay = 200;
-    if (isMobile()) {
-      $scope.delay = 300;
+
+    function isMobile() {
+      var userAgent = navigator.userAgent;
+      var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
+      var isiPhone = userAgent.indexOf("iPhone") > -1;
+      var isiPad = userAgent.indexOf("iPad") > -1;
+      return isiPad || isiPhone || isAndroid;
     }
-    $scope.loadingIndex= true;
+
+    $scope.delay = isMobile() ? 300 : 200;
+
+    $scope.loadingIndex = true;
     $http.get("index.json")
       .then(function (response) {
-        $timeout(function(){
-          $scope.loadingIndex= false;
+        // TODO: show fail
+        $timeout(function () {
+          $scope.loadingIndex = false;
           index = response.data[0];
-          directoryStack = [index];
-          $scope.currentPositionStack = [];
+          $scope.directoryStack = [index];
+          $scope.currentDirectory = index;
           lessons = getLessonsFrom(index);
-        }, 1400);
+        }, 1500);
       });
 
-    var index = {
-      "name": "",
-      "isDir": true,
-      "content": []
-    };
-    var directoryStack = [index];
-    var lessons = [];
+    var index;
+    var lessons;
 
     function getLessonsFrom(index) {
       var lessons = [];
@@ -56,26 +52,20 @@ angular.module("app").controller("controller",
       return lessons;
     }
 
-    $scope.currentPositionStack = [];
-
     $scope.goBack = function (step) {
-      var last;
-      if ($scope.currentPositionStack.length == 0) return false;
-      if (step > $scope.currentPositionStack.length) step = $scope.currentPositionStack.length;
+      if ($scope.directoryStack.length == 1) return false;
+      if (step >= $scope.directoryStack.length) step = $scope.directoryStack.length - 1;
       for (var i = 0; i < step; i++) {
-        $scope.currentPositionStack.pop();
-        last = directoryStack.pop();
-        if (last == index) {
-          directoryStack.push(index);
-        }
+        $scope.directoryStack.pop();
+        setCurrentDirectory();
       }
       return true;
     };
 
-    function fileInDirectory(filename, dir) {
+    function targetInDirectory(target, dir) {
       if (dir.isDir) {
         for (var i = 0; i < dir.content.length; i++) {
-          if (dir.content[i].name == filename) {
+          if (dir.content[i].name == target.name) {
             return i;
           }
         }
@@ -84,69 +74,163 @@ angular.module("app").controller("controller",
     }
 
     var disableGoTo = false; // prevent error which occurs folder double clicked
-    $scope.goTo = function (target, id, e) {
+    $scope.goTo = function (target, e) {
+      function showFileDetail(file, e) {
+        $mdDialog.show({
+          controller: DownloadController,
+          templateUrl: "views/file_preview.html",
+          parent: angular.element(document.body),
+          targetEvent: e,
+          locals: {
+            file: file,
+            positionStack: $scope.directoryStack
+          },
+          fullscreen: $mdMedia('xs'),
+          clickOutsideToClose: true
+        });
+      }
+
       if (disableGoTo) return;
-      var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
-      if (pos !== false && directoryStack[directoryStack.length - 1].content[pos].id == id) {
-        if (directoryStack[directoryStack.length - 1].content[pos].isDir) {
+      var pos = targetInDirectory(target, $scope.currentDirectory);
+      if (pos !== false) {
+        if (target.isDir) {
           disableGoTo = true;
           $timeout(function () {
-            $scope.currentPositionStack.push(target);
-            directoryStack.push(directoryStack[directoryStack.length - 1].content[pos]);
+            $scope.directoryStack.push(target);
+            setCurrentDirectory();
             disableGoTo = false;
           }, $scope.delay);
         } else {
-          $scope.showDownload(target, id, e);
+          showFileDetail(target, e);
         }
       }
     };
 
-    $scope.getCurrentDirectoryContent = function () {
-      return directoryStack[directoryStack.length - 1].content;
-    };
+    function setCurrentDirectory() {
+      $scope.currentDirectory = $scope.directoryStack.slice(-1)[0];
+    }
 
-    $scope.moreInfo = function (target, $mdOpenMenu, $e) {
+    $scope.openNestedMenu = function ($mdOpenMenu, $e) {
       $e.stopPropagation();
       $mdOpenMenu($e);
     };
 
-    $scope.getIcon = function (filename) {
+    $scope.getFileIcon = function (file) {
+      var filename = file.name;
       if (filename.indexOf(".") > -1 && filename[-1] != ".") {
         var fileType = filename.substr(filename.lastIndexOf(".") + 1);
         switch (fileType) {
           case "jpg":
-          case "png": return "image";
-          case "gif": return "gif";
+          case "png":
+            return "image";
+          case "gif":
+            return "gif";
           case "doc":
           case "docx":
-          case "rtf": return "description";
-          case "txt": return "description";
+          case "rtf":
+            return "description";
+          case "txt":
+            return "description";
           case "ppt":
-          case "pptx": return "slideshow";
-          case "pdf": return "picture_as_pdf";
-          case "mp3": return "mic";
+          case "pptx":
+            return "slideshow";
+          case "pdf":
+            return "picture_as_pdf";
+          case "mp3":
+            return "mic";
           case "mp4":
           case "avi":
-          case "flv": return "movie";
-          default: return "attach_file";
+          case "flv":
+            return "movie";
+          default:
+            return "attach_file";
         }
       }
     };
 
-    $scope.showDownload = function (filename, fileId, e) {
+    $scope.formatFileSize = function (file) {
+      var size = file.size;
+      if (!size) return;
+      var measures = ["", "K", "M", "G", "T", "P"];
+      var count = 0;
+      while (size >= 1000) {
+        count++;
+        size *= 0.001;
+      }
+      var sizeS = "";
+      var tail = measures[count] + "B";
+      if (count <= 1) {
+        sizeS = size.toString().substring(0, size.toString().indexOf("."));
+      } else {
+        sizeS = size.toString().substring(0, size.toString().indexOf(".") + 3);
+      }
+      return sizeS + tail;
+    };
+
+    $scope.lessonSearch = {
+      querySearch: function (query) {
+        function createFilterFor(query) {
+          return function filterFn(lesson) {
+            return (lesson.name.indexOf(query) > -1);
+          };
+        }
+
+        return query ? lessons.filter(createFilterFor(query)) : lessons;
+      },
+      selectedItemChange: function (item) {
+        function goByRoute(route) {
+          while ($scope.goBack(1)) {
+          }
+          while (route.length > 0) {
+            var target = route.shift();
+            var pos = targetInDirectory(target, $scope.currentDirectory);
+            if (pos !== false) {
+              $scope.directoryStack.push(target);
+              setCurrentDirectory();
+            }
+          }
+        }
+
+        if (!item) return;
+        goByRoute(item.path);
+      }
+    };
+
+    $scope.download = function (file) {
+      if (file.gettingDownloadLink) return;
+      file.gettingDownloadLink = true;
+      var getLinkUrl = "getDownloadLink.php";
+      $http.get(getLinkUrl + "?fileId=" + file.id)
+        .then(function (response) {
+          if (response.data["res_code"] == 1) {
+            console.log(response.data);
+            alert("获取下载链接失败!");
+          } else {
+            file.gettingDownloadLink = false;
+            window.location = response.data.downloadLink;
+          }
+        });
+    };
+
+    $scope.getLessonComments = function () {
+    };
+
+    // not used now
+    $scope.showSearch = function (e) {
       $mdDialog.show({
-        controller: DownloadController,
-        templateUrl: "views/file_preview.html",
+        controller: SearchController,
+        templateUrl: "views/search.html",
         parent: angular.element(document.body),
         targetEvent: e,
         locals: {
-          filename: filename,
-          fileId: fileId,
-          positionStack: $scope.currentPositionStack
+          lessons: lessons
         },
         fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
-      });
+      }).then(
+        function (feedback) {
+
+        });
     };
 
     $scope.showContribute = function (e) {
@@ -170,157 +254,57 @@ angular.module("app").controller("controller",
         clickOutsideToClose: true
       });
     };
-
-    $scope.showSearch = function (e) {
-      $mdDialog.show({
-        controller: SearchController,
-        templateUrl: "views/search.html",
-        parent: angular.element(document.body),
-        targetEvent: e,
-        locals: {
-          lessons: lessons
-        },
-        fullscreen: $mdMedia('xs'),
-        clickOutsideToClose: true
-      }).then(
-        function(feedback) {
-
-        });
-    };
-
-    $scope.formatSize = function (size) {
-      if (!size) return;
-      var sizers = ["", "K", "M", "G", "T", "P"];
-      var countSizer = 0;
-      while (size >= 1000) {
-        countSizer++;
-        size *= 0.001;
-      }
-      var sizeS = "";
-      var tail = sizers[countSizer] + "B";
-      if (countSizer <= 1) {
-        sizeS = size.toString().substring(0, size.toString().indexOf("."));
-      } else {
-        sizeS = size.toString().substring(0, size.toString().indexOf(".") + 3);
-      }
-      return sizeS + tail;
-    };
-
-    $scope.lessonSearch = {
-      querySearch: function(query) {
-        function createFilterFor(query) {
-          return function filterFn(lesson) {
-            return (lesson.name.indexOf(query) > -1);
-          };
-        }
-        return query ? lessons.filter(createFilterFor(query)) : lessons;
-      },
-      selectedItemChange: function(item) {
-        //goto
-        function goByRoute (route) {
-          while ($scope.goBack(1)) {}
-          while (route.length > 0) {
-            var target = route.shift();
-            var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
-            if (pos !== false) {
-              $scope.currentPositionStack.push(target);
-              directoryStack.push($scope.getCurrentDirectoryContent()[pos]);
-            }
-          }
-        }
-        if (!item) return;
-        goByRoute(item.path);
-      }
-    };
-
-    $scope.download = function (file) {
-      if ($scope.gettingDownloadLink) return;
-      file.gettingDownloadLink = true;
-      var getLinkUrl = "getDownloadLink.php";
-      $http.get(getLinkUrl + "?fileId=" + file.id)
-        .then(function(response){
-          if (response.data["res_code"] == 1) {
-            console.log(response.data);
-            alert("获取下载链接失败!");
-          } else {
-            file.gettingDownloadLink = false;
-            window.location=response.data.downloadLink;
-          }
-        });
-    };
-
-    $scope.getLessonComments = function () {};
   });
 
-function SearchController($scope, $mdDialog, lessons) {
-  $scope.lessonSearch = {
-    querySearch: function(query) {
-      function createFilterFor(query) {
-        return function filterFn(lesson) {
-          return (lesson.name.indexOf(query) > -1);
-        };
-      }
-      return query ? lessons.filter(createFilterFor(query)) : lessons;
-    },
-    selectedItemChange: function(item) {
-      //goto
-      function goByRoute (route) {
-        while ($scope.goBack(1)) {}
-        while (route.length > 0) {
-          var target = route.shift();
-          var pos = fileInDirectory(target, directoryStack[directoryStack.length - 1]);
-          if (pos !== false) {
-            $scope.currentPositionStack.push(target);
-            directoryStack.push($scope.getCurrentDirectoryContent()[pos]);
-          }
-        }
-      }
-      if (!item) return;
-      goByRoute(item.path);
-    }
-  };
-}
 
-function DownloadController($scope, $mdDialog, $http, filename, fileId, positionStack) {
-  function getRates() {
-    //var response = JSON.parse('{"rates":[{"comment":"0","score":5},{"comment":"\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528\u597d\u7528","score":5}],"avg_score":5}');
-    //$scope.rates = response.rates;
-    //$scope.avg_score = response.avg_score;
-
+function DownloadController($scope, $mdDialog, $http, file, positionStack) {
+  function getRates(file) {
     $http.post("getRate.php", {
-        "filename": filename,
-        "positionStack": positionStack
+        file: file,
+        positionStack: positionStack
       })
       .then(function (response) {
-        $scope.rates = response.data.rates;
-        $scope.avg_score = response.data.avg_score;
+
       });
   }
-  getRates();
 
-  function getDownloadLink (fileId) {
+  getRates();
+  $scope.file = file;
+  $scope.download = function () {
+    if (file.gettingDownloadLink) return;
+    file.gettingDownloadLink = true;
     var getLinkUrl = "getDownloadLink.php";
-    $http.get(getLinkUrl + "?fileId=" + fileId)
-      .then(function(response){
+    $http.get(getLinkUrl + "?fileId=" + file.id)
+      .then(function (response) {
         if (response.data["res_code"] == 1) {
           console.log(response.data);
           alert("获取下载链接失败!");
         } else {
-          $scope.gotDownloadLink = true;
-          $scope.downloadLink = response.data.downloadLink;
+          file.gettingDownloadLink = false;
+          window.location = response.data.downloadLink;
         }
       });
-  }
-  getDownloadLink(fileId);
-  $scope.openDownloadPage = function () {
-    //window.open($scope.downloadLink).focus();
-    window.location = $scope.downloadLink;
   };
-  $scope.filename = filename;
-  $scope.gotDownloadLink = false;
-  $scope.downloadLink = "#";
-  $scope.comment = "";
-  $scope.score = 5;
+
+  $scope.formatFileSize = function (file) {
+    var size = file.size;
+    if (!size) return;
+    var measures = ["", "K", "M", "G", "T", "P"];
+    var count = 0;
+    while (size >= 1000) {
+      count++;
+      size *= 0.001;
+    }
+    var sizeS = "";
+    var tail = measures[count] + "B";
+    if (count <= 1) {
+      sizeS = size.toString().substring(0, size.toString().indexOf("."));
+    } else {
+      sizeS = size.toString().substring(0, size.toString().indexOf(".") + 3);
+    }
+    return sizeS + tail;
+  };
+
   $scope.rateFile = function () {
     if (0 <= $scope.score && $scope.score <= 10) {
       $http.post("rateFile.php", {
@@ -336,14 +320,8 @@ function DownloadController($scope, $mdDialog, $http, filename, fileId, position
     }
   };
 
-  $scope.hide = function () {
-    $mdDialog.hide();
-  };
   $scope.cancel = function () {
     $mdDialog.cancel();
-  };
-  $scope.answer = function (answer) {
-    $mdDialog.hide(answer);
   };
 }
 
@@ -384,50 +362,51 @@ function AboutController($scope, $mdDialog) {
   $scope.qas = [
     {
       "q": "为什么做这个网站？",
-      "a": "每年学弟学妹找学习资料时都需要向学长学姐寻求帮助，这种“代代相传”是一种不高效的重复劳动。" +
-      "加之每个人的社交圈有限，得到的资料往往不够全面，能够保存、传递给各自学弟学妹的就更少了。" +
-      "通过这个网站集中传递、保存学习资料就解决了上述问题。" +
-      "另外本站提供课程评论功能，人人可见的对教师、课程的评论，让同学们的选课目标更加明确。"
+      "a": ["每年学弟学妹找学习资料时都需要向学长学姐寻求帮助，这种“代代相传”的方法是一种不高效的重复劳动。" +
+      "每个人的社交圈有限，得到的资料往往不够全面，能够保存、传递给各自学弟学妹的就更少了。许多宝贵的资料就此流失。" +
+      "通过这个网站集中传递、保存学习资料就可以避免上述问题。"]
     },
     {
       "q": "通过网站传播习题答案，不怕被校领导查水表吗？",
-      "a": "本站是为了帮助同学们更方便地获取学习资料而建立的。" +
-      "提供答案、注解是为了方便做完习题后校对、深入理解。" +
-      "举个栗子：很多同学都会有这样的经历，做完习题后没有答案校对，等若干日后老师批改完成再看题目时已经忘了当时的思路和知识点，导致学习效率降低，只恨当时没有答案。" +
-      "此外，对于从本站获取答案进行抄袭、应付了事的部分同学，想必不使用本站也不会乖乖独立完成作业。因为他们还可以从其他网络资源、室友处获得答案。"
-    },
-    {
-      "q": "作者是谁？",
-      "a": "不告诉你！"
+      "a": ["本站是为了帮助同学们更方便地获取学习资料而建立的。" +
+      "提供答案、注解是为了方便做完习题后校对、深入理解。",
+        "很多同学都会有这样的经历：做完习题后没有答案校对，等老师批改完再看时，当时的思路和知识点已经记忆模糊，" +
+        "由此导致学习效率降低。",
+        "此外，对于从本站获取答案进行抄袭、应付了事的部分同学，想必不使用本站也不会独立完成作业。" +
+        "因为他们还可以从其他网络资源、甚至同学那里获得答案。"]
     },
     {
       "q": "如何向这个站点提供其他学习资料？",
-      "a": "关闭这个对话框，点击“我要贡献资源”进行了解。"
+      "a": ["关闭这个对话框，点击右上角的“我要贡献资源”。"]
     },
     {
-      "q": "为什么不直接通过一个百度云分享链接来传递资料？",
-      "a": "1、百度云分享链接目前不支持用户为文件作出评价，而评价是本站存在的意义之一，通过同学们不断地评价、反馈，筛选出站点内最优质的资源、淘汰过期或不适宜的资源。" +
-      "2、以站点的形式存在更有利于本站的持久发展。" +
-      "3、资金充裕以后本站可以自建存储，无缝升级。" +
-      "4、站长的个人喜好。"
+      "q": "为什么不直接通过一个网盘来传递资料？",
+      "a": ["1、大多数网盘目前不支持用户为文件作出评价，而评价是本站的重要功能：" +
+      "通过同学们不断地评价、反馈，筛选出站点内优质的资源、淘汰过期或不适宜的资源。",
+        "2、以站点的形式存在更易于控制、提供更多功能。",
+        "4、站长的个人喜好。"]
     },
     {
       "q": "这个网站如何运营？",
-      "a": "本站的运营需要少量资金和人力，通过把资料都存放于云端存储提供商省去了绝大部分费用，但是管理员等人力还是不可或缺。" +
-      "欢迎有志于参与本站管理的同学向当前管理员提交你的申请，一起管理本站。"
+      "a": ["本站的运营需要少量资金和人力，通过把资料都存放于免费云端存储省去了绝大部分费用，但是管理员等人力还是不可或缺。" +
+      "欢迎有志于参与本站管理的同学向当前管理员提交你的申请，一起管理本站。"]
     },
     {
       "q": "那么如何提交申请呢？",
-      "a": "将你的申请文档以“我要贡献资源”内的方式提交即可。内容包括但不限于你的姓名、院系、年级、班级、网上联络方式。" +
-      "加分项：有一定的前端知识储备/脚本语言编程能力。（要求不高）"
+      "a": ["将你的申请文档以“我要贡献资源”内的方式提交即可（仅站长可以查阅）。" +
+      "内容包括但不限于你的姓名、院系、年级、班级、网上联络方式。" +
+      "加分项：有一定的前端知识储备/脚本语言编程能力。（要求不高）"]
     },
     {
-      "q": "所以作者到底是谁？",
-      "a": "水表已拆，快递不收！"
+      "q": "站长是谁？",
+      "a": ["本站是匿名作品，站长信息保密。"]
     }
     //{
     //  "q": "",
     //  "a": ""
     //},
   ];
+}
+
+function SearchController($scope, lessons) {
 }

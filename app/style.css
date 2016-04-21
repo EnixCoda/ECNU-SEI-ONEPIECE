@@ -12,7 +12,7 @@ md-input-container .md-errors-spacer {
     min-height: 0;
 }
 
-body, input {
+body, input, textarea {
     font-family: "黑体";
 }
 
@@ -109,4 +109,24 @@ md-dialog {
 
 .top-banner {
     min-height: 60px;
+}
+
+md-progress-circular.color-white path {
+    stroke: white;
+}
+
+.lesson-route {
+    padding-left: 5px;
+    cursor: pointer;
+}
+.lesson-route:focus {
+    outline: none;
+}
+
+.md-fab {
+    min-width: 40px !important;
+}
+
+.file-name-in-list {
+    line-height: 20px !important;
 }

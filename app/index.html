@@ -31,7 +31,7 @@
   </div>
   <div ng-if="!loadingIndex" flex layout="column">
     <div class="top-banner md-whiteframe-3dp" layout layout-align="start center" layout-wrap>
-      <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)" ng-show="currentPositionStack.length">
+      <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)" ng-show="directoryStack.length>1">
         <i class="material-icons color-white adjust-icon-top-margin-up-3">chevron_left</i>
       </md-button>
       <div flex></div>
@@ -81,13 +81,16 @@
     <div class="protect-overflow">
       <md-list class="no-padding-top">
         <md-subheader class="md-no-sticky">
-          <span>当前目录</span>
+          <span class="lesson-route" ng-click="goBack(directoryStack.length - 1)">ONEPIECE</span>
+          <span class="lesson-route" ng-repeat="dir in directoryStack" ng-if="!$first"
+                ng-click="goBack(directoryStack.length - $index - 1)">
+            > <b>{{dir.name}}</b>
+          </span>
         </md-subheader>
-        <md-list-item ng-repeat="content in getCurrentDirectoryContent()"
-                      ng-click="goTo(content.name, content.id, $event)">
+        <md-list-item ng-repeat="content in currentDirectory.content" ng-click="goTo(content, $event)">
           <div layout layout-align="start center">
-            <i class="material-icons">{{content.isDir?"folder":getIcon(content.name)}}</i>
-            <div class="left-offset">
+            <i class="material-icons">{{content.isDir?"folder":getFileIcon(content)}}</i>
+            <div class="left-offset file-name-in-list">
               <p>{{content.name}}</p>
             </div>
           </div>
@@ -95,26 +98,26 @@
           <md-button ng-if="!content.isDir" class="md-fab md-mini background-blue" ng-click="download(content)"
                      layout layout-align="center center">
             <md-tooltip md-direction="left">
-              {{formatSize(content.size)}}
+              {{formatFileSize(content)}}
             </md-tooltip>
             <div>
               <i ng-show="!content.gettingDownloadLink"
                  class="material-icons adjust-icon-top-margin-up-3 color-white">cloud_download</i>
             </div>
             <div layout layout-align="center center">
-              <md-progress-circular ng-if="content.gettingDownloadLink" class="spinner-white" md-mode="indeterminate"
+              <md-progress-circular ng-if="content.gettingDownloadLink" class="color-white" md-mode="indeterminate"
                                     md-diameter="20">
               </md-progress-circular>
             </div>
           </md-button>
-          <md-menu ng-if="content.isLesson" md-position-mode="target-right target">
-            <md-button class="md-fab md-mini background-blue" ng-click="moreInfo(content.name, $mdOpenMenu, $event)"
+          <md-menu class="no-padding-top no-padding-bottom" ng-if="content.isLesson" md-position-mode="target-right target">
+            <md-button class="md-fab md-mini background-blue" ng-click="openNestedMenu($mdOpenMenu, $event)"
                        layout-align="center center">
               <i class="material-icons adjust-icon-top-margin-up-3 color-white">more_vert</i>
             </md-button>
             <md-menu-content width="3">
               <md-menu-item>
-                <md-button ng-click="getLessonComments(content.id)">
+                <md-button ng-click="getLessonComments(content)">
                   <i class="material-icons adjust-icon-top-margin-down">feedback</i>
                   <div flex></div>
                   <p md-menu-align-target>课程评价</p>
