@@ -122,6 +122,9 @@ md-progress-circular.color-white path {
 .lesson-route:focus {
     outline: none;
 }
+.lesson-route:hover {
+    color: #5D5D5D;
+}
 
 .md-fab {
     min-width: 40px !important;
