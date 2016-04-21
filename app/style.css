@@ -18,33 +18,6 @@ body, input, textarea {
     font-family: "黑体";
 }
 
-.material-icons {
-    vertical-align: middle;
-    display: inline-block;
-    color: #02a8f3;
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px; /* Preferred icon size */
-    line-height: 1;
-    text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
-    white-space: nowrap;
-    direction: ltr;
-
-    /* Support for all WebKit browsers. */
-    -webkit-font-smoothing: antialiased;
-    /* Support for Safari and Chrome. */
-    text-rendering: optimizeLegibility;
-
-    /* Support for Firefox. */
-    -moz-osx-font-smoothing: grayscale;
-
-    /* Support for IE. */
-    font-feature-settings: 'liga';
-}
-
 .left-offset {
     padding-left: 10px;
 }

@@ -116,6 +116,46 @@ angular.module("app").controller("controller",
       $mdOpenMenu($e);
     };
 
+    $scope.getFileColor = function (file) {
+      var filename = file.name;
+      if (file.isDir) return {color: "#00bcd4"};
+      if (filename.indexOf(".") > -1 && filename[-1] != ".") {
+        var color;
+        var fileType = filename.substr(filename.lastIndexOf(".") + 1);
+        switch (fileType) {
+          case "jpg":
+          case "png":
+          case "gif":
+            color = "#ff9800";
+            break;
+          case "doc":
+          case "docx":
+          case "rtf":
+            color = "#295598";
+            break;
+          case "txt":
+            color = "#295598";
+            break;
+          case "ppt":
+          case "pptx":
+            color = "#8bc34a";
+            break;
+          case "pdf":
+            color = "#ff5722";
+            break;
+          case "mp3":
+          case "mp4":
+          case "avi":
+          case "flv":
+            color = "#009688";
+            break;
+          default:
+            color = "#607d8b";
+            break;
+        }
+        return {color: color};
+      }
+    };
     $scope.getFileIcon = function (file) {
       var filename = file.name;
       if (filename.indexOf(".") > -1 && filename[-1] != ".") {
@@ -414,7 +454,7 @@ function AboutController($scope, $mdDialog) {
       "a": ["1、大多数网盘目前不支持用户为文件作出评价，而评价是本站的重要功能：" +
       "通过同学们不断地评价、反馈，筛选出站点内优质的资源、淘汰过期或不适宜的资源。",
         "2、以站点的形式存在更易于控制、提供更多功能。",
-        "4、站长的个人喜好。"]
+        "3、站长的个人喜好。"]
     },
     {
       "q": "这个网站如何运营？",

@@ -1,22 +1,22 @@
-<md-dialog md-dynamic-width>
+<md-dialog>
   <md-toolbar>
     <div class="md-toolbar-tools">
       <h4>{{file.name}}</h4>
       <span flex></span>
       <md-button class="md-icon-button" ng-click="cancel()">
-        <i class="material-icons color-white">close</i>
+        <md-icon class="material-icons color-white">close</md-icon>
       </md-button>
     </div>
   </md-toolbar>
-  <md-dialog-content>
-    <md-content layout="column" layout-padding>
+  <md-dialog-content layout="column" flex>
+    <md-content flex layout="column" layout-padding>
       <div layout layout-align="space-between center">
         <div>
           <md-button class="md-icon-button" ng-click="rateFile(1)">
-            <i class="material-icons">thumb_up</i>
+            <md-icon class="material-icons">thumb_up</md-icon>
           </md-button>
           <md-button class="md-icon-button" ng-click="rateFile(-1)">
-            <i class="material-icons">thumb_down</i>
+            <md-icon class="material-icons">thumb_down</md-icon>
           </md-button>
         </div>
         <md-button class="md-fab md-mini background-blue" ng-click="download(file)"
@@ -25,8 +25,8 @@
             {{formatFileSize(file)}}
           </md-tooltip>
           <div>
-            <i ng-show="!file.gettingDownloadLink"
-               class="material-icons adjust-icon-top-margin-up-3 color-white">cloud_download</i>
+            <md-icon ng-show="!file.gettingDownloadLink"
+               class="material-icons adjust-icon-top-margin-up-3 color-white">cloud_download</md-icon>
           </div>
           <div layout layout-align="center center">
             <md-progress-circular ng-if="file.gettingDownloadLink" class="color-white" md-mode="indeterminate"
