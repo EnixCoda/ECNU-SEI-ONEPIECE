@@ -26,8 +26,9 @@
   <!--</div>-->
   <!--<md-divider></md-divider>-->
   <div ng-if="loadingIndex" flex layout="row" layout-align="center center" layout-padding>
-    <md-progress-circular md-mode="indeterminate" md-diameter="40"></md-progress-circular>
-    <p>正在读取文件列表</p>
+    <md-progress-circular ng-if="!loadIndexFailed" md-mode="indeterminate" md-diameter="40"></md-progress-circular>
+    <div><md-icon ng-if="loadIndexFailed" class="material-icons md-warn">report_problem</md-icon></div>
+    <p>{{loadIndexFailed?"读取文件列表失败":"正在读取文件列表"}}</p>
   </div>
   <div ng-if="!loadingIndex" flex layout="column">
     <div class="top-banner md-whiteframe-3dp light-background-color left-offset" layout layout-align="start center" layout-wrap>
@@ -142,11 +143,11 @@
     </div>
   </div>
   <div>
-    <md-subheader class="light-background-color">
-      <p>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
+    <md-subheader class="light-background-color no-padding-bottom no-padding-top">
+      <span>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
         <del>站长</del>
         Gol·D·Roger
-      </p>
+      </span>
     </md-subheader>
   </div>
 </md-content>

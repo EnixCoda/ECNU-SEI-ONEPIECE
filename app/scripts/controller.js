@@ -21,7 +21,6 @@ angular.module("app").controller("controller",
     $scope.loadingIndex = true;
     $http.get("index.json")
       .then(function (response) {
-        // TODO: show fail
         $timeout(function () {
           $scope.loadingIndex = false;
           index = response.data[0];
@@ -29,6 +28,8 @@ angular.module("app").controller("controller",
           $scope.currentDirectory = index;
           lessons = getLessonsFrom(index);
         }, 1500);
+      }, function () {
+        $scope.loadIndexFailed = true;
       });
 
     var index;
@@ -387,7 +388,7 @@ function ContributeController($scope, $mdDialog, $http, Upload) {
           $scope.submitStatus = "提交成功，感谢分享！";
         });
     }
-  }
+  };
 
 
   $scope.uploadFiles = function(file, errFiles) {
