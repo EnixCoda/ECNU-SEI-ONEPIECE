@@ -22,9 +22,9 @@ angular.module('app', [
       'A400': 'ffffff',
       'A700': 'ffffff'
     });
-    $mdThemingProvider.theme('default')
-      //.primaryPalette('light-blue')
-      .accentPalette('light-blue')
-      //.warnPalette('grey')
-      //.backgroundPalette('grey');
+    //$mdThemingProvider.theme('default')
+    //  //.primaryPalette('light-blue')
+    //  .accentPalette('light-blue')
+    //  //.warnPalette('grey')
+    //  //.backgroundPalette('grey');
   });
