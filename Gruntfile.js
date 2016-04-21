@@ -30,6 +30,10 @@ module.exports = function (grunt) {
         src:  ['app/scripts/*.js'],
         dest: 'dist/scripts.js'
       },
+      angularUpload: {
+        src: ['bower_components/ng-file-upload/ng-file-upload.min.js'],
+        dest: 'dist/ng-file-upload.min.js'
+      }
       //css: {
       //  src: ['app/style.css'],
       //  dest: 'dist/style.css'
@@ -153,6 +157,22 @@ module.exports = function (grunt) {
             {
               match: /angular-aria\.js/g,
               replacement: 'angular-aria.min.js'
+            }
+          ]
+        },
+        files: [
+          {
+            src: ['dist/index.html'],
+            dest: './'
+          }
+        ]
+      },
+      angularUpload: {
+        options: {
+          patterns: [
+            {
+              match: /<script src="\.\.\/bower_components\/ng-file-upload\/ng-file-upload\.js">/g,
+              replacement: '<script src="ng-file-upload.min.js">'
             }
           ]
         },

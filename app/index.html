@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>*BETA* ECNU SEI One Piece</title>
   <!--bower:css-->
-  <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css">
+  <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css"/>
   <!--endbower-->
   <link rel="stylesheet" href="style.css">
   <link href="//fonts.lug.ustc.edu.cn/icon?family=Material+Icons" rel="stylesheet">
@@ -30,7 +30,7 @@
     <p>正在读取文件列表</p>
   </div>
   <div ng-if="!loadingIndex" flex layout="column">
-    <div class="top-banner md-whiteframe-3dp" layout layout-align="start center" layout-wrap>
+    <div class="top-banner md-whiteframe-3dp light-background-color left-offset" layout layout-align="start center" layout-wrap>
       <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)" ng-show="directoryStack.length>1">
         <i class="material-icons color-white adjust-icon-top-margin-up-3">chevron_left</i>
       </md-button>
@@ -55,7 +55,7 @@
         <div>
           <md-menu md-position-mode="target-right target">
             <!-- use target-up after Angular Material updates -->
-            <md-button class="md-fab md-mini background-white" ng-click="$mdOpenMenu($event)">
+            <md-button class="md-raised align-to-ac background-white" ng-click="$mdOpenMenu($event)">
               <i class="material-icons adjust-icon-top-margin-up-3">more_vert</i>
             </md-button>
             <md-menu-content width="3">
@@ -80,13 +80,16 @@
     </div>
     <div class="protect-overflow">
       <md-list class="no-padding-top">
-        <md-subheader class="md-no-sticky">
-          <span class="lesson-route" ng-click="goBack(directoryStack.length - 1)"><b>ONEPIECE</b></span>
+        <md-subheader class="md-no-sticky lesson-route-header">
+          <span class="lesson-route" ng-click="goBack(directoryStack.length - 1)">
+            <b>ONEPIECE</b>
+          </span>
           <span class="lesson-route" ng-repeat="dir in directoryStack" ng-if="!$first"
                 ng-click="goBack(directoryStack.length - $index - 1)">
             > <b>{{dir.name}}</b>
           </span>
         </md-subheader>
+        <md-divider></md-divider>
         <md-list-item ng-repeat="content in currentDirectory.content" ng-click="goTo(content, $event)">
           <div layout layout-align="start center">
             <i class="material-icons">{{content.isDir?"folder":getFileIcon(content)}}</i>
@@ -110,10 +113,11 @@
               </md-progress-circular>
             </div>
           </md-button>
-          <md-menu class="no-padding-top no-padding-bottom" ng-if="content.isLesson" md-position-mode="target-right target">
-            <md-button class="md-fab md-mini background-blue" ng-click="openNestedMenu($mdOpenMenu, $event)"
+          <md-menu class="no-padding-top no-padding-bottom" ng-if="content.isLesson"
+                   md-position-mode="target-right target">
+            <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)"
                        layout-align="center center">
-              <i class="material-icons adjust-icon-top-margin-up-3 color-white">more_vert</i>
+              <i class="material-icons adjust-icon-top-margin-up-3">more_vert</i>
             </md-button>
             <md-menu-content width="3">
               <md-menu-item>
@@ -138,13 +142,11 @@
     </div>
   </div>
   <div>
-    <md-subheader>
-      <div>
-        <p>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
-          <del>站长</del>
-          Gol·D·Roger
-        </p>
-      </div>
+    <md-subheader class="light-background-color">
+      <p>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
+        <del>站长</del>
+        Gol·D·Roger
+      </p>
     </md-subheader>
   </div>
 </md-content>
@@ -154,6 +156,7 @@
 <script src="../bower_components/angular-animate/angular-animate.js"></script>
 <script src="../bower_components/angular-aria/angular-aria.js"></script>
 <script src="../bower_components/angular-material/angular-material.js"></script>
+<script src="../bower_components/ng-file-upload/ng-file-upload.js"></script>
 <!--endbower-->
 <script src="scripts/app.js"></script>
 <script src="scripts/controller.js"></script>

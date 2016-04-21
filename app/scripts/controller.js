@@ -6,6 +6,7 @@
 angular.module("app").controller("controller",
   function ($scope, $http, $sce, $mdSidenav, $mdDialog, $timeout, $mdMedia) {
     $sce.trustAsResourceUrl("http://download.cloud.189.cn/");
+    $sce.trustAsResourceUrl("http://api.189.cn/");
 
     function isMobile() {
       var userAgent = navigator.userAgent;
@@ -325,7 +326,7 @@ function DownloadController($scope, $mdDialog, $http, file, positionStack) {
   };
 }
 
-function ContributeController($scope, $mdDialog, $http) {
+function ContributeController($scope, $mdDialog, $http, Upload) {
   $scope.hide = function () {
     $mdDialog.hide();
   };
@@ -347,6 +348,35 @@ function ContributeController($scope, $mdDialog, $http) {
         });
     }
   }
+
+
+  $scope.uploadFiles = function(file, errFiles) {
+    $scope.f = file;
+    $scope.errFile = errFiles && errFiles[0];
+    if (file) {
+      $http.get("getUploadLink.php")
+        .then(function(response) {
+          var uploadUrl = response.data.uploadLink;
+          file.upload = Upload.upload({
+            url: uploadUrl,
+            wire: file,
+            method: 'PUT'
+          });
+
+          file.upload.then(function (response) {
+            $timeout(function () {
+              file.result = response.data;
+            });
+          }, function (response) {
+            if (response.status > 0)
+              $scope.errorMsg = response.status + ': ' + response.data;
+          }, function (evt) {
+            file.progress = Math.min(100, parseInt(100.0 *
+              evt.loaded / evt.total));
+          });
+        });
+    }
+  };
 }
 
 function AboutController($scope, $mdDialog) {

@@ -2,7 +2,9 @@
     display: none !important;
 }
 
-._md-track-ticks canvas { display: none; }
+._md-track-ticks canvas {
+    display: none;
+}
 
 md-content {
     /*background-color: #fff;*/
@@ -23,7 +25,7 @@ body, input, textarea {
     font-family: 'Material Icons';
     font-weight: normal;
     font-style: normal;
-    font-size: 24px;  /* Preferred icon size */
+    font-size: 24px; /* Preferred icon size */
     line-height: 1;
     text-transform: none;
     letter-spacing: normal;
@@ -66,6 +68,7 @@ body, input, textarea {
 .adjust-icon-top-margin-up {
     margin-top: -5px;
 }
+
 .adjust-icon-top-margin-up-3 {
     margin-top: -3px;
 }
@@ -95,7 +98,7 @@ body, input, textarea {
 }
 
 .light-background-color {
-    background-color: rgba(0,0,0,0.03);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .set-height-to-ac {
@@ -119,9 +122,11 @@ md-progress-circular.color-white path {
     padding-left: 5px;
     cursor: pointer;
 }
+
 .lesson-route:focus {
     outline: none;
 }
+
 .lesson-route:hover {
     color: #5D5D5D;
 }
@@ -132,4 +137,15 @@ md-progress-circular.color-white path {
 
 .file-name-in-list {
     line-height: 20px !important;
+}
+
+.lesson-route-header ._md-subheader-inner {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.align-to-ac {
+    height: 40px;
+    width: 40px;
+    min-width: 40px;
+    margin-left: 4px;
 }
