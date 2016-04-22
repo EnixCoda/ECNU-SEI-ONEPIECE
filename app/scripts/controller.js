@@ -79,7 +79,7 @@ angular.module("app").controller("controller",
     $scope.goTo = function (target, e) {
       function showFileDetail(file, e) {
         $mdDialog.show({
-          controller: DownloadController,
+          controller: PreviewController,
           templateUrl: "views/file_preview.html",
           parent: angular.element(document.body),
           targetEvent: e,
@@ -299,18 +299,20 @@ angular.module("app").controller("controller",
   });
 
 
-function DownloadController($scope, $mdDialog, $http, file, positionStack) {
-  function getRates(file) {
-    $http.post("getRate.php", {
-        file: file,
-        positionStack: positionStack
+  function PreviewController($scope, $mdDialog, $http, file, positionStack) {
+  function getRateAndComment(file) {
+    $scope.gettingRateAndComment = true;
+    $http.post("getRateAndComment.php", {
+        fileId: file.id
       })
       .then(function (response) {
-
+        $scope.totalScore = response.data.totalScore
+        $scope.comments = response.data.comments;
+        $scope.gettingRateAndComment = false;
       });
   }
+  getRateAndComment();
 
-  getRates();
   $scope.file = file;
   $scope.download = function () {
     if (file.gettingDownloadLink) return;
@@ -347,17 +349,29 @@ function DownloadController($scope, $mdDialog, $http, file, positionStack) {
     return sizeS + tail;
   };
 
-  $scope.rateFile = function () {
-    if (0 <= $scope.score && $scope.score <= 10) {
+  $scope.rateFile = function (rate) {
+    if (rate.isNumber()) {
+      var score = rate;
       $http.post("rateFile.php", {
-          "score": $scope.score,
-          "comment": $scope.comment,
-          "filename": filename,
-          "positionStack": positionStack
+          score: score,
+          fileId: file.id
         })
         .then(function () {
-          $scope.rateResponse = "评分已提交！";
-          getRates();
+          $scope.rated = true;
+          getRateAndComment();
+        });
+    }
+  };
+
+  $scope.sendComment = function () {
+    if ($scope.comment) {
+      $http.post("commentFile.php", {
+          comment: $scope.comment,
+          fileId: file.id
+        })
+        .then(function () {
+          $scope.commented = true;
+          getRateAndComment();
         });
     }
   };

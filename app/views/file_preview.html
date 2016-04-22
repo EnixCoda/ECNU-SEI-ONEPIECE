@@ -18,6 +18,7 @@
           <md-button class="md-icon-button" ng-click="rateFile(-1)">
             <md-icon class="material-icons">thumb_down</md-icon>
           </md-button>
+          <md-subheader ng-show="rated">提交成功！</md-subheader>
         </div>
         <md-button class="md-fab md-mini background-blue" ng-click="download(file)"
                    layout layout-align="center center">
@@ -44,19 +45,16 @@
           <md-button class="md-primary md-raised" ng-click="rateFile()">提交</md-button>
         </div>
       </div>
-      <div ng-show="avg_score">
+      <div ng-show="!gettingRateAndComment">
         <div layout layout-align="start center">
-          <h4>目前该文件的平均得分：</h4>
+          <h4>该文件的总评：</h4>
           <h1>{{avg_score}}</h1>
         </div>
         <md-subheader class="md-no-sticky">用户评论</md-subheader>
-        <md-list-item class="md-3-line md-long-text" ng-repeat="rate in rates">
+        <md-list-item class="md-3-line md-long-text" ng-repeat="cmt in comments">
           <div class="md-list-item-text" layout>
-            <div flex-sm="15" flex-gt-sm="10" layout-align="start center">
-              <h2>{{ rate.score }}</h2>
-            </div>
             <div flex layout layout-align="start center">
-              <p>{{ rate.comment }}</p>
+              <p>{{ cmt }}</p>
             </div>
           </div>
         </md-list-item>
@@ -64,7 +62,7 @@
       <div ng-show="rates.length === 0">
         <h3>暂无评论</h3>
       </div>
-      <div layout layout-align="start center" ng-show="avg_score === undefined">
+      <div layout layout-align="start center" ng-show="gettingRateAndComment">
         <md-progress-circular md-diameter="20" md-mode="indeterminate"></md-progress-circular>
         <p class="left-offset"> 正在加载评论... </p>
       </div>
