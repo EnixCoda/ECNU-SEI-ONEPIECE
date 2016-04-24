@@ -90,14 +90,15 @@
                      layout
                layout-align="center center">
             <md-tooltip md-direction="left">
-              {{formatFileSize(content)}}
+              {{content.gettingDownloadLink?"正在获取下载链接":formatFileSize(content)}}
             </md-tooltip>
             <div>
               <md-icon ng-show="!content.gettingDownloadLink"
                        class="material-icons adjust-icon-top-margin-up-3 color-primary">file_download</md-icon>
             </div>
             <div layout layout-align="center center">
-              <md-progress-circular ng-if="content.gettingDownloadLink" class="spinner-primary" md-mode="indeterminate"
+              <md-progress-circular ng-show="content.gettingDownloadLink" class="spinner-primary"
+                                    md-mode="indeterminate"
                                     md-diameter="20">
               </md-progress-circular>
             </div>
