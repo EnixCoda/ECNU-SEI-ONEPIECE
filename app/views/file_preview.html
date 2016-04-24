@@ -39,10 +39,10 @@
       <div layout="row" layout-align="start top">
         <md-input-container flex>
           <label for="comment">评论(可不填)</label>
-          <textarea id="comment" type="text" ng-model="comment" md-maxlength="200"></textarea>
+          <textarea id="comment" ng-model="comment" md-maxlength="200"></textarea>
         </md-input-container>
         <div>
-          <md-button class="md-primary md-raised" ng-click="rateFile()">提交</md-button>
+          <md-button class="md-primary md-raised" ng-click="sendComment()">提交</md-button>
         </div>
       </div>
       <div ng-show="!gettingRateAndComment">

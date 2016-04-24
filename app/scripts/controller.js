@@ -8,11 +8,11 @@ angular.module("app").controller("controller",
     $sce.trustAsResourceUrl("http://download.cloud.189.cn/");
     $sce.trustAsResourceUrl("http://api.189.cn/");
 
-    function isMobile() {
+    function isMobile () {
       var userAgent = navigator.userAgent;
       var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
-      var isiPhone = userAgent.indexOf("iPhone") > -1;
-      var isiPad = userAgent.indexOf("iPad") > -1;
+      var isiPhone  = userAgent.indexOf("iPhone") > -1;
+      var isiPad    = userAgent.indexOf("iPad") > -1;
       return isiPad || isiPhone || isAndroid;
     }
 
@@ -22,11 +22,11 @@ angular.module("app").controller("controller",
     $http.get("index.json")
       .then(function (response) {
         $timeout(function () {
-          $scope.loadingIndex = false;
-          index = response.data[0];
-          $scope.directoryStack = [index];
+          $scope.loadingIndex     = false;
+          index                   = response.data[0];
+          $scope.directoryStack   = [index];
           $scope.currentDirectory = index;
-          lessons = getLessonsFrom(index);
+          lessons                 = getLessonsFrom(index);
         }, 1500);
       }, function () {
         $scope.loadIndexFailed = true;
@@ -35,7 +35,7 @@ angular.module("app").controller("controller",
     var index;
     var lessons;
 
-    function getLessonsFrom(index) {
+    function getLessonsFrom (index) {
       var lessons = [];
       for (var i = 0; i < index.content.length; i++) {
         var contentI = index.content[i];
@@ -64,7 +64,7 @@ angular.module("app").controller("controller",
       return true;
     };
 
-    function targetInDirectory(target, dir) {
+    function targetInDirectory (target, dir) {
       if (dir.isDir) {
         for (var i = 0; i < dir.content.length; i++) {
           if (dir.content[i].name == target.name) {
@@ -77,17 +77,16 @@ angular.module("app").controller("controller",
 
     var disableGoTo = false; // prevent error which occurs folder double clicked
     $scope.goTo = function (target, e) {
-      function showFileDetail(file, e) {
+      function showFileDetail (file, e) {
         $mdDialog.show({
-          controller: PreviewController,
-          templateUrl: "views/file_preview.html",
-          parent: angular.element(document.body),
-          targetEvent: e,
-          locals: {
-            file: file,
-            positionStack: $scope.directoryStack
+          controller:          PreviewController,
+          templateUrl:         "views/file_preview.html",
+          parent:              angular.element(document.body),
+          targetEvent:         e,
+          locals:              {
+            file: file
           },
-          fullscreen: $mdMedia('xs'),
+          fullscreen:          $mdMedia('xs'),
           clickOutsideToClose: true
         });
       }
@@ -108,7 +107,7 @@ angular.module("app").controller("controller",
       }
     };
 
-    function setCurrentDirectory() {
+    function setCurrentDirectory () {
       $scope.currentDirectory = $scope.directoryStack.slice(-1)[0];
     }
 
@@ -157,7 +156,7 @@ angular.module("app").controller("controller",
         return {color: color};
       }
     };
-    $scope.getFileIcon = function (file) {
+    $scope.getFileIcon  = function (file) {
       var filename = file.name;
       if (filename.indexOf(".") > -1 && filename[-1] != ".") {
         var fileType = filename.substr(filename.lastIndexOf(".") + 1);
@@ -194,13 +193,13 @@ angular.module("app").controller("controller",
       var size = file.size;
       if (!size) return;
       var measures = ["", "K", "M", "G", "T", "P"];
-      var count = 0;
+      var count    = 0;
       while (size >= 1000) {
         count++;
         size *= 0.001;
       }
       var sizeS = "";
-      var tail = measures[count] + "B";
+      var tail  = measures[count] + "B";
       if (count <= 1) {
         sizeS = size.toString().substring(0, size.toString().indexOf("."));
       } else {
@@ -210,9 +209,9 @@ angular.module("app").controller("controller",
     };
 
     $scope.lessonSearch = {
-      querySearch: function (query) {
-        function createFilterFor(query) {
-          return function filterFn(lesson) {
+      querySearch:        function (query) {
+        function createFilterFor (query) {
+          return function filterFn (lesson) {
             return (lesson.name.indexOf(query) > -1);
           };
         }
@@ -220,12 +219,12 @@ angular.module("app").controller("controller",
         return query ? lessons.filter(createFilterFor(query)) : lessons;
       },
       selectedItemChange: function (item) {
-        function goByRoute(route) {
+        function goByRoute (route) {
           while ($scope.goBack(1)) {
           }
           while (route.length > 0) {
             var target = route.shift();
-            var pos = targetInDirectory(target, $scope.currentDirectory);
+            var pos    = targetInDirectory(target, $scope.currentDirectory);
             if (pos !== false) {
               $scope.directoryStack.push(target);
               setCurrentDirectory();
@@ -241,7 +240,7 @@ angular.module("app").controller("controller",
     $scope.download = function (file) {
       if (file.gettingDownloadLink) return;
       file.gettingDownloadLink = true;
-      var getLinkUrl = "getDownloadLink.php";
+      var getLinkUrl           = "getDownloadLink.php";
       $http.get(getLinkUrl + "?fileId=" + file.id)
         .then(function (response) {
           if (response.data["res_code"] == 1) {
@@ -249,7 +248,7 @@ angular.module("app").controller("controller",
             alert("获取下载链接失败!");
           } else {
             file.gettingDownloadLink = false;
-            window.location = response.data.downloadLink;
+            window.location          = response.data.downloadLink;
           }
         });
     };
@@ -260,14 +259,14 @@ angular.module("app").controller("controller",
     // not used now
     $scope.showSearch = function (e) {
       $mdDialog.show({
-        controller: SearchController,
-        templateUrl: "views/search.html",
-        parent: angular.element(document.body),
-        targetEvent: e,
-        locals: {
+        controller:          SearchController,
+        templateUrl:         "views/search.html",
+        parent:              angular.element(document.body),
+        targetEvent:         e,
+        locals:              {
           lessons: lessons
         },
-        fullscreen: $mdMedia('xs'),
+        fullscreen:          $mdMedia('xs'),
         clickOutsideToClose: true
       }).then(
         function (feedback) {
@@ -277,47 +276,48 @@ angular.module("app").controller("controller",
 
     $scope.showContribute = function (e) {
       $mdDialog.show({
-        controller: ContributeController,
-        templateUrl: "views/contribute.html",
-        parent: angular.element(document.body),
-        targetEvent: e,
-        fullscreen: $mdMedia('xs'),
+        controller:          ContributeController,
+        templateUrl:         "views/contribute.html",
+        parent:              angular.element(document.body),
+        targetEvent:         e,
+        fullscreen:          $mdMedia('xs'),
         clickOutsideToClose: true
       });
     };
 
     $scope.showAbout = function (e) {
       $mdDialog.show({
-        controller: AboutController,
-        templateUrl: "views/about.html",
-        parent: angular.element(document.body),
-        targetEvent: e,
-        fullscreen: $mdMedia('xs'),
+        controller:          AboutController,
+        templateUrl:         "views/about.html",
+        parent:              angular.element(document.body),
+        targetEvent:         e,
+        fullscreen:          $mdMedia('xs'),
         clickOutsideToClose: true
       });
     };
   });
 
+function PreviewController ($scope, $mdDialog, $http, file) {
+  $scope.file = file;
 
-  function PreviewController($scope, $mdDialog, $http, file, positionStack) {
-  function getRateAndComment(file) {
+  function getRateAndComment () {
     $scope.gettingRateAndComment = true;
     $http.post("getRateAndComment.php", {
         fileId: file.id
       })
       .then(function (response) {
-        $scope.totalScore = response.data.totalScore
-        $scope.comments = response.data.comments;
+        $scope.totalScore            = response.data.totalScore;
+        $scope.comments              = response.data.comments;
         $scope.gettingRateAndComment = false;
       });
   }
+
   getRateAndComment();
 
-  $scope.file = file;
   $scope.download = function () {
     if (file.gettingDownloadLink) return;
     file.gettingDownloadLink = true;
-    var getLinkUrl = "getDownloadLink.php";
+    var getLinkUrl           = "getDownloadLink.php";
     $http.get(getLinkUrl + "?fileId=" + file.id)
       .then(function (response) {
         if (response.data["res_code"] == 1) {
@@ -325,7 +325,7 @@ angular.module("app").controller("controller",
           alert("获取下载链接失败!");
         } else {
           file.gettingDownloadLink = false;
-          window.location = response.data.downloadLink;
+          window.location          = response.data.downloadLink;
         }
       });
   };
@@ -334,13 +334,13 @@ angular.module("app").controller("controller",
     var size = file.size;
     if (!size) return;
     var measures = ["", "K", "M", "G", "T", "P"];
-    var count = 0;
+    var count    = 0;
     while (size >= 1000) {
       count++;
       size *= 0.001;
     }
     var sizeS = "";
-    var tail = measures[count] + "B";
+    var tail  = measures[count] + "B";
     if (count <= 1) {
       sizeS = size.toString().substring(0, size.toString().indexOf("."));
     } else {
@@ -350,10 +350,10 @@ angular.module("app").controller("controller",
   };
 
   $scope.rateFile = function (rate) {
-    if (rate.isNumber()) {
+    if (angular.isNumber(rate)) {
       var score = rate;
       $http.post("rateFile.php", {
-          score: score,
+          score:  score,
           fileId: file.id
         })
         .then(function () {
@@ -367,7 +367,7 @@ angular.module("app").controller("controller",
     if ($scope.comment) {
       $http.post("commentFile.php", {
           comment: $scope.comment,
-          fileId: file.id
+          fileId:  file.id
         })
         .then(function () {
           $scope.commented = true;
@@ -381,11 +381,11 @@ angular.module("app").controller("controller",
   };
 }
 
-function ContributeController($scope, $mdDialog, $http, Upload) {
-  $scope.hide = function () {
+function ContributeController ($scope, $mdDialog, $http, Upload) {
+  $scope.hide   = function () {
     $mdDialog.hide();
   };
-  $scope.close = function () {
+  $scope.close  = function () {
     $mdDialog.cancel();
   };
   $scope.answer = function (answer) {
@@ -394,27 +394,26 @@ function ContributeController($scope, $mdDialog, $http, Upload) {
 
   $scope.submitNewFileLink = function () {
     if ($scope.link) {
-      $scope.submitting = true;
+      $scope.submitting   = true;
       $scope.submitStatus = "正在提交...";
       $http.post("share.php", $scope.link)
         .then(function () {
-          $scope.submitting = false;
+          $scope.submitting   = false;
           $scope.submitStatus = "提交成功，感谢分享！";
         });
     }
   };
 
-
-  $scope.uploadFiles = function(file, errFiles) {
-    $scope.f = file;
+  $scope.uploadFiles = function (file, errFiles) {
+    $scope.f       = file;
     $scope.errFile = errFiles && errFiles[0];
     if (file) {
       $http.get("getUploadLink.php")
-        .then(function(response) {
+        .then(function (response) {
           var uploadUrl = response.data.uploadLink;
-          file.upload = Upload.upload({
-            url: uploadUrl,
-            wire: file,
+          file.upload   = Upload.upload({
+            url:    uploadUrl,
+            wire:   file,
             method: 'PUT'
           });
 
@@ -423,8 +422,9 @@ function ContributeController($scope, $mdDialog, $http, Upload) {
               file.result = response.data;
             });
           }, function (response) {
-            if (response.status > 0)
+            if (response.status > 0) {
               $scope.errorMsg = response.status + ': ' + response.data;
+            }
           }, function (evt) {
             file.progress = Math.min(100, parseInt(100.0 *
               evt.loaded / evt.total));
@@ -434,17 +434,17 @@ function ContributeController($scope, $mdDialog, $http, Upload) {
   };
 }
 
-function AboutController($scope, $mdDialog) {
-  $scope.hide = function () {
+function AboutController ($scope, $mdDialog) {
+  $scope.hide   = function () {
     $mdDialog.hide();
   };
-  $scope.close = function () {
+  $scope.close  = function () {
     $mdDialog.cancel();
   };
   $scope.answer = function (answer) {
     $mdDialog.hide(answer);
   };
-  $scope.qas = [
+  $scope.qas    = [
     {
       "q": "为什么做这个网站？",
       "a": ["每年学弟学妹找学习资料时都需要向学长学姐寻求帮助，这种“代代相传”的方法是一种不高效的重复劳动。" +
@@ -493,5 +493,5 @@ function AboutController($scope, $mdDialog) {
   ];
 }
 
-function SearchController($scope, lessons) {
+function SearchController ($scope, lessons) {
 }
