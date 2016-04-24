@@ -45,7 +45,7 @@ angular.module("app").controller("controller",
           if (contentJ.isDir) {
             lessons.push({
               name: contentJ.name,
-              path: [contentI.name, contentJ.name]
+              path: [contentI, contentJ]
             });
             contentJ.isLesson = true;
           }
@@ -219,11 +219,11 @@ angular.module("app").controller("controller",
         return query ? lessons.filter(createFilterFor(query)) : lessons;
       },
       selectedItemChange: function (item) {
-        function goByRoute (route) {
+        function goDirectTo (target) {
           while ($scope.goBack(1)) {
           }
-          while (route.length > 0) {
-            var target = route.shift();
+          while (target.path) {
+            var target = target.path.shift();
             var pos    = targetInDirectory(target, $scope.currentDirectory);
             if (pos !== false) {
               $scope.directoryStack.push(target);
@@ -233,7 +233,7 @@ angular.module("app").controller("controller",
         }
 
         if (!item) return;
-        goByRoute(item.path);
+        goDirectTo(item);
       }
     };
 
