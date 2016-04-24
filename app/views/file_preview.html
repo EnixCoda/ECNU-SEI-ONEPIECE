@@ -18,7 +18,6 @@
           <md-button class="md-icon-button" ng-click="rateFile(-1)">
             <md-icon class="material-icons">thumb_down</md-icon>
           </md-button>
-          <md-subheader ng-show="rated">提交成功！</md-subheader>
         </div>
         <md-button class="md-fab md-mini background-blue" ng-click="download(file)"
                    layout layout-align="center center">
@@ -27,7 +26,8 @@
           </md-tooltip>
           <div>
             <md-icon ng-show="!file.gettingDownloadLink"
-               class="material-icons adjust-icon-top-margin-up-3 color-white">cloud_download</md-icon>
+                     class="material-icons adjust-icon-top-margin-up-3 color-white">cloud_download
+            </md-icon>
           </div>
           <div layout layout-align="center center">
             <md-progress-circular ng-if="file.gettingDownloadLink" class="color-white" md-mode="indeterminate"
@@ -36,35 +36,46 @@
           </div>
         </md-button>
       </div>
-      <div layout="row" layout-align="start top">
-        <md-input-container flex>
-          <label for="comment">评论(可不填)</label>
-          <textarea id="comment" ng-model="comment" md-maxlength="200"></textarea>
-        </md-input-container>
-        <div>
-          <md-button class="md-primary md-raised" ng-click="sendComment()">提交</md-button>
-        </div>
-      </div>
       <div ng-show="!gettingRateAndComment">
         <div layout layout-align="start center">
           <h4>该文件的总评：</h4>
-          <h1>{{avg_score}}</h1>
+          <h1>{{totalScore}}</h1>
         </div>
-        <md-subheader class="md-no-sticky">用户评论</md-subheader>
-        <md-list-item class="md-3-line md-long-text" ng-repeat="cmt in comments">
-          <div class="md-list-item-text" layout>
-            <div flex layout layout-align="start center">
-              <p>{{ cmt }}</p>
+        <md-list ng-show="comments.length > 0">
+          <md-subheader class="md-no-sticky">用户评论</md-subheader>
+          <md-list-item class="" ng-repeat="cmt in comments"
+                        ng-class="cmt.comment.legnth>100?'md-2-line md-long-text':'md-2-line'" ng-click="null">
+            <div class="md-list-item-text">
+              <h3>{{cmt.username.length>0?cmt.username:"匿名"}} :</h3>
+              <p>{{ cmt.comment }}</p>
             </div>
-          </div>
-        </md-list-item>
+            <!--<md-divider ng-if="!$last"></md-divider>-->
+          </md-list-item>
+        </md-list>
+        <div ng-show="comments.length === 0">
+          <h3>暂无评论</h3>
+        </div>
       </div>
-      <div ng-show="rates.length === 0">
-        <h3>暂无评论</h3>
-      </div>
-      <div layout layout-align="start center" ng-show="gettingRateAndComment">
+      <div ng-show="gettingRateAndComment" layout layout-align="start center">
         <md-progress-circular md-diameter="20" md-mode="indeterminate"></md-progress-circular>
         <p class="left-offset"> 正在加载评论... </p>
+      </div>
+      <div layout="column">
+        <div layout>
+          <md-input-container flex class="no-margin">
+            <label for="comment">你的评论</label>
+            <textarea id="comment" ng-model="comment" md-maxlength="140" maxlength="140"></textarea>
+          </md-input-container>
+        </div>
+        <div layout layout-align="end center">
+          <md-input-container flex-xs>
+            <label for="username">留个名字吧</label>
+            <input type="text" id="username" ng-model="username"/>
+          </md-input-container>
+          <div>
+            <md-button class="md-primary md-raised" ng-click="sendComment()">提交</md-button>
+          </div>
+        </div>
       </div>
     </md-content>
   </md-dialog-content>

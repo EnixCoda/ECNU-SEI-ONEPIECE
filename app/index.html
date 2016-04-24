@@ -85,17 +85,19 @@
             </div>
           </div>
           <div flex></div>
-          <md-button ng-if="!content.isDir" class="md-fab md-mini background-blue" ng-click="download(content)"
-                     layout layout-align="center center">
+          <md-button ng-if="!content.isDir" class="md-fab md-mini background-transparent no-box-shadow"
+                     ng-click="download(content)"
+                     layout
+               layout-align="center center">
             <md-tooltip md-direction="left">
               {{formatFileSize(content)}}
             </md-tooltip>
             <div>
               <md-icon ng-show="!content.gettingDownloadLink"
-                 class="material-icons adjust-icon-top-margin-up-3 color-white">cloud_download</md-icon>
+                       class="material-icons adjust-icon-top-margin-up-3 color-primary">file_download</md-icon>
             </div>
             <div layout layout-align="center center">
-              <md-progress-circular ng-if="content.gettingDownloadLink" class="color-white" md-mode="indeterminate"
+              <md-progress-circular ng-if="content.gettingDownloadLink" class="spinner-primary" md-mode="indeterminate"
                                     md-diameter="20">
               </md-progress-circular>
             </div>

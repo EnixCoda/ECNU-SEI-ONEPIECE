@@ -58,12 +58,20 @@ body, input, textarea {
     color: white !important;
 }
 
+.color-primary {
+    color: #02a8f3 !important;
+}
+
 .background-white {
     background-color: white !important;
 }
 
 .background-blue {
     background-color: #02a8f3 !important;
+}
+
+.background-transparent {
+    background-color: rgba(0,0,0,0) !important;
 }
 
 .protect-overflow {
@@ -129,4 +137,12 @@ body md-content{
 
 .color-grey {
     color: rgba(0, 0, 0, 0.54) !important;
+}
+
+md-progress-circular.spinner-primary path {
+    stroke: #02a8f3 !important;
+}
+
+.no-box-shadow {
+    box-shadow: none !important;
 }

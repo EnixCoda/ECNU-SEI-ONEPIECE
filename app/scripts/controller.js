@@ -306,8 +306,15 @@ function PreviewController ($scope, $mdDialog, $http, file) {
         fileId: file.id
       })
       .then(function (response) {
-        $scope.totalScore            = response.data.totalScore;
+        $scope.totalScore            = response.data.total_score;
         $scope.comments              = response.data.comments;
+        $scope.gettingRateAndComment = false;
+      }, function () {
+        //var response = JSON.parse('{"res_code":0,"comments":[{"comment":"哈哈哈","username":"牟筱璇"},{"comment":"长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长","username":""},{"comment":"\u597d\u597d\u597d","username":"\u725f\u7b71\u7487"}],"total_score":0}');
+        //$scope.totalScore            = response.total_score;
+        //$scope.comments              = response.comments;
+        $scope.totalScore            = 10;
+        $scope.comments              = [];
         $scope.gettingRateAndComment = false;
       });
   }
@@ -363,14 +370,20 @@ function PreviewController ($scope, $mdDialog, $http, file) {
     }
   };
 
+  $scope.detectCommentLength = function () {
+    $scope.comment = $scope.comment.substring(0, 140);
+  };
+
   $scope.sendComment = function () {
     if ($scope.comment) {
       $http.post("commentFile.php", {
+          username: $scope.username,
           comment: $scope.comment,
           fileId:  file.id
         })
         .then(function () {
           $scope.commented = true;
+          $scope.comment="";
           getRateAndComment();
         });
     }
