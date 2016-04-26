@@ -54,6 +54,10 @@ body, input, textarea {
     margin: 0;
 }
 
+.no-margin-left {
+    margin-left: 0;
+}
+
 .color-white {
     color: white !important;
 }
@@ -80,6 +84,11 @@ body, input, textarea {
 
 .light-background-color {
     background-color: rgba(0, 0, 0, 0.05);
+}
+
+.login-dialog {
+    max-width: 400px;
+    width: 400px;
 }
 
 .set-height-to-ac {
@@ -110,10 +119,6 @@ md-progress-circular.color-white path {
 
 .lesson-route:hover {
     color: #5D5D5D;
-}
-
-.md-fab {
-    min-width: 40px !important;
 }
 
 .file-name-in-list {

@@ -12,12 +12,17 @@
     <md-content flex layout="column" layout-padding>
       <div layout layout-align="space-between center">
         <div>
-          <md-button class="md-icon-button" ng-click="rateFile(1)">
+          <md-button class="md-icon-button" ng-click="rateFile(1)" ng-disabled="!user.loggedIn">
             <md-icon class="material-icons">thumb_up</md-icon>
           </md-button>
-          <md-button class="md-icon-button" ng-click="rateFile(-1)">
+          <md-button class="md-icon-button" ng-click="rateFile(-1)" ng-disabled="!user.loggedIn">
             <md-icon class="material-icons">thumb_down</md-icon>
           </md-button>
+        </div>
+        <div layout layout-align="start center">
+          <h4>该文件的总评：</h4>
+          <h1 ng-show="!gettingRate">{{totalScore}}</h1>
+          <md-progress-circular ng-show="gettingRate" md-diameter="20"></md-progress-circular>
         </div>
         <md-button class="md-fab md-mini background-blue" ng-click="download(file)"
                    layout layout-align="center center">
@@ -36,11 +41,7 @@
           </div>
         </md-button>
       </div>
-      <div ng-show="!gettingRateAndComment">
-        <div layout layout-align="start center">
-          <h4>该文件的总评：</h4>
-          <h1>{{totalScore}}</h1>
-        </div>
+      <div ng-show="!gettingComment">
         <md-list ng-show="comments.length > 0">
           <md-subheader class="md-no-sticky">用户评论</md-subheader>
           <md-list-item class="" ng-repeat="cmt in comments"
@@ -49,18 +50,17 @@
               <h3>{{cmt.username.length>0?cmt.username:"匿名"}} :</h3>
               <p>{{ cmt.comment }}</p>
             </div>
-            <!--<md-divider ng-if="!$last"></md-divider>-->
           </md-list-item>
         </md-list>
         <div ng-show="comments.length === 0">
           <h3>暂无评论</h3>
         </div>
       </div>
-      <div ng-show="gettingRateAndComment" layout layout-align="start center">
+      <div ng-show="gettingComment" layout layout-align="start center">
         <md-progress-circular md-diameter="20" md-mode="indeterminate"></md-progress-circular>
         <p class="left-offset"> 正在加载评论... </p>
       </div>
-      <div layout="column">
+      <div ng-show="user.loggedIn" layout="column">
         <div layout>
           <md-input-container flex class="no-margin">
             <label for="comment">你的评论</label>
@@ -68,14 +68,21 @@
           </md-input-container>
         </div>
         <div layout layout-align="end center">
-          <md-input-container flex-xs>
-            <label for="username">留个名字吧</label>
-            <input type="text" id="username" ng-model="username"/>
+          <md-checkbox class="no-margin" ng-model="anonymous">
+            匿名
+          </md-checkbox>
+          <md-input-container flex-xs ng-show="!anonymous">
+            <label for="username">留个昵称</label>
+            <input type="text" id="username" ng-model="username">
           </md-input-container>
           <div>
             <md-button class="md-primary md-raised" ng-click="sendComment()">提交</md-button>
           </div>
         </div>
+      </div>
+      <div ng-show="!user.loggedIn">
+        使用校内数据库账户登录后即可评论。
+        <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
       </div>
     </md-content>
   </md-dialog-content>

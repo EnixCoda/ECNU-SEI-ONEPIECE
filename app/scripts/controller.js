@@ -4,17 +4,20 @@
 
 
 angular.module("app").controller("controller",
-  function ($scope, $http, $sce, $mdSidenav, $mdDialog, $timeout, $mdMedia) {
-    $sce.trustAsResourceUrl("http://download.cloud.189.cn/");
-    $sce.trustAsResourceUrl("http://api.189.cn/");
+  function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia) {
 
-    function isMobile () {
+    $scope.user = {
+    };
+
+    function isMobile() {
       var userAgent = navigator.userAgent;
       var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
-      var isiPhone  = userAgent.indexOf("iPhone") > -1;
-      var isiPad    = userAgent.indexOf("iPad") > -1;
+      var isiPhone = userAgent.indexOf("iPhone") > -1;
+      var isiPad = userAgent.indexOf("iPad") > -1;
       return isiPad || isiPhone || isAndroid;
     }
+
+    $scope.isMobile = isMobile();
 
     $scope.delay = isMobile() ? 300 : 200;
 
@@ -22,11 +25,11 @@ angular.module("app").controller("controller",
     $http.get("index.json")
       .then(function (response) {
         $timeout(function () {
-          $scope.loadingIndex     = false;
-          index                   = response.data[0];
-          $scope.directoryStack   = [index];
+          $scope.loadingIndex = false;
+          index = response.data[0];
+          $scope.directoryStack = [index];
           $scope.currentDirectory = index;
-          lessons                 = getLessonsFrom(index);
+          lessons = getLessonsFrom(index);
         }, 1500);
       }, function () {
         $scope.loadIndexFailed = true;
@@ -35,7 +38,7 @@ angular.module("app").controller("controller",
     var index;
     var lessons;
 
-    function getLessonsFrom (index) {
+    function getLessonsFrom(index) {
       var lessons = [];
       for (var i = 0; i < index.content.length; i++) {
         var contentI = index.content[i];
@@ -64,7 +67,7 @@ angular.module("app").controller("controller",
       return true;
     };
 
-    function targetInDirectory (target, dir) {
+    function targetInDirectory(target, dir) {
       if (dir.isDir) {
         for (var i = 0; i < dir.content.length; i++) {
           if (dir.content[i].name == target.name) {
@@ -77,16 +80,18 @@ angular.module("app").controller("controller",
 
     var disableGoTo = false; // prevent error which occurs folder double clicked
     $scope.goTo = function (target, e) {
-      function showFileDetail (file, e) {
+      function showFileDetail(file, e) {
         $mdDialog.show({
-          controller:          PreviewController,
-          templateUrl:         "views/file_preview.html",
-          parent:              angular.element(document.body),
-          targetEvent:         e,
-          locals:              {
-            file: file
+          controller: PreviewController,
+          templateUrl: "views/file_preview.html",
+          parent: angular.element(document.body),
+          targetEvent: e,
+          locals: {
+            file: file,
+            user: $scope.user,
+            showUserCenter: $scope.showUserCenter
           },
-          fullscreen:          $mdMedia('xs'),
+          fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true
         });
       }
@@ -107,7 +112,7 @@ angular.module("app").controller("controller",
       }
     };
 
-    function setCurrentDirectory () {
+    function setCurrentDirectory() {
       $scope.currentDirectory = $scope.directoryStack.slice(-1)[0];
     }
 
@@ -156,7 +161,7 @@ angular.module("app").controller("controller",
         return {color: color};
       }
     };
-    $scope.getFileIcon  = function (file) {
+    $scope.getFileIcon = function (file) {
       var filename = file.name;
       if (filename.indexOf(".") > -1 && filename[-1] != ".") {
         var fileType = filename.substr(filename.lastIndexOf(".") + 1);
@@ -193,13 +198,13 @@ angular.module("app").controller("controller",
       var size = file.size;
       if (!size) return;
       var measures = ["", "K", "M", "G", "T", "P"];
-      var count    = 0;
+      var count = 0;
       while (size >= 1000) {
         count++;
         size *= 0.001;
       }
       var sizeS = "";
-      var tail  = measures[count] + "B";
+      var tail = measures[count] + "B";
       if (count <= 1) {
         sizeS = size.toString().substring(0, size.toString().indexOf("."));
       } else {
@@ -209,9 +214,9 @@ angular.module("app").controller("controller",
     };
 
     $scope.lessonSearch = {
-      querySearch:        function (query) {
-        function createFilterFor (query) {
-          return function filterFn (lesson) {
+      querySearch: function (query) {
+        function createFilterFor(query) {
+          return function filterFn(lesson) {
             return (lesson.name.indexOf(query) > -1);
           };
         }
@@ -219,12 +224,12 @@ angular.module("app").controller("controller",
         return query ? lessons.filter(createFilterFor(query)) : lessons;
       },
       selectedItemChange: function (item) {
-        function goDirectTo (target) {
+        function goDirectTo(target) {
           while ($scope.goBack(1)) {
           }
           while (target.path) {
             var target = target.path.shift();
-            var pos    = targetInDirectory(target, $scope.currentDirectory);
+            var pos = targetInDirectory(target, $scope.currentDirectory);
             if (pos !== false) {
               $scope.directoryStack.push(target);
               setCurrentDirectory();
@@ -240,7 +245,7 @@ angular.module("app").controller("controller",
     $scope.download = function (file) {
       if (file.gettingDownloadLink) return;
       file.gettingDownloadLink = true;
-      var getLinkUrl           = "getDownloadLink.php";
+      var getLinkUrl = "getDownloadLink.php";
       $http.get(getLinkUrl + "?fileId=" + file.id)
         .then(function (response) {
           if (response.data["res_code"] == 1) {
@@ -248,7 +253,7 @@ angular.module("app").controller("controller",
             alert("获取下载链接失败!");
           } else {
             file.gettingDownloadLink = false;
-            window.location          = response.data.downloadLink;
+            window.location = response.data.downloadLink;
           }
         });
     };
@@ -256,75 +261,106 @@ angular.module("app").controller("controller",
     $scope.getLessonComments = function () {
     };
 
-    // not used now
-    $scope.showSearch = function (e) {
+    $scope.showUserCenter = function (e) {
       $mdDialog.show({
-        controller:          SearchController,
-        templateUrl:         "views/search.html",
-        parent:              angular.element(document.body),
-        targetEvent:         e,
-        locals:              {
-          lessons: lessons
+        controller: UserCenterController,
+        templateUrl: "views/user_center.html",
+        parent: angular.element(document.body),
+        targetEvent: e,
+        locals: {
+          user: $scope.user
         },
-        fullscreen:          $mdMedia('xs'),
+        fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
-      }).then(
-        function (feedback) {
-
-        });
+      }).then(function(user) {
+        $scope.user = user
+      });
     };
+
+    // not used now
+    //$scope.showSearch = function (e) {
+    //  $mdDialog.show({
+    //    controller: SearchController,
+    //    templateUrl: "views/search.html",
+    //    parent: angular.element(document.body),
+    //    targetEvent: e,
+    //    locals: {
+    //      lessons: lessons
+    //    },
+    //    fullscreen: $mdMedia('xs'),
+    //    clickOutsideToClose: true
+    //  }).then(
+    //    function (feedback) {
+    //
+    //    });
+    //};
 
     $scope.showContribute = function (e) {
       $mdDialog.show({
-        controller:          ContributeController,
-        templateUrl:         "views/contribute.html",
-        parent:              angular.element(document.body),
-        targetEvent:         e,
-        fullscreen:          $mdMedia('xs'),
+        controller: UploadController,
+        templateUrl: "views/contribute.html",
+        parent: angular.element(document.body),
+        targetEvent: e,
+        fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
       });
     };
 
     $scope.showAbout = function (e) {
       $mdDialog.show({
-        controller:          AboutController,
-        templateUrl:         "views/about.html",
-        parent:              angular.element(document.body),
-        targetEvent:         e,
-        fullscreen:          $mdMedia('xs'),
+        controller: AboutController,
+        templateUrl: "views/about.html",
+        parent: angular.element(document.body),
+        targetEvent: e,
+        fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
       });
     };
   });
 
-function PreviewController ($scope, $mdDialog, $http, file) {
+function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter) {
   $scope.file = file;
+  $scope.user = user;
+  $scope.showUserCenter = showUserCenter;
+  $scope.anonymous = false;
 
-  function getRateAndComment () {
-    $scope.gettingRateAndComment = true;
-    $http.post("getRateAndComment.php", {
+  function getRate() {
+    $scope.gettingRate = true;
+    $http.post("getRate.php", {
         fileId: file.id
       })
       .then(function (response) {
-        $scope.totalScore            = response.data.total_score;
-        $scope.comments              = response.data.comments;
-        $scope.gettingRateAndComment = false;
+        $scope.totalScore = response.data.total_score;
+        $scope.gettingRate = false;
       }, function () {
-        //var response = JSON.parse('{"res_code":0,"comments":[{"comment":"哈哈哈","username":"牟筱璇"},{"comment":"长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长","username":""},{"comment":"\u597d\u597d\u597d","username":"\u725f\u7b71\u7487"}],"total_score":0}');
-        //$scope.totalScore            = response.total_score;
-        //$scope.comments              = response.comments;
-        $scope.totalScore            = 10;
-        $scope.comments              = [];
-        $scope.gettingRateAndComment = false;
+        // TODO: remove after release
+        $scope.totalScore = 10;
+        $scope.gettingRate = false;
       });
   }
 
-  getRateAndComment();
+  function getComment() {
+    $scope.gettingComment = true;
+    $http.post("getComment.php", {
+        fileId: file.id
+      })
+      .then(function (response) {
+        $scope.comments = response.data.comments;
+        $scope.gettingComment = false;
+      }, function () {
+        // TODO: remove after release
+        $scope.comments = [];
+        $scope.gettingComment = false;
+      });
+  }
+
+  getRate();
+  getComment();
 
   $scope.download = function () {
     if (file.gettingDownloadLink) return;
     file.gettingDownloadLink = true;
-    var getLinkUrl           = "getDownloadLink.php";
+    var getLinkUrl = "getDownloadLink.php";
     $http.get(getLinkUrl + "?fileId=" + file.id)
       .then(function (response) {
         if (response.data["res_code"] == 1) {
@@ -332,7 +368,7 @@ function PreviewController ($scope, $mdDialog, $http, file) {
           alert("获取下载链接失败!");
         } else {
           file.gettingDownloadLink = false;
-          window.location          = response.data.downloadLink;
+          window.location = response.data.downloadLink;
         }
       });
   };
@@ -341,13 +377,13 @@ function PreviewController ($scope, $mdDialog, $http, file) {
     var size = file.size;
     if (!size) return;
     var measures = ["", "K", "M", "G", "T", "P"];
-    var count    = 0;
+    var count = 0;
     while (size >= 1000) {
       count++;
       size *= 0.001;
     }
     var sizeS = "";
-    var tail  = measures[count] + "B";
+    var tail = measures[count] + "B";
     if (count <= 1) {
       sizeS = size.toString().substring(0, size.toString().indexOf("."));
     } else {
@@ -358,14 +394,16 @@ function PreviewController ($scope, $mdDialog, $http, file) {
 
   $scope.rateFile = function (rate) {
     if (angular.isNumber(rate)) {
+      $scope.gettingRate = true;
       var score = rate;
       $http.post("rateFile.php", {
-          score:  score,
-          fileId: file.id
+          score: score,
+          fileId: file.id,
+          token: user.token
         })
         .then(function () {
           $scope.rated = true;
-          getRateAndComment();
+          getRate();
         });
     }
   };
@@ -376,15 +414,16 @@ function PreviewController ($scope, $mdDialog, $http, file) {
 
   $scope.sendComment = function () {
     if ($scope.comment) {
+      $scope.gettingComment = true;
       $http.post("commentFile.php", {
-          username: $scope.username,
+          username: $scope.anonymous?"匿名":$scope.username,
           comment: $scope.comment,
-          fileId:  file.id
+          fileId: file.id,
+          token: user.token
         })
         .then(function () {
-          $scope.commented = true;
-          $scope.comment="";
-          getRateAndComment();
+          $scope.comment = "";
+          getComment();
         });
     }
   };
@@ -394,11 +433,35 @@ function PreviewController ($scope, $mdDialog, $http, file) {
   };
 }
 
-function ContributeController ($scope, $mdDialog, $http, Upload) {
-  $scope.hide   = function () {
+function UserCenterController($scope, $mdDialog, $http, user) {
+  $scope.user = user;
+  $scope.logIn = function () {
+    $http.post("login.php", user)
+      .then(function(response) {
+        var responseData = response.data;
+        if (responseData.res_code == 0) {
+          user.token = responseData.token;
+          user.name = responseData.data.username;
+          user.cademy = responseData.data.cademy;
+          user.loggedIn = true;
+        }
+
+      });
+  };
+  $scope.logOut = function () {
+    user.loggedIn = false;
+  };
+
+  $scope.hide = function () {
+    $mdDialog.hide(user);
+  };
+}
+
+function UploadController($scope, $mdDialog, $http, Upload) {
+  $scope.hide = function () {
     $mdDialog.hide();
   };
-  $scope.close  = function () {
+  $scope.close = function () {
     $mdDialog.cancel();
   };
   $scope.answer = function (answer) {
@@ -407,26 +470,26 @@ function ContributeController ($scope, $mdDialog, $http, Upload) {
 
   $scope.submitNewFileLink = function () {
     if ($scope.link) {
-      $scope.submitting   = true;
+      $scope.submitting = true;
       $scope.submitStatus = "正在提交...";
       $http.post("share.php", $scope.link)
         .then(function () {
-          $scope.submitting   = false;
+          $scope.submitting = false;
           $scope.submitStatus = "提交成功，感谢分享！";
         });
     }
   };
 
   $scope.uploadFiles = function (file, errFiles) {
-    $scope.f       = file;
+    $scope.f = file;
     $scope.errFile = errFiles && errFiles[0];
     if (file) {
       $http.get("getUploadLink.php")
         .then(function (response) {
           var uploadUrl = response.data.uploadLink;
-          file.upload   = Upload.upload({
-            url:    uploadUrl,
-            wire:   file,
+          file.upload = Upload.upload({
+            url: uploadUrl,
+            wire: file,
             method: 'PUT'
           });
 
@@ -447,17 +510,17 @@ function ContributeController ($scope, $mdDialog, $http, Upload) {
   };
 }
 
-function AboutController ($scope, $mdDialog) {
-  $scope.hide   = function () {
+function AboutController($scope, $mdDialog) {
+  $scope.hide = function () {
     $mdDialog.hide();
   };
-  $scope.close  = function () {
+  $scope.close = function () {
     $mdDialog.cancel();
   };
   $scope.answer = function (answer) {
     $mdDialog.hide(answer);
   };
-  $scope.qas    = [
+  $scope.qas = [
     {
       "q": "为什么做这个网站？",
       "a": ["每年学弟学妹找学习资料时都需要向学长学姐寻求帮助，这种“代代相传”的方法是一种不高效的重复劳动。" +
@@ -506,5 +569,5 @@ function AboutController ($scope, $mdDialog) {
   ];
 }
 
-function SearchController ($scope, lessons) {
-}
+//function SearchController($scope, lessons) {
+//}
