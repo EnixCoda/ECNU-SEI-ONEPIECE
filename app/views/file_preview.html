@@ -73,7 +73,7 @@
           </md-checkbox>
           <md-input-container flex-xs ng-show="!anonymous">
             <label for="username">留个昵称</label>
-            <input type="text" id="username" ng-model="username">
+            <input type="text" id="username" ng-model="username" placeholder="{{user.name}}">
           </md-input-container>
           <div>
             <md-button class="md-primary md-raised" ng-click="sendComment()">提交</md-button>
