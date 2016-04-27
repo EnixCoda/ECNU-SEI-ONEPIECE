@@ -253,7 +253,7 @@ angular.module("app").controller("controller",
             alert("获取下载链接失败!");
           } else {
             file.gettingDownloadLink = false;
-            window.location = response.data.downloadLink;
+            window.location = response.data["downloadLink"];
           }
         });
     };
@@ -330,7 +330,7 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
         fileId: file.id
       })
       .then(function (response) {
-        $scope.totalScore = response.data.total_score;
+        $scope.totalScore = response.data["total_score"];
         $scope.gettingRate = false;
       }, function () {
         // TODO: remove after release
@@ -368,7 +368,7 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
           alert("获取下载链接失败!");
         } else {
           file.gettingDownloadLink = false;
-          window.location = response.data.downloadLink;
+          window.location = response.data["downloadLink"];
         }
       });
   };
@@ -395,9 +395,8 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
   $scope.rateFile = function (rate) {
     if (angular.isNumber(rate)) {
       $scope.gettingRate = true;
-      var score = rate;
       $http.post("rateFile.php", {
-          score: score,
+          score: rate,
           fileId: file.id,
           token: user.token
         })
@@ -433,20 +432,25 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
   };
 }
 
-function UserCenterController($scope, $mdDialog, $http, user) {
+function UserCenterController($scope, $mdDialog, $http, $mdToast, user) {
   $scope.user = user;
 
   $scope.logIn = function () {
+    $scope.loggingIn = true;
     $http.post("login.php", user)
       .then(function (response) {
+        $scope.loggingIn = false;
+        $scope.loginMsg = null;
         var responseData = response.data;
-        if (responseData.res_code == 0) {
+        if (responseData["res_code"] == 0) {
           user.token = responseData.token;
           user.name = responseData.data.username;
           user.cademy = responseData.data.cademy;
           user.loggedIn = true;
           user.password = new Date().getTime().toString().substr(-user.password.length);
           saveToCookie(user);
+        } else {
+          $scope.loginMsg = responseData.msg;
         }
 
       });
@@ -578,6 +582,8 @@ function AboutController($scope, $mdDialog) {
 //function SearchController($scope, lessons) {
 //}
 
+
+// ----- cookie code start -----
 function setCookie(cookieName, cookieValue, expires) {
   document.cookie = cookieName + "=" + cookieValue + ";expires=" + expires;
 }
@@ -617,3 +623,4 @@ function loadFromCookie(user) {
     }
   }
 }
+// ----- cookie code end -----

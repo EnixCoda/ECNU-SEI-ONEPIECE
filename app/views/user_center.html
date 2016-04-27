@@ -1,35 +1,32 @@
-<md-dialog class="login-dialog" flex-gt-xs="nogrow">
-  <md-toolbar layout>
-    <div class="md-toolbar-tools">
-      <div>用户中心</div>
-      <div flex></div>
-      <md-button class="md-icon-button" ng-click="hide()">
-        <md-icon class="material-icons color-white">close</md-icon>
-      </md-button>
-    </div>
-  </md-toolbar>
+<md-dialog class="login-dialog" flex-gt-md="20" flex-gt-xs="nogrow">
   <md-dialog-content layout="column" flex>
     <md-content flex layout="column" layout-padding>
-      <div>
-        <div ng-if="user.loggedIn">你好，{{user.cademy}}{{user.name}}</div><div layout>
-        <div layout layout-xs="column" layout-wrap flex>
-          <md-input-container flex>
-            <label for="stuId">学号</label>
-            <input type="text" id="stuId" ng-model="user.id" ng-disabled="user.loggedIn">
-          </md-input-container>
-          <md-input-container flex>
-            <label for="password">密码</label>
-            <input type="password" id="password" ng-model="user.password" ng-disabled="user.loggedIn">
-          </md-input-container>
-        </div>
-        <div layout layout-align="center center">
-          <md-button class="md-fab md-primary md-raised" ng-click="logIn()" ng-if="!user.loggedIn">
-            登陆
-          </md-button>
-          <md-button class="md-fab md-raised" ng-click="logOut()" ng-if="user.loggedIn">
-            注销
-          </md-button>
-        </div></div>
+      <div layout>
+        <div ng-if="user.loggedIn">你好，{{user.cademy}}{{user.name}}</div>
+        <div flex></div>
+        <md-button class="md-icon-button" ng-click="hide()">
+          <md-icon class="material-icons">close</md-icon>
+        </md-button>
+      </div>
+      <md-input-container>
+        <label for="stuId">学号</label>
+        <input type="text" id="stuId" ng-model="user.id" ng-disabled="user.loggedIn">
+      </md-input-container>
+      <md-input-container>
+        <label for="password">密码</label>
+        <input type="password" id="password" ng-model="user.password" ng-disabled="user.loggedIn">
+      </md-input-container>
+      <div layout>
+        <md-button flex class="md-primary md-raised" ng-click="logIn()" ng-if="!user.loggedIn" layout
+                   layout-align="center center" ng-disabled="!user.id||!user.password">
+          {{!loggingIn?"登陆":"请稍等"}}
+        </md-button>
+        <md-button flex class="md-fab md-raised" ng-click="logOut()" ng-if="user.loggedIn">
+          注销
+        </md-button>
+      </div>
+      <div class="warn-msg">
+        {{loginMsg}}
       </div>
     </md-content>
   </md-dialog-content>

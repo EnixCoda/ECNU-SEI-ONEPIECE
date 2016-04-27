@@ -151,3 +151,7 @@ md-progress-circular.spinner-primary path {
 .no-box-shadow {
     box-shadow: none !important;
 }
+
+.warn-msg {
+    color: #f44336;
+}
