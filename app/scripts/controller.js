@@ -6,8 +6,8 @@
 angular.module("app").controller("controller",
   function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia) {
 
-    $scope.user = {
-    };
+    $scope.user = {};
+    loadFromCookie($scope.user);
 
     function isMobile() {
       var userAgent = navigator.userAgent;
@@ -272,7 +272,7 @@ angular.module("app").controller("controller",
         },
         fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
-      }).then(function(user) {
+      }).then(function (user) {
         $scope.user = user
       });
     };
@@ -416,7 +416,7 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
     if ($scope.comment) {
       $scope.gettingComment = true;
       $http.post("commentFile.php", {
-          username: $scope.anonymous?"匿名":$scope.username,
+          username: $scope.anonymous ? "匿名" : $scope.username,
           comment: $scope.comment,
           fileId: file.id,
           token: user.token
@@ -435,21 +435,27 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
 
 function UserCenterController($scope, $mdDialog, $http, user) {
   $scope.user = user;
+
   $scope.logIn = function () {
     $http.post("login.php", user)
-      .then(function(response) {
+      .then(function (response) {
         var responseData = response.data;
         if (responseData.res_code == 0) {
           user.token = responseData.token;
           user.name = responseData.data.username;
           user.cademy = responseData.data.cademy;
           user.loggedIn = true;
+          user.password = new Date().getTime().toString().substr(-user.password.length);
+          saveToCookie(user);
         }
 
       });
   };
   $scope.logOut = function () {
     user.loggedIn = false;
+    user.token = null;
+    user.password = null;
+    clearCookie();
   };
 
   $scope.hide = function () {
@@ -571,3 +577,43 @@ function AboutController($scope, $mdDialog) {
 
 //function SearchController($scope, lessons) {
 //}
+
+function setCookie(cookieName, cookieValue, expires) {
+  document.cookie = cookieName + "=" + cookieValue + ";expires=" + expires;
+}
+
+function clearCookie() {
+  var now = new Date();
+  var expire_s = now.toGMTString();
+  setCookie("stuId", "", expire_s);
+  setCookie("token", "", expire_s);
+  setCookie("cademy", "", expire_s);
+  setCookie("name", "", expire_s);
+}
+
+function saveToCookie(user) {
+  var OneMonthLater = new Date();
+  OneMonthLater.setDate(OneMonthLater.getDate() + 30);
+  var expire_s = OneMonthLater.toGMTString();
+  setCookie("stuId", user.id, expire_s);
+  setCookie("token", user.token, expire_s);
+  setCookie("cademy", user.cademy, expire_s);
+  setCookie("name", user.name, expire_s);
+}
+
+function loadFromCookie(user) {
+  var cookie_s = document.cookie;
+  if (cookie_s.indexOf("stuId") > -1 && cookie_s.indexOf("token") > -1) user.loggedIn = true;
+  var cookies = cookie_s.split("; ");
+  for (var i = 0; i < cookies.length; i++) {
+    if (cookies[i].indexOf("=") > -1) {
+      var pair = cookies[i].split("=");
+      var key = pair[0];
+      var value = pair[1];
+      if (key == "stuId") user.id = value;
+      if (key == "token") user.token = value;
+      if (key == "cademy") user.cademy = value;
+      if (key == "name") user.name = value;
+    }
+  }
+}
