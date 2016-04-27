@@ -22,7 +22,7 @@ angular.module("app").controller("controller",
     $scope.delay = isMobile() ? 300 : 200;
 
     $scope.loadingIndex = true;
-    $http.get("index.json")
+    $http.get("storage/index.json")
       .then(function (response) {
         $timeout(function () {
           $scope.loadingIndex = false;
@@ -245,8 +245,7 @@ angular.module("app").controller("controller",
     $scope.download = function (file) {
       if (file.gettingDownloadLink) return;
       file.gettingDownloadLink = true;
-      var getLinkUrl = "getDownloadLink.php";
-      $http.get(getLinkUrl + "?fileId=" + file.id)
+      $http.get("controlCenter/getDownloadLink.php" + "?fileId=" + file.id)
         .then(function (response) {
           if (response.data["res_code"] == 1) {
             console.log(response.data);
@@ -276,24 +275,6 @@ angular.module("app").controller("controller",
         $scope.user = user
       });
     };
-
-    // not used now
-    //$scope.showSearch = function (e) {
-    //  $mdDialog.show({
-    //    controller: SearchController,
-    //    templateUrl: "views/search.html",
-    //    parent: angular.element(document.body),
-    //    targetEvent: e,
-    //    locals: {
-    //      lessons: lessons
-    //    },
-    //    fullscreen: $mdMedia('xs'),
-    //    clickOutsideToClose: true
-    //  }).then(
-    //    function (feedback) {
-    //
-    //    });
-    //};
 
     $scope.showContribute = function (e) {
       $mdDialog.show({
@@ -326,7 +307,7 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
 
   function getRate() {
     $scope.gettingRate = true;
-    $http.post("getRate.php", {
+    $http.post("controlCenter/getRate.php", {
         fileId: file.id
       })
       .then(function (response) {
@@ -341,7 +322,7 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
 
   function getComment() {
     $scope.gettingComment = true;
-    $http.post("getComment.php", {
+    $http.post("controlCenter/getComment.php", {
         fileId: file.id
       })
       .then(function (response) {
@@ -349,7 +330,7 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
         $scope.gettingComment = false;
       }, function () {
         // TODO: remove after release
-        $scope.comments = [];
+        $scope.comments = [{comment: "内容测试", username: "用户名测试"}];
         $scope.gettingComment = false;
       });
   }
@@ -395,7 +376,7 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
   $scope.rateFile = function (rate) {
     if (angular.isNumber(rate)) {
       $scope.gettingRate = true;
-      $http.post("rateFile.php", {
+      $http.post("controlCenter/rateFile.php", {
           score: rate,
           fileId: file.id,
           token: user.token
@@ -414,8 +395,8 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
   $scope.sendComment = function () {
     if ($scope.comment) {
       $scope.gettingComment = true;
-      $http.post("commentFile.php", {
-          username: $scope.anonymous ? "匿名" : $scope.username,
+      $http.post("controlCenter/commentFile.php", {
+          username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
           comment: $scope.comment,
           fileId: file.id,
           token: user.token
@@ -437,7 +418,7 @@ function UserCenterController($scope, $mdDialog, $http, $mdToast, user) {
 
   $scope.logIn = function () {
     $scope.loggingIn = true;
-    $http.post("login.php", user)
+    $http.post("controlCenter/login.php", user)
       .then(function (response) {
         $scope.loggingIn = false;
         $scope.loginMsg = null;
@@ -455,8 +436,10 @@ function UserCenterController($scope, $mdDialog, $http, $mdToast, user) {
 
       });
   };
+
   $scope.logOut = function () {
     user.loggedIn = false;
+    user.name = null;
     user.token = null;
     user.password = null;
     clearCookie();
@@ -471,9 +454,11 @@ function UploadController($scope, $mdDialog, $http, Upload) {
   $scope.hide = function () {
     $mdDialog.hide();
   };
+
   $scope.close = function () {
     $mdDialog.cancel();
   };
+
   $scope.answer = function (answer) {
     $mdDialog.hide(answer);
   };
@@ -482,7 +467,7 @@ function UploadController($scope, $mdDialog, $http, Upload) {
     if ($scope.link) {
       $scope.submitting = true;
       $scope.submitStatus = "正在提交...";
-      $http.post("share.php", $scope.link)
+      $http.post("controlCenter/share.php", $scope.link)
         .then(function () {
           $scope.submitting = false;
           $scope.submitStatus = "提交成功，感谢分享！";
@@ -494,7 +479,7 @@ function UploadController($scope, $mdDialog, $http, Upload) {
     $scope.f = file;
     $scope.errFile = errFiles && errFiles[0];
     if (file) {
-      $http.get("getUploadLink.php")
+      $http.get("controlCenter/getUploadLink.php")
         .then(function (response) {
           var uploadUrl = response.data.uploadLink;
           file.upload = Upload.upload({
@@ -578,10 +563,6 @@ function AboutController($scope, $mdDialog) {
     //},
   ];
 }
-
-//function SearchController($scope, lessons) {
-//}
-
 
 // ----- cookie code start -----
 function setCookie(cookieName, cookieValue, expires) {

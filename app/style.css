@@ -155,3 +155,7 @@ md-progress-circular.spinner-primary path {
 .warn-msg {
     color: #f44336;
 }
+
+.short-user-name {
+    font-size: 18px;
+}

@@ -8,7 +8,7 @@ cookie保存用户信息
 
 需要修复的BUG：
 限制mdDialog的宽度
-详情页闪烁
+详情页过长时布局变形
 
 分享功能
 使用SVG icon

@@ -21,7 +21,7 @@
                    layout-align="center center" ng-disabled="!user.id||!user.password">
           {{!loggingIn?"登陆":"请稍等"}}
         </md-button>
-        <md-button flex class="md-fab md-raised" ng-click="logOut()" ng-if="user.loggedIn">
+        <md-button flex class="md-raised" ng-click="logOut()" ng-if="user.loggedIn">
           注销
         </md-button>
       </div>

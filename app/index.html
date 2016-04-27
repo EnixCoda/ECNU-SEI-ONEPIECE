@@ -86,7 +86,8 @@
         </div>
         <div layout ng-if="!isMobile">
           <md-button class="md-fab md-mini background-white" ng-click="showUserCenter($event)">
-            <md-icon class="material-icons adjust-icon-top-margin-up-3 color-primary">account_circle</md-icon>
+            <md-icon ng-if="!user.name" class="material-icons adjust-icon-top-margin-up-3 color-primary">account_circle</md-icon>
+            <span class="short-user-name color-primary">{{user.name?user.name[0]:""}}</span>
             <md-tooltip md-direction="bottom">
               用户中心
             </md-tooltip>

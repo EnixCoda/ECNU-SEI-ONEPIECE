@@ -22,7 +22,7 @@
         <div layout layout-align="start center">
           <p>当前总分：</p>
           <h3 ng-show="!gettingRate">{{totalScore}}</h3>
-          <md-progress-circular ng-show="gettingRate" md-diameter="20"></md-progress-circular>
+          <md-progress-circular ng-show="gettingRate" md-diameter="20" md-mode="indeterminate"></md-progress-circular>
         </div>
         <div flex></div>
         <md-button class="md-fab md-mini background-blue" ng-click="download(file)"
@@ -42,11 +42,11 @@
           </div>
         </md-button>
       </div>
-      <div ng-show="!gettingComment">
+      <div>
         <md-list ng-show="comments.length > 0">
           <md-subheader class="md-no-sticky">用户评论</md-subheader>
-          <md-list-item class="" ng-repeat="cmt in comments"
-                        ng-class="cmt.comment.legnth>100?'md-2-line md-long-text':'md-2-line'" ng-click="null">
+          <md-list-item ng-repeat="cmt in comments"
+                        ng-class="cmt.comment.legnth>100?'md-2-line md-long-text':'md-2-line'">
             <div class="md-list-item-text">
               <h3>{{cmt.username.length>0?cmt.username:"匿名"}} :</h3>
               <p>{{ cmt.comment }}</p>
