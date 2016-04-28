@@ -35,6 +35,9 @@ angular.module("app").controller("controller",
     function checkScreenSize() {
       $scope.isNanoScreen = Math.min(getWindowSize().width, getWindowSize().height) < 340;
       console.log($scope.isNanoScreen);
+      if ($scope.isNanoScreen) {
+        alert("检测到当前设备屏幕较小，已为您隐藏返回按钮。想要返回上级目录请点击当前路径中的文件夹名。点击“ONEPIECE”即可回到根目录。");
+      }
     }
     checkScreenSize();
     window.onresize = checkScreenSize();
