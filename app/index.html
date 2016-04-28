@@ -87,7 +87,7 @@
         <div layout ng-if="!isMobile">
           <md-button class="md-fab md-mini background-white" ng-click="showUserCenter($event)">
             <md-icon ng-if="!user.name" class="material-icons adjust-icon-top-margin-up-3 color-primary">account_circle</md-icon>
-            <span class="short-user-name color-primary">{{user.name?user.name[0]:""}}</span>
+            <span ng-if="user.name" class="short-user-name color-primary">{{user.name?user.name[0]:""}}</span>
             <md-tooltip md-direction="bottom">
               用户中心
             </md-tooltip>
@@ -143,8 +143,7 @@
             </div>
             <div layout layout-align="center center">
               <md-progress-circular ng-show="content.gettingDownloadLink" class="spinner-primary"
-                                    md-mode="indeterminate"
-                                    md-diameter="20">
+                                    md-mode="indeterminate" md-diameter="20">
               </md-progress-circular>
             </div>
           </md-button>
@@ -157,13 +156,20 @@
             <md-menu-content width="3">
               <md-menu-item>
                 <md-button ng-click="getLessonComments(content)">
-                  <md-icon class="material-icons adjust-icon-top-margin-down">feedback</md-icon>
+                  <md-icon class="material-icons adjust-icon-top-margin-down color-primary">feedback</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>课程评价</p>
                 </md-button>
               </md-menu-item>
               <md-menu-item>
-                <md-button>
+                <md-button ng-disabled="true">
+                  <md-icon class="material-icons adjust-icon-top-margin-down">file_download</md-icon>
+                  <div flex></div>
+                  <p md-menu-align-target>打包下载</p>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item>
+                <md-button ng-disabled="true">
                   <md-icon class="material-icons adjust-icon-top-margin-down">add</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>其他功能</p>
