@@ -10,7 +10,8 @@
     "grunt-contrib-htmlmin": "^0.6.0",
     "grunt-google-cdn": "^0.4.3",
     "grunt-replace": "^0.11.0",
-    "grunt-wiredep": "^2.0.0"
+    "grunt-wiredep": "^2.0.0",
+    "grunt-contrib-cssmin": "^1.0.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,6 +19,5 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "grunt-contrib-cssmin": "^1.0.1"
   }
 }
