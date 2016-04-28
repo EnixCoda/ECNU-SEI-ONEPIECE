@@ -103,7 +103,7 @@ angular.module("app").controller("controller",
     $scope.goTo = function (target, e) {
       function showFileDetail(file, e) {
         $mdDialog.show({
-          controller: PreviewController,
+          controller: FilePreviewController,
           templateUrl: "views/file_preview.html",
           parent: angular.element(document.body),
           targetEvent: e,
@@ -268,6 +268,7 @@ angular.module("app").controller("controller",
       }
     };
 
+
     $scope.download = function (file) {
       if (file.gettingDownloadLink) return;
       file.gettingDownloadLink = true;
@@ -280,6 +281,22 @@ angular.module("app").controller("controller",
             window.location = response.data["downloadLink"];
           }
         });
+    };
+
+    $scope.showLessonPreview = function (lesson, e) {
+      $mdDialog.show({
+        controller: LessonPreviewController,
+        templateUrl: "views/lesson_preview.html",
+        parent: angular.element(document.body),
+        targetEvent: e,
+        locals: {
+          lesson: lesson,
+          user: $scope.user,
+          showUserCenter: $scope.showUserCenter
+        },
+        fullscreen: $mdMedia('xs'),
+        clickOutsideToClose: true
+      });
     };
 
     $scope.getLessonComments = function () {
@@ -324,7 +341,7 @@ angular.module("app").controller("controller",
     };
   });
 
-function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter) {
+function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCenter) {
   $scope.file = file;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
@@ -412,10 +429,6 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
     }
   };
 
-  $scope.detectCommentLength = function () {
-    $scope.comment = $scope.comment.substring(0, 140);
-  };
-
   $scope.sendComment = function () {
     if ($scope.comment) {
       $scope.gettingComment = true;
@@ -423,6 +436,50 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
           username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
           comment: $scope.comment,
           fileId: file.id,
+          token: user.token
+        })
+        .then(function () {
+          $scope.comment = "";
+          getComment();
+        });
+    }
+  };
+
+  $scope.cancel = function () {
+    $mdDialog.cancel();
+  };
+}
+
+function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUserCenter) {
+  $scope.lesson = lesson;
+  $scope.user = user;
+  $scope.showUserCenter = showUserCenter;
+  $scope.anonymous = false;
+
+  function getComment() {
+    $scope.gettingComment = true;
+    $http.post("controlCenter/getLessonComment.php", {
+        lessonName: lesson.name
+      })
+      .then(function (response) {
+        $scope.comments = response.data.comments;
+        $scope.gettingComment = false;
+      }, function () {
+        // TODO: remove after release
+        $scope.comments = [{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"}];
+        $scope.gettingComment = false;
+      });
+  }
+
+  getComment();
+
+  $scope.sendComment = function () {
+    if ($scope.comment) {
+      $scope.gettingComment = true;
+      $http.post("controlCenter/commentLesson.php", {
+          username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
+          comment: $scope.comment,
+          lessonName: lesson.name,
           token: user.token
         })
         .then(function () {
