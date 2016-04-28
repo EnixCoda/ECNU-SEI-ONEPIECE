@@ -22,7 +22,7 @@
   <div ng-if="!loadingIndex" flex layout="column">
     <div class="top-banner md-whiteframe-3dp light-background-color left-offset-10" layout
          layout-align="space-between center" layout-wrap>
-      <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)" ng-show="directoryStack.length>1">
+      <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)" ng-show="directoryStack.length>1 && !isNanoScreen">
         <md-icon class="material-icons color-white adjust-icon-top-margin-up-3">chevron_left</md-icon>
       </md-button>
       <div>
@@ -183,7 +183,7 @@
     </div>
   </div>
   <div>
-    <md-subheader class="light-background-color no-padding-bottom no-padding-top">
+    <md-subheader class="light-background-color" ng-class="isNanoScreen?'nano-padding':''">
       <span>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
         <del>站长</del>
         Gol·D·Roger

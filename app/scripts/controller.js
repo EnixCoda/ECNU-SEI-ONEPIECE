@@ -16,7 +16,28 @@ angular.module("app").controller("controller",
       return isiPad || isiPhone || isAndroid;
     }
 
+    function getWindowSize() {
+      var w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        x = w.innerWidth || e.clientWidth || g.clientWidth,
+        y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+      console.log(x,y);
+      return {
+        width: x,
+        height: y
+      };
+    }
+
     $scope.isMobile = isMobile();
+
+    function checkScreenSize() {
+      $scope.isNanoScreen = Math.min(getWindowSize().width, getWindowSize().height) < 340;
+      console.log($scope.isNanoScreen);
+    }
+    checkScreenSize();
+    window.onresize = checkScreenSize();
 
     $scope.delay = isMobile() ? 300 : 200;
 

@@ -168,10 +168,14 @@ md-progress-circular.spinner-primary path {
 }
 
 md-autocomplete {
-    min-width: 256px;
+    min-width: 216px;
 }
 
 .user-comment-area {
     min-height: 160px;
     padding-top: 24px;
+}
+
+.nano-padding ._md-subheader-inner {
+    padding: 4px;
 }
