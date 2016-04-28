@@ -50,6 +50,7 @@ module.exports = function (grunt) {
           'dist/views/about.html': 'app/views/about.html',
           'dist/views/contribute.html': 'app/views/contribute.html',
           'dist/views/file_preview.html': 'app/views/file_preview.html',
+          'dist/views/lesson_preview.html': 'app/views/lesson_preview.html',
           'dist/views/user_center.html': 'app/views/user_center.html'
         }
       }
