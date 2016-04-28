@@ -184,10 +184,16 @@ module.exports = function (grunt) {
           }
         ]
       }
+    },
+    ngmin: {
+      controllers: {
+        src: ['test/src/controllers/one.js'],
+        dest: 'test/generated/controllers/one.js'
+      }
     }
   });
 
-
+  grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-wiredep');
   grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');

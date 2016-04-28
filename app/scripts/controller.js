@@ -2,7 +2,6 @@
  * Created by Exin on 2016/3/2.
  */
 
-
 angular.module("app").controller("controller",
   function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia) {
 
@@ -227,12 +226,17 @@ angular.module("app").controller("controller",
         function goDirectTo(target) {
           while ($scope.goBack(1)) {
           }
-          while (target.path) {
-            var target = target.path.shift();
-            var pos = targetInDirectory(target, $scope.currentDirectory);
+          var dummyPath = [].concat(target.path);
+          while (dummyPath.length > 0) {
+            var nextTarget = dummyPath.shift();
+            var pos = targetInDirectory(nextTarget, $scope.currentDirectory);
             if (pos !== false) {
-              $scope.directoryStack.push(target);
+              $scope.directoryStack.push(nextTarget);
               setCurrentDirectory();
+            } else {
+              while ($scope.goBack(1)) {
+              }
+              console.log("Path Error");
             }
           }
         }
@@ -330,7 +334,7 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
         $scope.gettingComment = false;
       }, function () {
         // TODO: remove after release
-        $scope.comments = [{comment: "内容测试", username: "用户名测试"}];
+        $scope.comments = [{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"}];
         $scope.gettingComment = false;
       });
   }
@@ -416,7 +420,14 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
 function UserCenterController($scope, $mdDialog, $http, $mdToast, user) {
   $scope.user = user;
 
+  $scope.keyLogIn = function (e) {
+    if (e.keyCode == 13) {
+      $scope.logIn();
+    }
+  };
+
   $scope.logIn = function () {
+    if (!$scope.user.id || !$scope.user.password) return;
     $scope.loggingIn = true;
     $http.post("controlCenter/login.php", user)
       .then(function (response) {
@@ -566,12 +577,13 @@ function AboutController($scope, $mdDialog) {
 
 // ----- cookie code start -----
 function setCookie(cookieName, cookieValue, expires) {
-  document.cookie = cookieName + "=" + cookieValue + ";expires=" + expires;
+  document.cookie = cookieName + "=" + cookieValue + ";path=;expires=" + expires;
 }
 
 function clearCookie() {
-  var now = new Date();
-  var expire_s = now.toGMTString();
+  var OneMonthAgo = new Date();
+  OneMonthAgo.setMonth(OneMonthAgo.getMonth-1);
+  var expire_s = OneMonthAgo.toGMTString();
   setCookie("stuId", "", expire_s);
   setCookie("token", "", expire_s);
   setCookie("cademy", "", expire_s);
@@ -590,18 +602,32 @@ function saveToCookie(user) {
 
 function loadFromCookie(user) {
   var cookie_s = document.cookie;
-  if (cookie_s.indexOf("stuId") > -1 && cookie_s.indexOf("token") > -1) user.loggedIn = true;
   var cookies = cookie_s.split("; ");
+  var count = 0;
+  var ESSENTIAL = 4;
   for (var i = 0; i < cookies.length; i++) {
     if (cookies[i].indexOf("=") > -1) {
       var pair = cookies[i].split("=");
-      var key = pair[0];
-      var value = pair[1];
-      if (key == "stuId") user.id = value;
-      if (key == "token") user.token = value;
-      if (key == "cademy") user.cademy = value;
-      if (key == "name") user.name = value;
+      var key = pair[0], value = pair[1];
+      if (!key || !value) continue;
+      if (key == "stuId") {
+        user.id = value;
+        count++;
+      }
+      if (key == "token") {
+        user.token = value;
+        count++;
+      }
+      if (key == "cademy") {
+        user.cademy = value;
+        count++;
+      }
+      if (key == "name") {
+        user.name = value;
+        count++;
+      }
     }
   }
+  if (count == ESSENTIAL) user.loggedIn = true;
 }
 // ----- cookie code end -----

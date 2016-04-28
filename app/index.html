@@ -20,7 +20,7 @@
     <p>{{loadIndexFailed?"读取文件列表失败":"正在读取文件列表"}}</p>
   </div>
   <div ng-if="!loadingIndex" flex layout="column">
-    <div class="top-banner md-whiteframe-3dp light-background-color left-offset" layout
+    <div class="top-banner md-whiteframe-3dp light-background-color left-offset-10" layout
          layout-align="space-between center" layout-wrap>
       <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)" ng-show="directoryStack.length>1">
         <md-icon class="material-icons color-white adjust-icon-top-margin-up-3">chevron_left</md-icon>
@@ -124,7 +124,7 @@
             <md-icon class="material-icons" ng-style="getFileColor(content)">
               {{content.isDir?"folder":getFileIcon(content)}}
             </md-icon>
-            <div class="left-offset file-name-in-list">
+            <div class="left-offset-10 file-name-in-list">
               <p>{{content.name}}</p>
             </div>
           </div>

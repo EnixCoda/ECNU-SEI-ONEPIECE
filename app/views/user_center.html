@@ -14,7 +14,7 @@
       </md-input-container>
       <md-input-container>
         <label for="password">密码</label>
-        <input type="password" id="password" ng-model="user.password" ng-disabled="user.loggedIn">
+        <input type="password" id="password" ng-model="user.password" ng-disabled="user.loggedIn" ng-keypress="keyLogIn($event)">
       </md-input-container>
       <div layout>
         <md-button flex class="md-primary md-raised" ng-click="logIn()" ng-if="!user.loggedIn" layout

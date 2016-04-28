@@ -4,19 +4,19 @@
       <h4>{{file.name}}</h4>
       <span flex></span>
       <md-button class="md-icon-button" ng-click="cancel()">
-        <md-icon class="material-icons color-white">close</md-icon>
+        <md-icon class="material-icons color-white adjust-icon-top-margin-up-3">close</md-icon>
       </md-button>
     </div>
   </md-toolbar>
   <md-dialog-content layout="column" flex>
     <md-content flex layout="column" layout-padding>
-      <div class="min-height-65" layout layout-align="start center">
+      <div layout layout-align="start center">
         <div>
           <md-button class="md-icon-button" ng-click="rateFile(1)" ng-disabled="!user.loggedIn">
-            <md-icon class="material-icons">thumb_up</md-icon>
+            <md-icon class="material-icons" ng-class="user.loggedIn?'thumbUp-enabled':''">thumb_up</md-icon>
           </md-button>
           <md-button class="md-icon-button" ng-click="rateFile(-1)" ng-disabled="!user.loggedIn">
-            <md-icon class="material-icons">thumb_down</md-icon>
+            <md-icon class="material-icons" ng-class="user.loggedIn?'thumbUp-disabled':''">thumb_down</md-icon>
           </md-button>
         </div>
         <div layout layout-align="start center">
@@ -42,9 +42,9 @@
           </div>
         </md-button>
       </div>
-      <div>
+      <div class="protect-overflow" flex>
         <md-list ng-show="comments.length > 0">
-          <md-subheader class="md-no-sticky">用户评论</md-subheader>
+          <md-subheader class="md-no-sticky">评论</md-subheader>
           <md-list-item ng-repeat="cmt in comments"
                         ng-class="cmt.comment.legnth>100?'md-2-line md-long-text':'md-2-line'">
             <div class="md-list-item-text">
@@ -59,20 +59,20 @@
       </div>
       <div ng-show="gettingComment" layout layout-align="start center">
         <md-progress-circular md-diameter="20" md-mode="indeterminate"></md-progress-circular>
-        <p class="left-offset"> 正在加载评论... </p>
+        <p class="left-offset-10"> 正在加载评论... </p>
       </div>
-      <div ng-show="user.loggedIn" layout="column" class="min-height-100">
-        <div layout>
+      <div ng-show="user.loggedIn" class="user-comment-area md-whiteframe-5dp" layout="column">
+        <div layout layout-wrap>
           <md-input-container flex class="no-margin">
             <label for="comment">你的评论</label>
-            <textarea id="comment" ng-model="comment" md-maxlength="140" maxlength="140"></textarea>
+            <textarea id="comment" ng-model="comment" md-maxlength="140" md-no-autogrow maxlength="140" rows="2"></textarea>
           </md-input-container>
         </div>
-        <div layout layout-align="end center">
+        <div layout layout-align="space-between center" layout-wrap>
           <md-checkbox class="no-margin" ng-model="anonymous">
             匿名
           </md-checkbox>
-          <md-input-container flex-xs ng-show="!anonymous">
+          <md-input-container flex-xs class="no-margin" ng-show="!anonymous">
             <label for="username">留个昵称</label>
             <input type="text" id="username" ng-model="username" placeholder="{{user.name}}">
           </md-input-container>
