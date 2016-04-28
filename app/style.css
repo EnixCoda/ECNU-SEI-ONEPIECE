@@ -159,3 +159,11 @@ md-progress-circular.spinner-primary path {
 .short-user-name {
     font-size: 18px;
 }
+
+.min-height-65 {
+    min-height: 65px;
+}
+
+.min-height-100 {
+    min-height: 100px;
+}
