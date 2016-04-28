@@ -23,7 +23,6 @@ angular.module("app").controller("controller",
         g = d.getElementsByTagName('body')[0],
         x = w.innerWidth || e.clientWidth || g.clientWidth,
         y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-      console.log(x,y);
       return {
         width: x,
         height: y
@@ -34,7 +33,6 @@ angular.module("app").controller("controller",
 
     function checkScreenSize() {
       $scope.isNanoScreen = Math.min(getWindowSize().width, getWindowSize().height) < 340;
-      console.log($scope.isNanoScreen);
       if ($scope.isNanoScreen) {
         alert("检测到当前设备屏幕较小，已为您隐藏返回按钮。想要返回上级目录请点击当前路径中的文件夹名。点击“ONEPIECE”即可回到根目录。");
       }
@@ -276,7 +274,6 @@ angular.module("app").controller("controller",
       $http.get("controlCenter/getDownloadLink.php" + "?fileId=" + file.id)
         .then(function (response) {
           if (response.data["res_code"] == 1) {
-            console.log(response.data);
             alert("获取下载链接失败!");
           } else {
             file.gettingDownloadLink = false;
@@ -373,7 +370,6 @@ function PreviewController($scope, $mdDialog, $http, file, user, showUserCenter)
     $http.get(getLinkUrl + "?fileId=" + file.id)
       .then(function (response) {
         if (response.data["res_code"] == 1) {
-          console.log(response.data);
           alert("获取下载链接失败!");
         } else {
           file.gettingDownloadLink = false;
