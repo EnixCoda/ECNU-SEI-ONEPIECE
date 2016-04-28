@@ -512,7 +512,7 @@ function UploadController($scope, $mdDialog, $http, Upload) {
     if (file) {
       $http.get("controlCenter/getUploadLink.php")
         .then(function (response) {
-          var uploadUrl = response.data.uploadLink;
+          var uploadUrl = response.data["uploadLink"];
           file.upload = Upload.upload({
             url: uploadUrl,
             wire: file,
