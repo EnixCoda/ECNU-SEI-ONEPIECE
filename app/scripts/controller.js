@@ -42,20 +42,28 @@ angular.module("app").controller("controller",
 
     $scope.delay = isMobile() ? 300 : 200;
 
-    $scope.loadingIndex = true;
-    $http.get("storage/index.json")
-      .then(function (response) {
-        $timeout(function () {
-          $scope.loadingIndex = false;
-          index = response.data[0];
-          $scope.directoryStack = [index];
-          $scope.currentDirectory = index;
-          lessons = getLessonsFrom(index);
-        }, 1500);
-      }, function () {
-        $scope.loadIndexFailed = true;
-      });
+    function getIndex () {
+      $scope.loadingIndex = true;
+      $http.post("controlCenter/getIndex.php", $scope.user)
+        .then(function (response) {
+          var responseData = response.data;
+          if (responseData["res_code"] == 0) {
+            $timeout(function () {
+              $scope.loadingIndex = false;
+              index = responseData.data[0];
+              $scope.directoryStack = [index];
+              $scope.currentDirectory = index;
+              lessons = getLessonsFrom(index);
+            }, 1500);
+          } else {
+            $scope.loadIndexFailed = true;
+          }
+        }, function () {
+          $scope.loadIndexFailed = true;
+        });
+    }
 
+    getIndex();
     var index;
     var lessons;
 
@@ -272,9 +280,15 @@ angular.module("app").controller("controller",
     $scope.download = function (file) {
       if (file.gettingDownloadLink) return;
       file.gettingDownloadLink = true;
-      $http.get("controlCenter/getDownloadLink.php" + "?fileId=" + file.id)
+      var data = {
+        fileId: file.id.toString()
+      };
+      if ($scope.user.loggedIn) {
+        data.token = $scope.user.token;
+      }
+      $http.post("controlCenter/getDownloadLink.php", data)
         .then(function (response) {
-          if (response.data["res_code"] == 1) {
+          if (response.data["res_code"] != 0) {
             alert("获取下载链接失败!");
           } else {
             file.gettingDownloadLink = false;
@@ -350,7 +364,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   function getRate() {
     $scope.gettingRate = true;
     $http.post("controlCenter/getRate.php", {
-        fileId: file.id
+        fileId: file.id.toString()
       })
       .then(function (response) {
         $scope.totalScore = response.data["total_score"];
@@ -365,7 +379,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   function getComment() {
     $scope.gettingComment = true;
     $http.post("controlCenter/getComment.php", {
-        fileId: file.id
+        fileId: file.id.toString()
       })
       .then(function (response) {
         $scope.comments = response.data.comments;
@@ -383,10 +397,15 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   $scope.download = function () {
     if (file.gettingDownloadLink) return;
     file.gettingDownloadLink = true;
-    var getLinkUrl = "getDownloadLink.php";
-    $http.get(getLinkUrl + "?fileId=" + file.id)
+    var data = {
+      fileId: file.id.toString()
+    };
+    if ($scope.user.loggedIn) {
+      data.token = $scope.user.token;
+    }
+    $http.post("controlCenter/getDownloadLink.php", data)
       .then(function (response) {
-        if (response.data["res_code"] == 1) {
+        if (response.data["res_code"] != 0) {
           alert("获取下载链接失败!");
         } else {
           file.gettingDownloadLink = false;
@@ -419,7 +438,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
       $scope.gettingRate = true;
       $http.post("controlCenter/rateFile.php", {
           score: rate,
-          fileId: file.id,
+          fileId: file.id.toString(),
           token: user.token
         })
         .then(function () {
@@ -435,7 +454,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
       $http.post("controlCenter/commentFile.php", {
           username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
           comment: $scope.comment,
-          fileId: file.id,
+          fileId: file.id.toString(),
           token: user.token
         })
         .then(function () {
