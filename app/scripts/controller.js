@@ -44,13 +44,15 @@ angular.module("app").controller("controller",
 
     function getIndex () {
       $scope.loadingIndex = true;
-      $http.post("controlCenter/getIndex.php", $scope.user)
+      var data = {};
+      if ($scope.user.token) data.token = $scope.user.token;
+      $http.post("controlCenter/getIndex.php", data)
         .then(function (response) {
           var responseData = response.data;
           if (responseData["res_code"] == 0) {
             $timeout(function () {
               $scope.loadingIndex = false;
-              index = responseData.data[0];
+              index = responseData.data["index"];
               $scope.directoryStack = [index];
               $scope.currentDirectory = index;
               lessons = getLessonsFrom(index);
@@ -288,11 +290,12 @@ angular.module("app").controller("controller",
       }
       $http.post("controlCenter/getDownloadLink.php", data)
         .then(function (response) {
-          if (response.data["res_code"] != 0) {
+          var responseData = response.data;
+          if (responseData["res_code"] != 0) {
             alert("获取下载链接失败!");
           } else {
             file.gettingDownloadLink = false;
-            window.location = response.data["downloadLink"];
+            window.location = responseData["data"]["downloadLink"];
           }
         });
     };
@@ -367,7 +370,8 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
         fileId: file.id.toString()
       })
       .then(function (response) {
-        $scope.totalScore = response.data["total_score"];
+        var responseData = response.data;
+        $scope.totalScore = responseData["data"]["total_score"];
         $scope.gettingRate = false;
       }, function () {
         // TODO: remove after release
@@ -382,7 +386,8 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
         fileId: file.id.toString()
       })
       .then(function (response) {
-        $scope.comments = response.data.comments;
+        var responseData = response.data;
+        $scope.comments = responseData["data"]["comments"];
         $scope.gettingComment = false;
       }, function () {
         // TODO: remove after release
@@ -405,11 +410,12 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
     }
     $http.post("controlCenter/getDownloadLink.php", data)
       .then(function (response) {
-        if (response.data["res_code"] != 0) {
+        var responseData = response.data;
+        if (responseData["res_code"] != 0) {
           alert("获取下载链接失败!");
         } else {
           file.gettingDownloadLink = false;
-          window.location = response.data["downloadLink"];
+          window.location = responseData["data"]["downloadLink"];
         }
       });
   };
@@ -531,9 +537,9 @@ function UserCenterController($scope, $mdDialog, $http, $mdToast, user) {
         $scope.loginMsg = null;
         var responseData = response.data;
         if (responseData["res_code"] == 0) {
-          user.token = responseData.token;
-          user.name = responseData.data.username;
-          user.cademy = responseData.data.cademy;
+          user.token = responseData["data"]["token"];
+          user.name = responseData["data"]["username"];
+          user.cademy = responseData["data"]["cademy"];
           user.loggedIn = true;
           user.password = new Date().getTime().toString().substr(-user.password.length);
           saveToCookie(user);
