@@ -3,7 +3,16 @@
  */
 
 angular.module("app").controller("controller",
-  function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia) {
+  function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia, $mdToast) {
+
+    function showToast(text) {
+      $mdToast.show(
+        $mdToast.simple()
+          .textContent(text)
+          .position("top right")
+          .hideDelay(900)
+      );
+    }
 
     $scope.user = {};
     loadFromCookie($scope.user);
@@ -15,6 +24,8 @@ angular.module("app").controller("controller",
       var isiPad = userAgent.indexOf("iPad") > -1;
       return isiPad || isiPhone || isAndroid;
     }
+    $scope.isMobile = isMobile();
+    $scope.delay = isMobile() ? 300 : 200;
 
     function getWindowSize() {
       var w = window,
@@ -22,15 +33,12 @@ angular.module("app").controller("controller",
         e = d.documentElement,
         g = d.getElementsByTagName('body')[0],
         x = w.innerWidth || e.clientWidth || g.clientWidth,
-        y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+        y = w.innerHeight || e.clientHeight || g.clientHeight;
       return {
         width: x,
         height: y
       };
     }
-
-    $scope.isMobile = isMobile();
-
     function checkScreenSize() {
       $scope.isNanoScreen = Math.min(getWindowSize().width, getWindowSize().height) < 340;
       if ($scope.isNanoScreen) {
@@ -40,16 +48,14 @@ angular.module("app").controller("controller",
     checkScreenSize();
     window.onresize = checkScreenSize();
 
-    $scope.delay = isMobile() ? 300 : 200;
-
-    function getIndex () {
+    function getIndex() {
       $scope.loadingIndex = true;
       var data = {};
       if ($scope.user.token) data.token = $scope.user.token;
       $http.post("controlCenter/getIndex.php", data)
         .then(function (response) {
           var responseData = response.data;
-          if (responseData["res_code"] == 0) {
+          if (responseData["res_code"] === 0) {
             $timeout(function () {
               $scope.loadingIndex = false;
               index = responseData.data["index"];
@@ -64,8 +70,8 @@ angular.module("app").controller("controller",
           $scope.loadIndexFailed = true;
         });
     }
-
     getIndex();
+
     var index;
     var lessons;
 
@@ -120,7 +126,8 @@ angular.module("app").controller("controller",
           locals: {
             file: file,
             user: $scope.user,
-            showUserCenter: $scope.showUserCenter
+            showUserCenter: $scope.showUserCenter,
+            showToast: showToast
           },
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true
@@ -291,11 +298,11 @@ angular.module("app").controller("controller",
       $http.post("controlCenter/getDownloadLink.php", data)
         .then(function (response) {
           var responseData = response.data;
-          if (responseData["res_code"] != 0) {
-            alert("获取下载链接失败!");
-          } else {
+          if (responseData["res_code"] === 0) {
             file.gettingDownloadLink = false;
             window.location = responseData["data"]["downloadLink"];
+          } else {
+            showToast(responseData["msg"]);
           }
         });
     };
@@ -309,7 +316,8 @@ angular.module("app").controller("controller",
         locals: {
           lesson: lesson,
           user: $scope.user,
-          showUserCenter: $scope.showUserCenter
+          showUserCenter: $scope.showUserCenter,
+          showToast: showToast
         },
         fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
@@ -326,7 +334,8 @@ angular.module("app").controller("controller",
         parent: angular.element(document.body),
         targetEvent: e,
         locals: {
-          user: $scope.user
+          user: $scope.user,
+          showToast: showToast
         },
         fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
@@ -358,7 +367,7 @@ angular.module("app").controller("controller",
     };
   });
 
-function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCenter) {
+function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCenter, showToast) {
   $scope.file = file;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
@@ -371,8 +380,12 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
       })
       .then(function (response) {
         var responseData = response.data;
-        $scope.totalScore = responseData["data"]["total_score"];
-        $scope.gettingRate = false;
+        if (responseData["res_code"] === 0) {
+          $scope.totalScore = responseData["data"]["total_score"];
+          $scope.gettingRate = false;
+        } else {
+          showToast(responseData["msg"]);
+        }
       }, function () {
         // TODO: remove after release
         $scope.totalScore = 10;
@@ -387,11 +400,21 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
       })
       .then(function (response) {
         var responseData = response.data;
-        $scope.comments = responseData["data"]["comments"];
-        $scope.gettingComment = false;
+        if (responseData["res_code"] === 0) {
+          $scope.comments = responseData["data"]["comments"];
+          $scope.gettingComment = false;
+        } else {
+          showToast(responseData["msg"]);
+        }
       }, function () {
         // TODO: remove after release
-        $scope.comments = [{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"}];
+        $scope.comments = [{comment: "内容测试", username: "用户名测试"}, {comment: "内容测试", username: "用户名测试"}, {
+          comment: "内容测试",
+          username: "用户名测试"
+        }, {comment: "内容测试", username: "用户名测试"}, {comment: "内容测试", username: "用户名测试"}, {
+          comment: "内容测试",
+          username: "用户名测试"
+        }, {comment: "内容测试", username: "用户名测试"}];
         $scope.gettingComment = false;
       });
   }
@@ -411,11 +434,11 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
     $http.post("controlCenter/getDownloadLink.php", data)
       .then(function (response) {
         var responseData = response.data;
-        if (responseData["res_code"] != 0) {
-          alert("获取下载链接失败!");
-        } else {
+        if (responseData["res_code"] === 0) {
           file.gettingDownloadLink = false;
           window.location = responseData["data"]["downloadLink"];
+        } else {
+          showToast(responseData["msg"]);
         }
       });
   };
@@ -447,9 +470,14 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
           fileId: file.id.toString(),
           token: user.token
         })
-        .then(function () {
-          $scope.rated = true;
-          getRate();
+        .then(function (response) {
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            $scope.rated = true;
+            getRate();
+          } else {
+            showToast(responseData["msg"]);
+          }
         });
     }
   };
@@ -463,9 +491,13 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
           fileId: file.id.toString(),
           token: user.token
         })
-        .then(function () {
-          $scope.comment = "";
-          getComment();
+        .then(function (response) {
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            getComment();
+          } else {
+            showToast(responseData["msg"]);
+          }
         });
     }
   };
@@ -475,7 +507,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   };
 }
 
-function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUserCenter) {
+function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUserCenter, showToast) {
   $scope.lesson = lesson;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
@@ -487,11 +519,22 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
         lessonName: lesson.name
       })
       .then(function (response) {
-        $scope.comments = response.data.comments;
-        $scope.gettingComment = false;
+        var responseData = response.data;
+        if (responseData["res_code"] === 0) {
+          $scope.comments = response.data.comments;
+          $scope.gettingComment = false;
+        } else {
+          showToast(responseData["msg"]);
+        }
       }, function () {
         // TODO: remove after release
-        $scope.comments = [{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"},{comment: "内容测试", username: "用户名测试"}];
+        $scope.comments = [{comment: "内容测试", username: "用户名测试"}, {comment: "内容测试", username: "用户名测试"}, {
+          comment: "内容测试",
+          username: "用户名测试"
+        }, {comment: "内容测试", username: "用户名测试"}, {comment: "内容测试", username: "用户名测试"}, {
+          comment: "内容测试",
+          username: "用户名测试"
+        }, {comment: "内容测试", username: "用户名测试"}];
         $scope.gettingComment = false;
       });
   }
@@ -507,9 +550,13 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
           lessonName: lesson.name,
           token: user.token
         })
-        .then(function () {
-          $scope.comment = "";
-          getComment();
+        .then(function (response) {
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            getComment();
+          } else {
+            showToast(responseData["msg"]);
+          }
         });
     }
   };
@@ -519,7 +566,7 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
   };
 }
 
-function UserCenterController($scope, $mdDialog, $http, $mdToast, user) {
+function UserCenterController($scope, $mdDialog, $http, user, showToast) {
   $scope.user = user;
 
   $scope.keyLogIn = function (e) {
@@ -546,7 +593,6 @@ function UserCenterController($scope, $mdDialog, $http, $mdToast, user) {
         } else {
           $scope.loginMsg = responseData.msg;
         }
-
       });
   };
 
@@ -684,7 +730,7 @@ function setCookie(cookieName, cookieValue, expires) {
 
 function clearCookie() {
   var OneMonthAgo = new Date();
-  OneMonthAgo.setMonth(OneMonthAgo.getMonth-1);
+  OneMonthAgo.setMonth(OneMonthAgo.getMonth - 1);
   var expire_s = OneMonthAgo.toGMTString();
   setCookie("stuId", "", expire_s);
   setCookie("token", "", expire_s);
