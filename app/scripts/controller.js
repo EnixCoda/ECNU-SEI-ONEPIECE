@@ -24,6 +24,7 @@ angular.module("app").controller("controller",
       var isiPad = userAgent.indexOf("iPad") > -1;
       return isiPad || isiPhone || isAndroid;
     }
+
     $scope.isMobile = isMobile();
     $scope.delay = isMobile() ? 300 : 200;
 
@@ -39,12 +40,14 @@ angular.module("app").controller("controller",
         height: y
       };
     }
+
     function checkScreenSize() {
       $scope.isNanoScreen = Math.min(getWindowSize().width, getWindowSize().height) < 340;
       if ($scope.isNanoScreen) {
         alert("检测到当前设备屏幕较小，已为您隐藏返回按钮。想要返回上级目录请点击当前路径中的文件夹名。点击“ONEPIECE”即可回到根目录。");
       }
     }
+
     checkScreenSize();
     window.onresize = checkScreenSize();
 
@@ -70,6 +73,7 @@ angular.module("app").controller("controller",
           $scope.loadIndexFailed = true;
         });
     }
+
     getIndex();
 
     var index;
@@ -304,6 +308,8 @@ angular.module("app").controller("controller",
           } else {
             showToast(responseData["msg"]);
           }
+        }, function () {
+          showToast("服务器无响应")
         });
     };
 
@@ -341,6 +347,8 @@ angular.module("app").controller("controller",
         clickOutsideToClose: true
       }).then(function (user) {
         $scope.user = user
+      }, function () {
+        showToast("服务器无响应")
       });
     };
 
@@ -387,8 +395,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
           showToast(responseData["msg"]);
         }
       }, function () {
-        // TODO: remove after release
-        $scope.totalScore = 10;
+        showToast("服务器无响应");
         $scope.gettingRate = false;
       });
   }
@@ -407,14 +414,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
           showToast(responseData["msg"]);
         }
       }, function () {
-        // TODO: remove after release
-        $scope.comments = [{comment: "内容测试", username: "用户名测试"}, {comment: "内容测试", username: "用户名测试"}, {
-          comment: "内容测试",
-          username: "用户名测试"
-        }, {comment: "内容测试", username: "用户名测试"}, {comment: "内容测试", username: "用户名测试"}, {
-          comment: "内容测试",
-          username: "用户名测试"
-        }, {comment: "内容测试", username: "用户名测试"}];
+        showToast("服务器无响应");
         $scope.gettingComment = false;
       });
   }
@@ -440,7 +440,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
         } else {
           showToast(responseData["msg"]);
         }
-      });
+      }, function () {showToast("服务器无响应")});
   };
 
   $scope.formatFileSize = function (file) {
@@ -478,7 +478,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
           } else {
             showToast(responseData["msg"]);
           }
-        });
+        }, function () {showToast("服务器无响应")});
     }
   };
 
@@ -498,7 +498,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
           } else {
             showToast(responseData["msg"]);
           }
-        });
+        }, function () {showToast("服务器无响应")});
     }
   };
 
@@ -536,6 +536,8 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
           username: "用户名测试"
         }, {comment: "内容测试", username: "用户名测试"}];
         $scope.gettingComment = false;
+      }, function () {
+        showToast("服务器无响应")
       });
   }
 
@@ -557,6 +559,8 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
           } else {
             showToast(responseData["msg"]);
           }
+        }, function () {
+          showToast("服务器无响应")
         });
     }
   };
@@ -593,6 +597,8 @@ function UserCenterController($scope, $mdDialog, $http, user, showToast) {
         } else {
           $scope.loginMsg = responseData.msg;
         }
+      }, function () {
+        showToast("服务器无响应")
       });
   };
 
@@ -630,6 +636,8 @@ function UploadController($scope, $mdDialog, $http, Upload) {
         .then(function () {
           $scope.submitting = false;
           $scope.submitStatus = "提交成功，感谢分享！";
+        }, function () {
+          showToast("服务器无响应")
         });
     }
   };
@@ -659,6 +667,8 @@ function UploadController($scope, $mdDialog, $http, Upload) {
             file.progress = Math.min(100, parseInt(100.0 *
               evt.loaded / evt.total));
           });
+        }, function () {
+          showToast("服务器无响应")
         });
     }
   };
