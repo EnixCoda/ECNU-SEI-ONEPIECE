@@ -3,14 +3,16 @@
  */
 
 angular.module("app").controller("controller",
-  function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia, $mdToast) {
+  function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia, $mdToast, $document) {
 
-    function showToast(text) {
+    function showToast(text, parentId, type) {
       $mdToast.show(
         $mdToast.simple()
           .textContent(text)
           .position("top right")
-          .hideDelay(900)
+          .parent($document[0].querySelector(parentId?'#' + parentId:''))
+          .theme(type + "-toast")
+          .hideDelay(1500)
       );
     }
 
@@ -21,8 +23,7 @@ angular.module("app").controller("controller",
       var userAgent = navigator.userAgent;
       var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
       var isiPhone = userAgent.indexOf("iPhone") > -1;
-      var isiPad = userAgent.indexOf("iPad") > -1;
-      return isiPad || isiPhone || isAndroid;
+      return isiPhone || isAndroid;
     }
 
     $scope.isMobile = isMobile();
@@ -48,7 +49,6 @@ angular.module("app").controller("controller",
       }
     }
 
-    checkScreenSize();
     window.onresize = checkScreenSize();
 
     function getIndex() {
@@ -70,11 +70,34 @@ angular.module("app").controller("controller",
             $scope.loadIndexFailed = true;
           }
         }, function () {
-          $scope.loadIndexFailed = true;
+          $http.get("storage/index.json")
+            .then(function (response) {
+              var responseData = response.data;
+                $timeout(function () {
+                  $scope.loadingIndex = false;
+                  index = responseData;
+                  $scope.directoryStack = [index];
+                  $scope.currentDirectory = index;
+                  lessons = getLessonsFrom(index);
+                }, 1500);
+            }, function () {
+              $scope.loadIndexFailed = true;
+            });
+        });
+    }
+
+    function getRates() {
+      $http.get("controlCenter/getRates.php")
+        .then(function (response) {
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            $scope.rates = responseData["data"]["rates"];
+          }
         });
     }
 
     getIndex();
+    getRates();
 
     var index;
     var lessons;
@@ -125,7 +148,6 @@ angular.module("app").controller("controller",
         $mdDialog.show({
           controller: FilePreviewController,
           templateUrl: "views/file_preview.html",
-          parent: angular.element(document.body),
           targetEvent: e,
           locals: {
             file: file,
@@ -301,15 +323,16 @@ angular.module("app").controller("controller",
       }
       $http.post("controlCenter/getDownloadLink.php", data)
         .then(function (response) {
+          file.gettingDownloadLink = false;
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
-            file.gettingDownloadLink = false;
             window.location = responseData["data"]["downloadLink"];
           } else {
-            showToast(responseData["msg"]);
+            showToast(responseData["msg"], "bodyToastBounds", "error");
           }
         }, function () {
-          showToast("服务器无响应")
+          file.gettingDownloadLink = false;
+          showToast("无法连接到服务器", "bodyToastBounds", "error")
         });
     };
 
@@ -317,7 +340,6 @@ angular.module("app").controller("controller",
       $mdDialog.show({
         controller: LessonPreviewController,
         templateUrl: "views/lesson_preview.html",
-        parent: angular.element(document.body),
         targetEvent: e,
         locals: {
           lesson: lesson,
@@ -337,7 +359,6 @@ angular.module("app").controller("controller",
       $mdDialog.show({
         controller: UserCenterController,
         templateUrl: "views/user_center.html",
-        parent: angular.element(document.body),
         targetEvent: e,
         locals: {
           user: $scope.user,
@@ -347,8 +368,6 @@ angular.module("app").controller("controller",
         clickOutsideToClose: true
       }).then(function (user) {
         $scope.user = user
-      }, function () {
-        showToast("服务器无响应")
       });
     };
 
@@ -356,7 +375,6 @@ angular.module("app").controller("controller",
       $mdDialog.show({
         controller: UploadController,
         templateUrl: "views/contribute.html",
-        parent: angular.element(document.body),
         targetEvent: e,
         fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
@@ -367,7 +385,6 @@ angular.module("app").controller("controller",
       $mdDialog.show({
         controller: AboutController,
         templateUrl: "views/about.html",
-        parent: angular.element(document.body),
         targetEvent: e,
         fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
@@ -387,16 +404,16 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
         fileId: file.id.toString()
       })
       .then(function (response) {
+        $scope.gettingRate = false;
         var responseData = response.data;
         if (responseData["res_code"] === 0) {
           $scope.totalScore = responseData["data"]["total_score"];
-          $scope.gettingRate = false;
         } else {
-          showToast(responseData["msg"]);
+          showToast(responseData["msg"], "filePreviewToastBounds", "error");
         }
       }, function () {
-        showToast("服务器无响应");
         $scope.gettingRate = false;
+        showToast("无法连接到服务器", "filePreviewToastBounds", "error");
       });
   }
 
@@ -406,16 +423,16 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
         fileId: file.id.toString()
       })
       .then(function (response) {
+        $scope.gettingComment = false;
         var responseData = response.data;
         if (responseData["res_code"] === 0) {
           $scope.comments = responseData["data"]["comments"];
-          $scope.gettingComment = false;
         } else {
-          showToast(responseData["msg"]);
+          showToast(responseData["msg"], "filePreviewToastBounds", "error");
         }
       }, function () {
-        showToast("服务器无响应");
         $scope.gettingComment = false;
+        showToast("无法连接到服务器", "filePreviewToastBounds", "error");
       });
   }
 
@@ -433,14 +450,17 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
     }
     $http.post("controlCenter/getDownloadLink.php", data)
       .then(function (response) {
+        file.gettingDownloadLink = false;
         var responseData = response.data;
         if (responseData["res_code"] === 0) {
-          file.gettingDownloadLink = false;
           window.location = responseData["data"]["downloadLink"];
         } else {
-          showToast(responseData["msg"]);
+          showToast(responseData["msg"], "filePreviewToastBounds", "error");
         }
-      }, function () {showToast("服务器无响应")});
+      }, function () {
+        file.gettingDownloadLink = false;
+        showToast("无法连接到服务器", "filePreviewToastBounds", "error")
+      });
   };
 
   $scope.formatFileSize = function (file) {
@@ -464,7 +484,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
 
   $scope.rateFile = function (rate) {
     if (angular.isNumber(rate)) {
-      $scope.gettingRate = true;
+      showToast("正在提交评分", "filePreviewToastBounds", "success");
       $http.post("controlCenter/rateFile.php", {
           score: rate,
           fileId: file.id.toString(),
@@ -473,18 +493,20 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
         .then(function (response) {
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
-            $scope.rated = true;
-            getRate();
+            showToast(responseData["msg"], "filePreviewToastBounds", "success");
           } else {
-            showToast(responseData["msg"]);
+            showToast(responseData["msg"], "filePreviewToastBounds", "error");
           }
-        }, function () {showToast("服务器无响应")});
+          getRate();
+        }, function () {
+          showToast("无法连接到服务器", "filePreviewToastBounds", "error");
+        });
     }
   };
 
   $scope.sendComment = function () {
     if ($scope.comment) {
-      $scope.gettingComment = true;
+      showToast("正在提交评论", "filePreviewToastBounds", "success");
       $http.post("controlCenter/commentFile.php", {
           username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
           comment: $scope.comment,
@@ -495,10 +517,13 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
             getComment();
+            showToast(responseData["msg"], "filePreviewToastBounds", "success");
           } else {
-            showToast(responseData["msg"]);
+            showToast(responseData["msg"], "filePreviewToastBounds", "error");
           }
-        }, function () {showToast("服务器无响应")});
+        }, function () {
+          showToast("无法连接到服务器", "filePreviewToastBounds", "error")
+        });
     }
   };
 
@@ -524,20 +549,11 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
           $scope.comments = response.data.comments;
           $scope.gettingComment = false;
         } else {
-          showToast(responseData["msg"]);
+          showToast(responseData["msg"], "lessonPreviewToastBounds", "error");
         }
       }, function () {
-        // TODO: remove after release
-        $scope.comments = [{comment: "内容测试", username: "用户名测试"}, {comment: "内容测试", username: "用户名测试"}, {
-          comment: "内容测试",
-          username: "用户名测试"
-        }, {comment: "内容测试", username: "用户名测试"}, {comment: "内容测试", username: "用户名测试"}, {
-          comment: "内容测试",
-          username: "用户名测试"
-        }, {comment: "内容测试", username: "用户名测试"}];
         $scope.gettingComment = false;
-      }, function () {
-        showToast("服务器无响应")
+        showToast("无法连接到服务器", "lessonPreviewToastBounds", "error");
       });
   }
 
@@ -545,7 +561,7 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
 
   $scope.sendComment = function () {
     if ($scope.comment) {
-      $scope.gettingComment = true;
+      showToast("正在提交评论", "lessonPreviewToastBounds", "success");
       $http.post("controlCenter/commentLesson.php", {
           username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
           comment: $scope.comment,
@@ -557,10 +573,10 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
           if (responseData["res_code"] === 0) {
             getComment();
           } else {
-            showToast(responseData["msg"]);
+            showToast(responseData["msg"], "lessonPreviewToastBounds", "error");
           }
         }, function () {
-          showToast("服务器无响应")
+          showToast("无法连接到服务器", "lessonPreviewToastBounds", "error");
         });
     }
   };
@@ -574,9 +590,7 @@ function UserCenterController($scope, $mdDialog, $http, user, showToast) {
   $scope.user = user;
 
   $scope.keyLogIn = function (e) {
-    if (e.keyCode == 13) {
-      $scope.logIn();
-    }
+    if (e.keyCode == 13) $scope.logIn();
   };
 
   $scope.logIn = function () {
@@ -587,18 +601,19 @@ function UserCenterController($scope, $mdDialog, $http, user, showToast) {
         $scope.loggingIn = false;
         $scope.loginMsg = null;
         var responseData = response.data;
-        if (responseData["res_code"] == 0) {
+        if (responseData["res_code"] === 0) {
           user.token = responseData["data"]["token"];
           user.name = responseData["data"]["username"];
           user.cademy = responseData["data"]["cademy"];
           user.loggedIn = true;
           user.password = new Date().getTime().toString().substr(-user.password.length);
+          showToast("欢迎！"+user.cademy+"的"+user.name, "userCenterToastBounds", "success");
           saveToCookie(user);
         } else {
           $scope.loginMsg = responseData.msg;
         }
       }, function () {
-        showToast("服务器无响应")
+        showToast("无法连接到服务器", "userCenterToastBounds", "error");
       });
   };
 
@@ -615,7 +630,7 @@ function UserCenterController($scope, $mdDialog, $http, user, showToast) {
   };
 }
 
-function UploadController($scope, $mdDialog, $http, Upload) {
+function UploadController($scope, $mdDialog) {
   $scope.hide = function () {
     $mdDialog.hide();
   };
@@ -626,51 +641,6 @@ function UploadController($scope, $mdDialog, $http, Upload) {
 
   $scope.answer = function (answer) {
     $mdDialog.hide(answer);
-  };
-
-  $scope.submitNewFileLink = function () {
-    if ($scope.link) {
-      $scope.submitting = true;
-      $scope.submitStatus = "正在提交...";
-      $http.post("controlCenter/share.php", $scope.link)
-        .then(function () {
-          $scope.submitting = false;
-          $scope.submitStatus = "提交成功，感谢分享！";
-        }, function () {
-          showToast("服务器无响应")
-        });
-    }
-  };
-
-  $scope.uploadFiles = function (file, errFiles) {
-    $scope.f = file;
-    $scope.errFile = errFiles && errFiles[0];
-    if (file) {
-      $http.get("controlCenter/getUploadLink.php")
-        .then(function (response) {
-          var uploadUrl = response.data["uploadLink"];
-          file.upload = Upload.upload({
-            url: uploadUrl,
-            wire: file,
-            method: 'PUT'
-          });
-
-          file.upload.then(function (response) {
-            $timeout(function () {
-              file.result = response.data;
-            });
-          }, function (response) {
-            if (response.status > 0) {
-              $scope.errorMsg = response.status + ': ' + response.data;
-            }
-          }, function (evt) {
-            file.progress = Math.min(100, parseInt(100.0 *
-              evt.loaded / evt.total));
-          });
-        }, function () {
-          showToast("服务器无响应")
-        });
-    }
   };
 }
 

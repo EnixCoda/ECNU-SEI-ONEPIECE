@@ -11,7 +11,7 @@
   <link href="//fonts.lug.ustc.edu.cn/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body ng-cloak ng-app="app" ng-controller="controller" layout="row" layout-align="center">
-<md-content class="md-whiteframe-4dp" flex-gt-xs="60" layout="column">
+<md-content class="md-whiteframe-4dp" flex-gt-xs="60" layout="column" id="bodyToastBounds">
   <div ng-if="loadingIndex" flex layout="row" layout-align="center center" layout-padding>
     <md-progress-circular ng-if="!loadIndexFailed" md-mode="indeterminate" md-diameter="40"></md-progress-circular>
     <div>
@@ -129,6 +129,7 @@
             </div>
           </div>
           <div flex></div>
+          <div>{{rates[content.id]&&!isNanoScreen?rates[content.id]:""}}</div>
           <md-button ng-if="!content.isDir" class="md-icon-button"
                      ng-click="download(content)"
                      layout

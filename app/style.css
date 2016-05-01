@@ -67,7 +67,7 @@ body, input, textarea {
 }
 
 .background-transparent {
-    background-color: rgba(0,0,0,0) !important;
+    background-color: rgba(0, 0, 0, 0) !important;
 }
 
 .protect-overflow {
@@ -127,8 +127,8 @@ md-progress-circular.color-white path {
     margin-left: 4px;
 }
 
-body md-content{
-    max-width:1000px !important;
+body md-content {
+    max-width: 1024px !important;
 }
 
 .color-grey {
@@ -179,4 +179,24 @@ md-autocomplete {
 
 .nano-padding ._md-subheader-inner {
     padding: 4px;
+}
+
+md-input-container:not(.md-input-invalid) > md-icon {
+    color: dodgerblue;
+}
+
+md-input-container.md-input-invalid > md-icon {
+    color: #f44336;
+}
+
+md-toast.md-success-toast-theme .md-toast-content {
+    background-color: #4caf50;
+}
+
+md-toast.md-error-toast-theme .md-toast-content {
+    background-color: #f44336;
+}
+
+md-toast.md-warning-toast-theme .md-toast-content {
+    background-color: #e91e63;
 }

@@ -1,4 +1,4 @@
-<md-dialog md-dynamic-width>
+<md-dialog>
   <md-toolbar>
     <div class="md-toolbar-tools">
       <h2>上传你的优质资料</h2>
@@ -9,18 +9,8 @@
     </div>
   </md-toolbar>
   <md-dialog-content>
-    <md-content layout-padding>
-      <md-button ng-disabled="true" type="file" ngf-select="uploadFiles($file, $invalidFiles)"
-                 accept="image/*" ngf-max-height="1000" ngf-max-size="1MB">
-        Select File
-      </md-button>
-
-      <div>{{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
-      <span class="progress" ng-show="f.progress >= 0">
-          <div style="width:{{f.progress}}%"
-               ng-bind="f.progress + '%'"></div>
-      </span>
-      </div>
+    <md-content layout-padding id="uploadControllerToastBounds">
+      功能调试中...
     </md-content>
   </md-dialog-content>
 </md-dialog>
