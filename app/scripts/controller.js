@@ -61,7 +61,7 @@ angular.module("app").controller("controller",
           if (responseData["res_code"] === 0) {
             $timeout(function () {
               $scope.loadingIndex = false;
-              index = responseData.data["index"];
+              index = responseData["data"]["index"];
               $scope.directoryStack = [index];
               $scope.currentDirectory = index;
               lessons = getLessonsFrom(index);
@@ -544,10 +544,10 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
         lessonName: lesson.name
       })
       .then(function (response) {
+        $scope.gettingComment = false;
         var responseData = response.data;
         if (responseData["res_code"] === 0) {
-          $scope.comments = response.data.comments;
-          $scope.gettingComment = false;
+          $scope.comments = responseData["data"]["comments"];
         } else {
           showToast(responseData["msg"], "lessonPreviewToastBounds", "error");
         }
