@@ -84,10 +84,7 @@ body, input, textarea {
 }
 
 md-dialog {
-    min-width: 400px;
-}
-
-.about-dialog {
+    min-width: 480px;
     max-width: 600px;
 }
 

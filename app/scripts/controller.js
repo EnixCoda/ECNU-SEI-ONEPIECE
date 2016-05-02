@@ -413,7 +413,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
         }
       }, function () {
         $scope.gettingRate = false;
-        showToast("无法连接到服务器", "filePreviewToastBounds", "error");
+        showToast("无法获取评分", "filePreviewToastBounds", "error");
       });
   }
 
@@ -432,7 +432,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
         }
       }, function () {
         $scope.gettingComment = false;
-        showToast("无法连接到服务器", "filePreviewToastBounds", "error");
+        showToast("无法获取评论", "filePreviewToastBounds", "error");
       });
   }
 
@@ -553,7 +553,7 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
         }
       }, function () {
         $scope.gettingComment = false;
-        showToast("无法连接到服务器", "lessonPreviewToastBounds", "error");
+        showToast("无法获取评论", "lessonPreviewToastBounds", "error");
       });
   }
 
@@ -572,6 +572,7 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
             getComment();
+            showToast(responseData["msg"], "lessonPreviewToastBounds", "success");
           } else {
             showToast(responseData["msg"], "lessonPreviewToastBounds", "error");
           }
