@@ -256,6 +256,7 @@ angular.module("app").controller("controller",
             return "attach_file";
         }
       }
+      return "attach_file";
     };
 
     $scope.formatFileSize = function (file) {
