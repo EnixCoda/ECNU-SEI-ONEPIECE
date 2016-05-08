@@ -143,7 +143,7 @@ angular.module("app").controller("controller",
       return false;
     }
 
-    var disableGoTo = false; // prevent error which occurs folder double clicked
+    var disableGoTo = false; // prevent error which occurs when folder double clicked
     $scope.goTo = function (target, e) {
       function showFileDetail(file, e) {
         $mdDialog.show({
@@ -389,6 +389,10 @@ angular.module("app").controller("controller",
         targetEvent: e,
         fullscreen: $mdMedia('xs'),
         clickOutsideToClose: false,
+        locals: {
+          user: $scope.user,
+          showUserCenter: $scope.showUserCenter
+        },
         onComplete: function (uploadControllerScope) {
           var QUploader;
           QUploader = Qiniu.uploader({
@@ -419,6 +423,7 @@ angular.module("app").controller("controller",
               },
               'FileUploaded': function (up, file, info) {
                 up.removeFile(file);
+                // TODO: 将上传记录提交到数据库(user, username, fileId)
                 uploadControllerScope.uploadedFiles.push(file);
                 uploadControllerScope.uploadingCount--;
                 uploadControllerScope.$apply();
@@ -433,7 +438,7 @@ angular.module("app").controller("controller",
               },
               'Key': function (up, file) {
                 var key = file.name;
-                return key
+                return key;
               }
             }
           });
@@ -453,6 +458,7 @@ angular.module("app").controller("controller",
     };
   });
 
+// ----- other controllers start -----
 function FilePreviewController($scope, $mdDialog, $http, file, user, path, showUserCenter, showToast) {
   $scope.file = file;
   $scope.user = user;
@@ -701,13 +707,18 @@ function UserCenterController($scope, $mdDialog, $http, user, showToast) {
   };
 }
 
-function UploadController($scope, $mdDialog) {
+function UploadController($scope, $mdDialog, user, showUserCenter) {
 
+  $scope.user = user;
+  $scope.showUserCenter = showUserCenter;
+  
   $scope.uploadingCount = 0;
 
   $scope.uploadedFiles = [];
 
   $scope.startUpload = function () {
+    // TODO: 保存用户信息
+    // TODO: 禁用按钮
     $scope.QUploader.start();
   };
 
@@ -778,6 +789,8 @@ function AboutController($scope, $mdDialog) {
     //},
   ];
 }
+// ----- other controllers end -----
+
 
 // ----- cookie code start -----
 function setCookie(cookieName, cookieValue, expires) {
@@ -786,7 +799,7 @@ function setCookie(cookieName, cookieValue, expires) {
 
 function clearCookie() {
   var OneMonthAgo = new Date();
-  OneMonthAgo.setMonth(OneMonthAgo.getMonth - 1);
+  OneMonthAgo.setMonth(OneMonthAgo.getMonth() - 1);
   var expire_s = OneMonthAgo.toGMTString();
   setCookie("stuId", "", expire_s);
   setCookie("token", "", expire_s);

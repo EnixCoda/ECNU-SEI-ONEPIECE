@@ -10,52 +10,67 @@
   </md-toolbar>
   <md-dialog-content>
     <md-content layout-padding>
-      <div layout layout-align="end center">
-        <md-button class="md-fab md-primary" id="pickfiles">
-          <md-icon class="material-icons">add</md-icon>
-          <md-tooltip md-direction="left">添加文件</md-tooltip>
-        </md-button>
+      <div ng-show="!user.loggedIn">
+        使用校内数据库账户登录后即可上传文件。
+        <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
       </div>
-      <md-list class="no-padding-top">
-        <md-subheader class="md-no-sticky">
-          文件列表
-        </md-subheader>
-        <md-divider></md-divider>
-        <md-list-item ng-show="QUploader.files.length === 0 && uploadedFiles.length === 0">
-          什么都没有
-        </md-list-item>
-        <md-list-item ng-repeat="file in uploadedFiles" layout="column" layout-align="center">
+      <div ng-show="user.loggedIn">
+        <div layout layout-align="end center">
+          <md-button class="md-fab md-primary" id="pickfiles">
+            <md-icon class="material-icons">add</md-icon>
+            <md-tooltip md-direction="left">添加文件</md-tooltip>
+          </md-button>
+        </div>
+        <md-list class="no-padding-top">
+          <md-subheader class="md-no-sticky">
+            文件列表
+          </md-subheader>
+          <md-divider></md-divider>
+          <md-list-item ng-show="QUploader.files.length === 0 && uploadedFiles.length === 0">
+            什么都没有
+          </md-list-item>
+          <md-list-item ng-repeat="file in uploadedFiles" layout="column" layout-align="center">
             <div layout layout-align="space-between center">
               <div>{{file.name}}</div>
               <div>完成</div>
             </div>
-          <md-divider></md-divider>
-        </md-list-item>
-        <md-list-item ng-repeat="file in QUploader.files" layout="column" layout-align="center">
-          <div layout>
-            <div flex layout="column" layout-align="space-around">
-              <div layout layout-align="start center">
-                <div>{{file.name}}</div>
+            <md-divider></md-divider>
+          </md-list-item>
+          <md-list-item ng-repeat="file in QUploader.files" layout="column" layout-align="center">
+            <div layout>
+              <div flex layout="column" layout-align="space-around">
+                <div layout layout-align="start center">
+                  <div>{{file.name}}</div>
+                </div>
+                <div layout layout-align="start center">
+                  <md-progress-linear flex md-mode="determinate" value="{{file.percent}}"></md-progress-linear>
+                  <div class="left-offset-10">{{file.percent}}%</div>
+                </div>
               </div>
-              <div layout layout-align="start center">
-                <md-progress-linear flex md-mode="determinate" value="{{file.percent}}"></md-progress-linear>
-                <div class="left-offset-10">{{file.percent}}%</div>
+              <div layout layout-align="center center">
+                <md-button class="md-fab md-mini no-margin-right background-white"
+                           ng-class="uploadingCount>0?'md-warn':''"
+                           ng-click="cancel(file)" aria-label="cancel upload">
+                  <md-icon class="material-icons color-primary">close</md-icon>
+                </md-button>
               </div>
             </div>
-            <div layout layout-align="center center">
-              <md-button class="md-fab md-mini no-margin-right background-white"
-                         ng-class="uploadingCount>0?'md-warn':''"
-                         ng-click="cancel(file)" aria-label="cancel upload">
-                <md-icon class="material-icons color-primary">close</md-icon>
-              </md-button>
-            </div>
+            <md-divider></md-divider>
+          </md-list-item>
+        </md-list>
+        <div layout layout-align="space-between center">
+          <div layout layout-align="start center">
+            <md-checkbox class="no-margin" ng-model="anonymous">
+              匿名
+            </md-checkbox>
+            <md-input-container flex-xs class="no-margin" ng-show="!anonymous">
+              <label for="username">留个昵称</label>
+              <input type="text" id="username" ng-model="username" placeholder="{{user.name}}">
+            </md-input-container>
           </div>
-          <md-divider></md-divider>
-        </md-list-item>
-      </md-list>
-      <div layout layout-align="end center">
-        <md-button class="md-raised md-primary" ng-show="QUploader.files.length>0" ng-click="startUpload()">开始上传
-        </md-button>
+          <md-button class="md-raised md-primary" ng-show="QUploader.files.length>0" ng-click="startUpload()">开始上传
+          </md-button>
+        </div>
       </div>
     </md-content>
   </md-dialog-content>
