@@ -3,8 +3,7 @@
  */
 
 angular.module('app', [
-    'ngMaterial',
-    'ngFileUpload'
+    'ngMaterial'
   ])
   .config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('error-toast');

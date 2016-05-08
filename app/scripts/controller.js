@@ -2,6 +2,8 @@
  * Created by Exin on 2016/3/2.
  */
 
+var QUploader;
+
 angular.module("app").controller("controller",
   function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia, $mdToast, $document) {
 
@@ -10,7 +12,7 @@ angular.module("app").controller("controller",
         $mdToast.simple()
           .textContent(text)
           .position("top right")
-          .parent($document[0].querySelector(parentId?'#' + parentId:''))
+          .parent($document[0].querySelector(parentId ? '#' + parentId : ''))
           .theme(type + "-toast")
           .hideDelay(1500)
       );
@@ -73,13 +75,13 @@ angular.module("app").controller("controller",
           $http.get("storage/index.json")
             .then(function (response) {
               var responseData = response.data;
-                $timeout(function () {
-                  $scope.loadingIndex = false;
-                  index = responseData;
-                  $scope.directoryStack = [index];
-                  $scope.currentDirectory = index;
-                  lessons = getLessonsFrom(index);
-                }, 1500);
+              $timeout(function () {
+                $scope.loadingIndex = false;
+                index = responseData;
+                $scope.directoryStack = [index];
+                $scope.currentDirectory = index;
+                lessons = getLessonsFrom(index);
+              }, 1500);
             }, function () {
               $scope.loadIndexFailed = true;
             });
@@ -151,6 +153,7 @@ angular.module("app").controller("controller",
           targetEvent: e,
           locals: {
             file: file,
+            path: $scope.directoryStack,
             user: $scope.user,
             showUserCenter: $scope.showUserCenter,
             showToast: showToast
@@ -312,12 +315,16 @@ angular.module("app").controller("controller",
       }
     };
 
-
     $scope.download = function (file) {
       if (file.gettingDownloadLink) return;
       file.gettingDownloadLink = true;
       var data = {
-        fileId: file.id.toString()
+        fileId: file.id.toString(),
+        filename: file.name.toString(),
+        path: $scope.directoryStack.map(
+          function (curDir, index) {
+            if (index > 0) return curDir.name;
+          }).join("/") + "/"
       };
       if ($scope.user.loggedIn) {
         data.token = $scope.user.token;
@@ -327,9 +334,12 @@ angular.module("app").controller("controller",
           file.gettingDownloadLink = false;
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
-            window.location = responseData["data"]["downloadLink"];
+            var win = window.open(responseData["data"]["downloadLink"], "_blank");
           } else {
             showToast(responseData["msg"], "bodyToastBounds", "error");
+          }
+          if (win == undefined) {
+            showToast("下载窗口被拦截，请关闭对本站弹出窗口的阻拦。", "bodyToastBounds", "warning");
           }
         }, function () {
           file.gettingDownloadLink = false;
@@ -378,7 +388,97 @@ angular.module("app").controller("controller",
         templateUrl: "views/contribute.html",
         targetEvent: e,
         fullscreen: $mdMedia('xs'),
-        clickOutsideToClose: true
+        clickOutsideToClose: true,
+        onComplete: function () {
+          QUploader = Qiniu.uploader({
+            runtimes: 'html5,flash,html4',
+            browse_button: 'pickfiles',
+            // uptoken 是上传凭证，由其他程序生成
+            uptoken_url: 'controlCenter/genToken.php',
+            uptoken_func: function (file) {
+              function createAjax() {
+                var xmlhttp = {};
+                if (window.XMLHttpRequest) {
+                  xmlhttp = new XMLHttpRequest();
+                } else {
+                  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                return xmlhttp;
+              }
+
+              var ajax = createAjax();
+              ajax.open('GET', "genToken.php" + "?key=" + file.name, false);
+              ajax.setRequestHeader("If-Modified-Since", "0");
+              ajax.onreadystatechange = function () {
+                if (ajax.readyState === 4 && ajax.status === 200) {
+                  var res = JSON.parse(ajax.responseText);
+                  return res.uptoken;
+                }
+              };
+              ajax.send();
+              // if (ajax.status === 200) {
+              //   var uptoken = ajax.responseText;
+              //   console.log("get new uptoken: ", uptoken);
+              //   return uptoken;
+              // } else {
+              //   console.error("get uptoken error: ", ajax.responseText);
+              //   return "";
+              // }
+              return ajax.onreadystatechange();
+            },
+            get_new_uptoken: true,             // 设置上传文件的时候是否每次都重新获取新的 uptoken
+            // downtoken_url: '/downtoken',
+            // Ajax请求downToken的Url，私有空间时使用,JS-SDK 将向该地址POST文件的key和domain,服务端返回的JSON必须包含`url`字段，`url`值为该文件的下载地址
+            domain: '7xt1vj.com1.z0.glb.clouddn.com',          // bucket 域名，下载资源时用到，**必需**
+            container: document.getElementById('uploadControllerToastBounds'),             // 上传区域 DOM ID，默认是 browser_button 的父元素，
+            max_file_size: '100mb',             // 最大文件体积限制
+            flash_swf_url: 'Moxie.swf',         //引入 flash,相对路径
+            max_retries: 3,                     // 上传失败最大重试次数
+            chunk_size: '4mb',                  // 分块上传时，每块的体积
+            // auto_start: true,                   // 选择文件后自动上传，若关闭需要自己绑定事件触发上传
+            init: {
+              'FilesAdded': function (up, files) {
+                plupload.each(files, function (file) {
+                  // 文件添加进队列后,处理相关的事情
+                });
+              },
+              'BeforeUpload': function (up, file) {
+                // 每个文件上传前,处理相关的事情
+              },
+              'UploadProgress': function (up, file) {
+                // 每个文件上传时,处理相关的事情
+              },
+              'FileUploaded': function (up, file, info) {
+                // 每个文件上传成功后,处理相关的事情
+                // 其中 info 是文件上传成功后，服务端返回的json，形式如
+                // {
+                //    "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
+                //    "key": "gogopher.jpg"
+                //  }
+                // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
+
+                // var domain = up.getOption('domain');
+                // var res = parseJSON(info);
+                // var sourceLink = domain + res.key; 获取上传成功后的文件的Url
+              },
+              'Error': function (up, err, errTip) {
+                //上传出错时,处理相关的事情
+              },
+              'UploadComplete': function () {
+                //队列文件处理完毕后,处理相关的事情
+              },
+              'Key': function (up, file) {
+                // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
+                // 该配置必须要在 unique_names: false , save_key: false 时才生效
+
+                var key = file.name;
+                // do something with key here
+                return key
+              }
+            }
+          });
+
+        }
       });
     };
 
@@ -393,7 +493,7 @@ angular.module("app").controller("controller",
     };
   });
 
-function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCenter, showToast) {
+function FilePreviewController($scope, $mdDialog, $http, file, user, path, showUserCenter, showToast) {
   $scope.file = file;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
@@ -444,7 +544,12 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
     if (file.gettingDownloadLink) return;
     file.gettingDownloadLink = true;
     var data = {
-      fileId: file.id.toString()
+      fileId: file.id.toString(),
+      filename: file.name.toString(),
+      path: path.map(
+        function (curDir, index) {
+          if (index > 0)return curDir.name;
+        }).join("/") + "/"
     };
     if ($scope.user.loggedIn) {
       data.token = $scope.user.token;
@@ -454,9 +559,12 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
         file.gettingDownloadLink = false;
         var responseData = response.data;
         if (responseData["res_code"] === 0) {
-          window.location = responseData["data"]["downloadLink"];
+          var win = window.open(responseData["data"]["downloadLink"], "_blank");
         } else {
           showToast(responseData["msg"], "filePreviewToastBounds", "error");
+        }
+        if (win == undefined) {
+          showToast("下载窗口被拦截，请关闭对本站弹出窗口的阻拦。", "bodyToastBounds", "warning");
         }
       }, function () {
         file.gettingDownloadLink = false;
@@ -589,6 +697,7 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
 }
 
 function UserCenterController($scope, $mdDialog, $http, user, showToast) {
+
   $scope.user = user;
 
   $scope.keyLogIn = function (e) {
@@ -609,7 +718,7 @@ function UserCenterController($scope, $mdDialog, $http, user, showToast) {
           user.cademy = responseData["data"]["cademy"];
           user.loggedIn = true;
           user.password = new Date().getTime().toString().substr(-user.password.length);
-          showToast("欢迎！"+user.cademy+"的"+user.name, "userCenterToastBounds", "success");
+          showToast("欢迎！" + user.cademy + "的" + user.name, "userCenterToastBounds", "success");
           saveToCookie(user);
         } else {
           $scope.loginMsg = responseData.msg;
@@ -633,6 +742,11 @@ function UserCenterController($scope, $mdDialog, $http, user, showToast) {
 }
 
 function UploadController($scope, $mdDialog) {
+
+  $scope.startUpload = function () {
+    QUploader.start();
+  };
+
   $scope.hide = function () {
     $mdDialog.hide();
   };
@@ -644,6 +758,7 @@ function UploadController($scope, $mdDialog) {
   $scope.answer = function (answer) {
     $mdDialog.hide(answer);
   };
+
 }
 
 function AboutController($scope, $mdDialog) {

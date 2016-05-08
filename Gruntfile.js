@@ -30,10 +30,14 @@ module.exports = function (grunt) {
         src:  ['app/scripts/*.js'],
         dest: 'dist/scripts.js'
       },
-      angularUpload: {
-        src: ['bower_components/ng-file-upload/ng-file-upload.min.js'],
-        dest: 'dist/ng-file-upload.min.js'
-      }
+      qiniuUpload: {
+        src: ['app/deps/*.min.js'],
+        dest: 'dist/qiniuUpload.min.js'
+      },
+      // angularUpload: {
+      //   src: ['bower_components/ng-file-upload/ng-file-upload.min.js'],
+      //   dest: 'dist/ng-file-upload.min.js'
+      // }
       //css: {
       //  src: ['app/style.css'],
       //  dest: 'dist/style.css'
@@ -169,12 +173,28 @@ module.exports = function (grunt) {
           }
         ]
       },
-      angularUpload: {
+      // angularUpload: {
+      //   options: {
+      //     patterns: [
+      //       {
+      //         match: /<script src="\.\.\/bower_components\/ng-file-upload\/ng-file-upload\.js">/g,
+      //         replacement: '<script src="ng-file-upload.min.js">'
+      //       }
+      //     ]
+      //   },
+      //   files: [
+      //     {
+      //       src: ['dist/index.html'],
+      //       dest: './'
+      //     }
+      //   ]
+      // },
+      qiniuUpload: {
         options: {
           patterns: [
             {
-              match: /<script src="\.\.\/bower_components\/ng-file-upload\/ng-file-upload\.js">/g,
-              replacement: '<script src="ng-file-upload.min.js">'
+              match: /<script src="deps\/moxie.js"><\/script><script src="deps\/plupload.dev.js"><\/script><script src="deps\/qiniu.js">/g,
+              replacement: '<script src="qiniuUpload.min.js"></script>'
             }
           ]
         },
