@@ -15,7 +15,7 @@ md-input-container .md-errors-spacer {
 }
 
 body, input, textarea {
-    font-family: "黑体";
+    font-family: Roboto, "黑体";
 }
 
 .left-offset-10 {
@@ -48,6 +48,10 @@ body, input, textarea {
 
 .no-margin-left {
     margin-left: 0;
+}
+
+.no-margin-right {
+    margin-right: 0;
 }
 
 .color-white {
