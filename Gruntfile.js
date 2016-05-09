@@ -34,6 +34,10 @@ module.exports = function (grunt) {
         src: ['app/deps/*.min.js'],
         dest: 'dist/qiniuUpload.min.js'
       },
+      qiniuMap: {
+        src: ['app/deps/qiniu.min.map'],
+        dest: 'dist/qiniu.min.map'
+      }
       // angularUpload: {
       //   src: ['bower_components/ng-file-upload/ng-file-upload.min.js'],
       //   dest: 'dist/ng-file-upload.min.js'
