@@ -92,6 +92,10 @@ md-dialog {
     max-width: 600px;
 }
 
+.upload-dialog {
+    min-width: 600px;
+}
+
 .top-banner {
     min-height: 60px;
 }
@@ -200,4 +204,12 @@ md-toast.md-error-toast-theme .md-toast-content {
 
 md-toast.md-warning-toast-theme .md-toast-content {
     background-color: #e91e63;
+}
+
+.locator-input-container {
+    margin: 6px 0;
+}
+
+.upload-footer {
+    margin-top: 20px;
 }

@@ -60,13 +60,11 @@ angular.module("app").controller("controller",
         .then(function (response) {
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
-            $timeout(function () {
-              $scope.loadingIndex = false;
-              index = responseData["data"]["index"];
-              $scope.directoryStack = [index];
-              $scope.currentDirectory = index;
-              lessons = getLessonsFrom(index);
-            }, 1500);
+            $scope.loadingIndex = false;
+            index = responseData["data"]["index"];
+            $scope.directoryStack = [index];
+            $scope.currentDirectory = index;
+            lessons = getLessonsFrom(index);
           } else {
             $scope.loadIndexFailed = true;
           }
@@ -391,11 +389,11 @@ angular.module("app").controller("controller",
         clickOutsideToClose: false,
         locals: {
           user: $scope.user,
-          showUserCenter: $scope.showUserCenter
+          showUserCenter: $scope.showUserCenter,
+          path: $scope.directoryStack
         },
         onComplete: function (uploadControllerScope) {
-          var QUploader;
-          QUploader = Qiniu.uploader({
+          var QUploader = Qiniu.uploader({
             runtimes: 'html5',
             browse_button: 'pickfiles',
             uptoken_url: 'controlCenter/genToken.php',
@@ -437,7 +435,11 @@ angular.module("app").controller("controller",
               'UploadComplete': function () {
               },
               'Key': function (up, file) {
-                var key = file.name;
+                var key = uploadControllerScope.path.slice(1).map(
+                    function (curDir) {
+                      return curDir.name;
+                    }
+                  ).join("/") + "/" + file.name;
                 return key;
               }
             }
@@ -707,11 +709,57 @@ function UserCenterController($scope, $mdDialog, $http, user, showToast) {
   };
 }
 
-function UploadController($scope, $mdDialog, user, showUserCenter) {
+function UploadController($scope, $mdDialog, user, showUserCenter, path) {
 
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
-  
+  $scope.path = path;
+
+  $scope.nextDir = undefined;
+  $scope.newDirName = "";
+  $scope.namingDirDepth = 0;
+
+  $scope.cutTail = function (depth) {
+    while(path.length > depth + 1) {
+      path.pop();
+    }
+  };
+
+  $scope.createDir = function (depth) {
+    while(path.length > depth) {
+      path.pop();
+    }
+    $scope.namingDirDepth = depth;
+  };
+
+  $scope.namingDirKeyPress = function (e) {
+    if (e.keyCode == 13 && $scope.newDirName) {
+      $scope.saveDir($scope.newDirName);
+    }
+  };
+
+  $scope.pushNext = function () {
+    if ($scope.nextDir) {
+      $scope.path.push($scope.nextDir);
+    }
+  };
+
+  $scope.saveDir = function (name) {
+    var newDir = {
+      name: name,
+      content: [],
+      isDir: true
+    };
+    if ($scope.path[$scope.path.length - 1] === 0) {
+      $scope.path.pop();
+    }
+    $scope.path[$scope.path.length - 1].content.push(newDir);
+    $scope.path.push(newDir);
+    $scope.namingDirDepth = 0;
+    $scope.newDirName = "";
+    $scope.nextDir = undefined;
+  };
+
   $scope.uploadingCount = 0;
 
   $scope.uploadedFiles = [];

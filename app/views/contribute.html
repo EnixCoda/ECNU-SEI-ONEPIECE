@@ -1,4 +1,4 @@
-<md-dialog>
+<md-dialog class="upload-dialog">
   <md-toolbar id="uploadControllerToastBounds">
     <div class="md-toolbar-tools">
       <h2>上传你的优质资料</h2>
@@ -15,11 +15,45 @@
         <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
       </div>
       <div ng-show="user.loggedIn">
-        <div layout layout-align="end center">
-          <md-button class="md-fab md-primary" id="pickfiles">
-            <md-icon class="material-icons">add</md-icon>
-            <md-tooltip md-direction="left">添加文件</md-tooltip>
-          </md-button>
+        <div layout layout-align="space-between center">
+          <div>
+            <md-input-container class="locator-input-container" ng-repeat="dir in path track by $index"
+                                >
+              <md-select aria-label="locator" ng-if="$index === 0" ng-model="dir">
+                <md-option ng-value="dir">{{dir.name}}</md-option>
+              </md-select>
+              <md-select aria-label="locator" ng-if="$index > 0" ng-model="path[$index]" ng-change="cutTail($index)">
+                <md-option ng-repeat="content in path[$index - 1].content" ng-if="content.isDir" ng-value="content">
+                  {{content.name}}
+                </md-option>
+                <md-option ng-if="$index > 1" ng-click="createDir($index)" ng-value="0">
+                  新建文件夹
+                </md-option>
+              </md-select>
+            </md-input-container>
+            <md-input-container class="locator-input-container" ng-show="!namingDirDepth" aria-label="locator">
+              <md-select aria-label="locator" ng-model="nextDir" ng-change="pushNext()">
+                <md-option ng-repeat="item in path[path.length - 1].content" ng-if="item.isDir" ng-value="item">
+                  {{item.name}}
+                </md-option>
+                <md-option ng-if="path.length > 1" ng-click="createDir(path.length + 1)" ng-value="0">
+                  新建文件夹
+                </md-option>
+              </md-select>
+            </md-input-container>
+            <md-input-container class="locator-input-container" ng-show="namingDirDepth" aria-label="locator">
+              <label>
+                新文件夹名
+              </label>
+              <input ng-keypress="namingDirKeyPress($event)" ng-model="newDirName">
+            </md-input-container>
+          </div>
+          <div>
+            <md-button class="md-fab md-primary" id="pickfiles">
+              <md-icon class="material-icons">add</md-icon>
+              <md-tooltip md-direction="bottom">添加文件</md-tooltip>
+            </md-button>
+          </div>
         </div>
         <md-list class="no-padding-top">
           <md-subheader class="md-no-sticky">
@@ -58,7 +92,7 @@
             <md-divider></md-divider>
           </md-list-item>
         </md-list>
-        <div layout layout-align="space-between center">
+        <div ng-show="QUploader.files.length>0" class="upload-footer" layout layout-align="space-between center">
           <div layout layout-align="start center">
             <md-checkbox class="no-margin" ng-model="anonymous">
               匿名
@@ -68,7 +102,7 @@
               <input type="text" id="username" ng-model="username" placeholder="{{user.name}}">
             </md-input-container>
           </div>
-          <md-button class="md-raised md-primary" ng-show="QUploader.files.length>0" ng-click="startUpload()">开始上传
+          <md-button class="md-raised md-primary" ng-click="startUpload()">开始上传
           </md-button>
         </div>
       </div>

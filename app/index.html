@@ -120,7 +120,7 @@
           </span>
         </md-subheader>
         <md-divider></md-divider>
-        <md-list-item ng-repeat="content in currentDirectory.content" ng-click="goTo(content, $event)">
+        <md-list-item ng-repeat="content in directoryStack[directoryStack.length - 1].content" ng-click="goTo(content, $event)">
           <div layout layout-align="start center">
             <md-icon class="material-icons" ng-style="getFileColor(content)">
               {{content.isDir?"folder":getFileIcon(content)}}
