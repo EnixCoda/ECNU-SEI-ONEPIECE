@@ -10,12 +10,20 @@
   </md-toolbar>
   <md-dialog-content>
     <md-content layout-padding>
+      <div>
+        * 上传前请仔细阅读根目录的管理规则。<br>
+        * 请遵照管理规则确定你要上传的资料的名称、位置。<br>
+        * 请确认你要上传的是本站没有的高质量资料，或质量远高于本站已有的资料。<br>
+        * 每个文件大小限制为200MB。<br>
+      </div>
+      <md-divider></md-divider>
       <div ng-show="!user.loggedIn">
         使用校内数据库账户登录后即可上传文件。
         <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
       </div>
       <div ng-show="user.loggedIn">
-        <div layout layout-align="space-between center">
+        <div layout layout-align="start center">
+          <div>目标上传位置：</div>
           <div>
             <md-input-container class="locator-input-container" ng-repeat="dir in path track by $index"
                                 >
@@ -48,6 +56,7 @@
               <input ng-keypress="namingDirKeyPress($event)" ng-model="newDirName">
             </md-input-container>
           </div>
+          <div flex></div>
           <div>
             <md-button class="md-fab md-primary" id="pickfiles">
               <md-icon class="material-icons">add</md-icon>
