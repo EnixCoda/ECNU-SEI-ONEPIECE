@@ -13,7 +13,7 @@ angular.module("app").controller("controller",
           .position("top right")
           .parent($document[0].querySelector(parentId ? '#' + parentId : ''))
           .theme(type + "-toast")
-          .hideDelay(stayLong ? 2500 : 1500)
+          .hideDelay(stayLong ? 4500 : 1500)
       );
     }
 
@@ -390,7 +390,8 @@ angular.module("app").controller("controller",
         locals: {
           user: $scope.user,
           showUserCenter: $scope.showUserCenter,
-          path: $scope.directoryStack
+          path: $scope.directoryStack,
+          showToast: showToast
         },
         onComplete: function (uploadControllerScope) {
           var QUploader = Qiniu.uploader({
@@ -430,13 +431,15 @@ angular.module("app").controller("controller",
                 $http.post("controlCenter/contribute.php", data)
                   .then(function (response) {}, function () {});
                 up.removeFile(file);
-                uploadControllerScope.uploadedFiles.push(file);
+                file.success = true;
+                uploadControllerScope.doneFiles.push(file);
                 uploadControllerScope.uploadingCount--;
                 uploadControllerScope.$apply();
               },
               'Error': function (up, err, errTip) {
                 showToast("上传失败! " + err.file.name + ": " + errTip, "uploadControllerToastBounds", "error", true);
                 up.removeFile(err.file);
+                uploadControllerScope.doneFiles.push(err.file);
                 uploadControllerScope.uploadingCount--;
                 uploadControllerScope.$apply();
               },
@@ -718,7 +721,7 @@ function UserCenterController($scope, $mdDialog, $http, user, showToast) {
   };
 }
 
-function UploadController($scope, $mdDialog, user, showUserCenter, path) {
+function UploadController($scope, $mdDialog, user, showUserCenter, path, showToast) {
 
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
@@ -727,6 +730,9 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path) {
   $scope.nextDir = undefined;
   $scope.newDirName = "";
   $scope.namingDirDepth = 0;
+  $scope.uploadingCount = 0;
+
+  $scope.doneFiles = [];
 
   $scope.cutTail = function (depth) {
     while (path.length > depth + 1) {
@@ -769,20 +775,19 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path) {
     $scope.nextDir = undefined;
   };
 
-  $scope.uploadingCount = 0;
-
-  $scope.uploadedFiles = [];
-
   $scope.startUpload = function () {
-    // TODO: 保存用户信息
-    // TODO: 禁用按钮
-    $scope.QUploader.start();
+    if ($scope.path.length < 3) {
+      showToast("无法上传到当前位置。请选择课程分类、课程名称。", "uploadControllerToastBounds", "warning");
+    } else {
+      $scope.QUploader.start();
+    }
   };
 
   $scope.cancel = function (file) {
     $scope.uploadingCount--;
     $scope.canceling = true;
     $scope.QUploader.removeFile(file);
+    $scope.doneFiles.push(file);
   };
 
   $scope.close = function () {
