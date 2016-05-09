@@ -85,18 +85,7 @@ angular.module("app").controller("controller",
         });
     }
 
-    function getRates() {
-      $http.get("controlCenter/getRates.php")
-        .then(function (response) {
-          var responseData = response.data;
-          if (responseData["res_code"] === 0) {
-            $scope.rates = responseData["data"]["rates"];
-          }
-        });
-    }
-
     getIndex();
-    getRates();
 
     var index;
     var lessons;
@@ -260,6 +249,15 @@ angular.module("app").controller("controller",
       return "attach_file";
     };
 
+    $scope.getContentNameStyle = function (content) {
+      if (content.isDir) {
+        return "";
+      } else {
+        if (content.score > 10) return "good-file";
+        if (content.score < -2) return "bad-file";
+      }
+    };
+    
     $scope.formatFileSize = function (file) {
       var size = file.size;
       if (!size) return;

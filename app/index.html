@@ -72,14 +72,21 @@
                 <md-button ng-click="showContribute($event)" layout layout-align="center center">
                   <md-icon class="material-icons adjust-icon-top-margin-down">cloud_upload</md-icon>
                   <div flex></div>
-                  <p md-menu-align-target>我要贡献资源</p>
+                  <p md-menu-align-target>上传资料</p>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item>
+                <md-button ng-click="showRanking($event)" ng-disabled="true">
+                  <md-icon class="material-icons adjust-icon-top-margin-down">info_outline</md-icon>
+                  <div flex></div>
+                  <p md-menu-align-target>贡献度排行</p>
                 </md-button>
               </md-menu-item>
               <md-menu-item>
                 <md-button ng-click="showAbout($event)">
                   <md-icon class="material-icons adjust-icon-top-margin-down">info_outline</md-icon>
                   <div flex></div>
-                  <p md-menu-align-target>关于这个站点</p>
+                  <p md-menu-align-target>关于本站</p>
                 </md-button>
               </md-menu-item>
             </md-menu-content>
@@ -100,7 +107,7 @@
             </md-tooltip>
           </md-button>
           <md-button class="md-fab md-mini background-white no-margin-left" ng-click="showRanking($event)" ng-disabled="true">
-            <md-icon class="material-icons adjust-icon-top-margin-up-3 color-primary">format_list_numbered</md-icon>
+            <md-icon class="material-icons adjust-icon-top-margin-up-3">format_list_numbered</md-icon>
             <md-tooltip md-direction="bottom">
               贡献度排行
             </md-tooltip>
@@ -131,12 +138,12 @@
             <md-icon class="material-icons" ng-style="getFileColor(content)">
               {{content.isDir?"folder":getFileIcon(content)}}
             </md-icon>
-            <div class="left-offset-10 file-name-in-list">
+            <div class="left-offset-10 file-name-in-list" ng-class="getContentNameStyle(content)">
               <p>{{content.name}}</p>
             </div>
           </div>
           <div flex></div>
-          <div>{{rates[content.id]&&!isNanoScreen?rates[content.id]:""}}</div>
+          <div>{{!isNanoScreen&&!content.isDir&&content.score!=0?content.score:""}}</div>
           <md-button ng-if="!content.isDir" class="md-icon-button"
                      ng-click="download(content)"
                      layout

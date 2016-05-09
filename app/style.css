@@ -213,3 +213,11 @@ md-toast.md-warning-toast-theme .md-toast-content {
 .upload-footer {
     margin-top: 20px;
 }
+
+.bad-file {
+    color: #9e9e9e;
+}
+
+.good-file {
+    color: #ff5722;
+}
