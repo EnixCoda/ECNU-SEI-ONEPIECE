@@ -142,7 +142,8 @@ angular.module("app").controller("controller",
             path: $scope.directoryStack,
             user: $scope.user,
             showUserCenter: $scope.showUserCenter,
-            showToast: showToast
+            showToast: showToast,
+            formatFileSize: $scope.formatFileSize
           },
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true
@@ -257,24 +258,20 @@ angular.module("app").controller("controller",
         if (content.score < -2) return "bad-file";
       }
     };
-    
+
     $scope.formatFileSize = function (file) {
       var size = file.size;
       if (!size) return;
-      var measures = ["", "K", "M", "G", "T", "P"];
+      var measures = ["B", "KB", "MB", "GB", "TB", "PB"];
       var count = 0;
       while (size >= 1000) {
         count++;
         size *= 0.001;
       }
-      var sizeS = "";
-      var tail = measures[count] + "B";
-      if (count <= 1) {
-        sizeS = size.toString().substring(0, size.toString().indexOf("."));
-      } else {
-        sizeS = size.toString().substring(0, size.toString().indexOf(".") + 3);
-      }
-      return sizeS + tail;
+      var sizeToString = size.toString();
+      var tail = measures[count];
+      var sizeBody = sizeToString.substring(0, sizeToString.indexOf(".") > -1 ? sizeToString.indexOf(".") + 2 : 3);
+      return sizeBody + tail;
     };
 
     $scope.lessonSearch = {
@@ -330,12 +327,9 @@ angular.module("app").controller("controller",
           file.gettingDownloadLink = false;
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
-            var win = window.open(responseData["data"]["downloadLink"], "_blank");
+            window.open(responseData["data"]["downloadLink"]);
           } else {
             showToast(responseData["msg"], "bodyToastBounds", "error");
-          }
-          if (win == undefined) {
-            showToast("下载窗口被拦截，请关闭对本站弹出窗口的阻拦。", "bodyToastBounds", "warning");
           }
         }, function () {
           file.gettingDownloadLink = false;
@@ -421,13 +415,15 @@ angular.module("app").controller("controller",
               'FileUploaded': function (up, file, info) {
                 info = JSON.parse(info);
                 var data = {
-                  username: uploadControllerScope.anonymous?"匿名":uploadControllerScope.username?uploadControllerScope.username:uploadControllerScope.user.name,
+                  username: uploadControllerScope.anonymous ? "匿名" : uploadControllerScope.username ? uploadControllerScope.username : uploadControllerScope.user.name,
                   token: uploadControllerScope.user.token,
                   fileId: info["etag"],
                   filePath: info["key"]
                 };
                 $http.post("controlCenter/contribute.php", data)
-                  .then(function (response) {}, function () {});
+                  .then(function (response) {
+                  }, function () {
+                  });
                 up.removeFile(file);
                 file.success = true;
                 uploadControllerScope.doneFiles.push(file);
@@ -449,7 +445,12 @@ angular.module("app").controller("controller",
                     return curDir.name;
                   }
                 );
-                var key = dirNames.length > 0 ? dirNames.join("/") + "/" + file.name : file.name;
+                var key;
+                if (dirNames.length > 0) {
+                  key = dirNames.join("/") + "/" + file.name;
+                } else {
+                  key = file.name;
+                }
                 return key;
               }
             }
@@ -471,7 +472,7 @@ angular.module("app").controller("controller",
   });
 
 // ----- other controllers start -----
-function FilePreviewController($scope, $mdDialog, $http, file, user, path, showUserCenter, showToast) {
+function FilePreviewController($scope, $mdDialog, $http, file, user, path, showUserCenter, showToast, formatFileSize) {
   $scope.file = file;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
@@ -537,12 +538,9 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, path, showU
         file.gettingDownloadLink = false;
         var responseData = response.data;
         if (responseData["res_code"] === 0) {
-          var win = window.open(responseData["data"]["downloadLink"], "_blank");
+          window.open(responseData["data"]["downloadLink"]);
         } else {
           showToast(responseData["msg"], "filePreviewToastBounds", "error");
-        }
-        if (win == undefined) {
-          showToast("下载窗口被拦截，请关闭对本站弹出窗口的阻拦。", "bodyToastBounds", "warning");
         }
       }, function () {
         file.gettingDownloadLink = false;
@@ -550,24 +548,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, path, showU
       });
   };
 
-  $scope.formatFileSize = function (file) {
-    var size = file.size;
-    if (!size) return;
-    var measures = ["", "K", "M", "G", "T", "P"];
-    var count = 0;
-    while (size >= 1000) {
-      count++;
-      size *= 0.001;
-    }
-    var sizeS = "";
-    var tail = measures[count] + "B";
-    if (count <= 1) {
-      sizeS = size.toString().substring(0, size.toString().indexOf("."));
-    } else {
-      sizeS = size.toString().substring(0, size.toString().indexOf(".") + 3);
-    }
-    return sizeS + tail;
-  };
+  $scope.formatFileSize = formatFileSize;
 
   $scope.rateFile = function (rate) {
     if (angular.isNumber(rate)) {
@@ -807,9 +788,9 @@ function AboutController($scope, $mdDialog) {
     {
       "q": "如何使用？",
       "a": ["站点内所有资料都可以自由下载、查阅，用于学习用途。",
-      "每位登陆成功的同学都可以对站点内的资料/课程进行评分、评论等操作，也可以上传新的资料。",
-      "对于需要修整的资料（垃圾文件/过期资料/位置不当的资料），将在多位用户提交相同的修整请求后自动修整。",
-      "简而言之，每位用户都可以是本站的使用者、贡献者、管理者。"]
+        "每位登陆成功的同学都可以对站点内的资料/课程进行评分、评论等操作，也可以上传新的资料。",
+        "对于需要修整的资料（垃圾文件/过期资料/位置不当的资料），将在多位用户提交相同的修整请求后自动修整。",
+        "简而言之，每位用户都可以是本站的使用者、贡献者、管理者。"]
     },
     {
       "q": "为什么做这个网站？",
