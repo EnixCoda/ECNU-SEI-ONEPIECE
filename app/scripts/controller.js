@@ -2,10 +2,118 @@
  * Created by Exin on 2016/3/2.
  */
 
+var Utility = {
+  getFileColor: function (file) {
+    var filename = file.name;
+    if (file.isDir) return {color: "#00bcd4"};
+    if (filename.indexOf(".") > -1 && filename[-1] != ".") {
+      var color;
+      var fileType = filename.substr(filename.lastIndexOf(".") + 1);
+      switch (fileType) {
+        case "jpg":
+        case "png":
+        case "gif":
+          color = "#ff9800";
+          break;
+        case "doc":
+        case "docx":
+        case "rtf":
+          color = "#295598";
+          break;
+        case "txt":
+          color = "#295598";
+          break;
+        case "ppt":
+        case "pptx":
+          color = "#8bc34a";
+          break;
+        case "pdf":
+          color = "#ff5722";
+          break;
+        case "mp3":
+        case "mp4":
+        case "avi":
+        case "flv":
+          color = "#009688";
+          break;
+        default:
+          color = "#607d8b";
+          break;
+      }
+      return {color: color};
+    }
+  },
+  getFileIcon: function (file) {
+    var filename = file.name;
+    if (filename.indexOf(".") > -1 && filename[-1] != ".") {
+      var fileType = filename.substr(filename.lastIndexOf(".") + 1);
+      switch (fileType) {
+        case "jpg":
+        case "png":
+          return "image";
+        case "gif":
+          return "gif";
+        case "doc":
+        case "docx":
+        case "rtf":
+          return "description";
+        case "txt":
+          return "description";
+        case "ppt":
+        case "pptx":
+          return "slideshow";
+        case "pdf":
+          return "picture_as_pdf";
+        case "mp3":
+          return "mic";
+        case "mp4":
+        case "avi":
+        case "flv":
+          return "movie";
+        default:
+          return "attach_file";
+      }
+    }
+    return "attach_file";
+  },
+  formatFileSize: function (file) {
+    var size = file.size;
+    if (!size) return;
+    var measures = ["B", "KB", "MB", "GB", "TB", "PB"];
+    var count = 0;
+    while (size >= 1000) {
+      count++;
+      size *= 0.001;
+    }
+    var sizeToString = size.toString();
+    var tail = measures[count];
+    var sizeBody = sizeToString.substring(0, sizeToString.indexOf(".") > -1 ? sizeToString.indexOf(".") + 2 : 3);
+    return sizeBody + tail;
+  },
+  isMobile: function () {
+    var userAgent = navigator.userAgent;
+    var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
+    var isiPhone = userAgent.indexOf("iPhone") > -1;
+    return isiPhone || isAndroid;
+  },
+  getWindowSize: function () {
+    var w = window,
+      d = document,
+      e = d.documentElement,
+      g = d.getElementsByTagName('body')[0],
+      x = w.innerWidth || e.clientWidth || g.clientWidth,
+      y = w.innerHeight || e.clientHeight || g.clientHeight;
+    return {
+      width: x,
+      height: y
+    };
+  }
+};
 
 angular.module("app").controller("controller",
   function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia, $mdToast, $document) {
-
+    
+    // cannot define in Utility due to scope of $mdToast
     function showToast(text, parentId, type, stayLong) {
       $mdToast.show(
         $mdToast.simple()
@@ -20,38 +128,19 @@ angular.module("app").controller("controller",
     $scope.user = {};
     loadFromCookie($scope.user);
 
-    function isMobile() {
-      var userAgent = navigator.userAgent;
-      var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
-      var isiPhone = userAgent.indexOf("iPhone") > -1;
-      return isiPhone || isAndroid;
-    }
+    $scope.isMobile = Utility.isMobile();
+    $scope.delay = $scope.isMobile ? 300 : 200;
 
-    $scope.isMobile = isMobile();
-    $scope.delay = isMobile() ? 300 : 200;
-
-    function getWindowSize() {
-      var w = window,
-        d = document,
-        e = d.documentElement,
-        g = d.getElementsByTagName('body')[0],
-        x = w.innerWidth || e.clientWidth || g.clientWidth,
-        y = w.innerHeight || e.clientHeight || g.clientHeight;
-      return {
-        width: x,
-        height: y
-      };
-    }
-
-    function checkScreenSize() {
-      $scope.isNanoScreen = Math.min(getWindowSize().width, getWindowSize().height) < 340;
+    function checkScreenSize () {
+      $scope.isNanoScreen = Math.min(Utility.getWindowSize().width, Utility.getWindowSize().height) < 340;
       if ($scope.isNanoScreen) {
         alert("检测到当前设备屏幕较小，已为您隐藏返回按钮。想要返回上级目录请点击当前路径中的文件夹名。点击“ONEPIECE”即可回到根目录。");
       }
     }
-
     window.onresize = checkScreenSize();
 
+    var index, lessons;
+    
     function getIndex() {
       $scope.loadingIndex = true;
       var data = {};
@@ -84,12 +173,8 @@ angular.module("app").controller("controller",
             });
         });
     }
-
     getIndex();
-
-    var index;
-    var lessons;
-
+    
     function getLessonsFrom(index) {
       var lessons = [];
       for (var i = 0; i < index.content.length; i++) {
@@ -132,24 +217,6 @@ angular.module("app").controller("controller",
 
     var disableGoTo = false; // prevent error which occurs when folder double clicked
     $scope.goTo = function (target, e) {
-      function showFileDetail(file, e) {
-        $mdDialog.show({
-          controller: FilePreviewController,
-          templateUrl: "views/file_preview.html",
-          targetEvent: e,
-          locals: {
-            file: file,
-            path: $scope.directoryStack,
-            user: $scope.user,
-            showUserCenter: $scope.showUserCenter,
-            showToast: showToast,
-            formatFileSize: $scope.formatFileSize
-          },
-          fullscreen: $mdMedia('xs'),
-          clickOutsideToClose: true
-        });
-      }
-
       if (disableGoTo) return;
       var pos = targetInDirectory(target, $scope.currentDirectory);
       if (pos !== false) {
@@ -175,80 +242,11 @@ angular.module("app").controller("controller",
       $mdOpenMenu($e);
     };
 
-    $scope.getFileColor = function (file) {
-      var filename = file.name;
-      if (file.isDir) return {color: "#00bcd4"};
-      if (filename.indexOf(".") > -1 && filename[-1] != ".") {
-        var color;
-        var fileType = filename.substr(filename.lastIndexOf(".") + 1);
-        switch (fileType) {
-          case "jpg":
-          case "png":
-          case "gif":
-            color = "#ff9800";
-            break;
-          case "doc":
-          case "docx":
-          case "rtf":
-            color = "#295598";
-            break;
-          case "txt":
-            color = "#295598";
-            break;
-          case "ppt":
-          case "pptx":
-            color = "#8bc34a";
-            break;
-          case "pdf":
-            color = "#ff5722";
-            break;
-          case "mp3":
-          case "mp4":
-          case "avi":
-          case "flv":
-            color = "#009688";
-            break;
-          default:
-            color = "#607d8b";
-            break;
-        }
-        return {color: color};
-      }
-    };
+    $scope.getFileColor = Utility.getFileColor;
 
-    $scope.getFileIcon = function (file) {
-      var filename = file.name;
-      if (filename.indexOf(".") > -1 && filename[-1] != ".") {
-        var fileType = filename.substr(filename.lastIndexOf(".") + 1);
-        switch (fileType) {
-          case "jpg":
-          case "png":
-            return "image";
-          case "gif":
-            return "gif";
-          case "doc":
-          case "docx":
-          case "rtf":
-            return "description";
-          case "txt":
-            return "description";
-          case "ppt":
-          case "pptx":
-            return "slideshow";
-          case "pdf":
-            return "picture_as_pdf";
-          case "mp3":
-            return "mic";
-          case "mp4":
-          case "avi":
-          case "flv":
-            return "movie";
-          default:
-            return "attach_file";
-        }
-      }
-      return "attach_file";
-    };
+    $scope.getFileIcon = Utility.getFileIcon;
+
+    $scope.formatFileSize = Utility.formatFileSize;
 
     $scope.getContentNameStyle = function (content) {
       if (content.isDir) {
@@ -257,21 +255,6 @@ angular.module("app").controller("controller",
         if (content.score > 10) return "good-file";
         if (content.score < -2) return "bad-file";
       }
-    };
-
-    $scope.formatFileSize = function (file) {
-      var size = file.size;
-      if (!size) return;
-      var measures = ["B", "KB", "MB", "GB", "TB", "PB"];
-      var count = 0;
-      while (size >= 1000) {
-        count++;
-        size *= 0.001;
-      }
-      var sizeToString = size.toString();
-      var tail = measures[count];
-      var sizeBody = sizeToString.substring(0, sizeToString.indexOf(".") > -1 ? sizeToString.indexOf(".") + 2 : 3);
-      return sizeBody + tail;
     };
 
     $scope.lessonSearch = {
@@ -353,9 +336,24 @@ angular.module("app").controller("controller",
       });
     };
 
-    $scope.getLessonComments = function () {
-    };
-
+    function showFileDetail(file, e) {
+      $mdDialog.show({
+        controller: FilePreviewController,
+        templateUrl: "views/file_preview.html",
+        targetEvent: e,
+        locals: {
+          file: file,
+          path: $scope.directoryStack,
+          user: $scope.user,
+          showUserCenter: $scope.showUserCenter,
+          showToast: showToast,
+          formatFileSize: $scope.formatFileSize
+        },
+        fullscreen: $mdMedia('xs'),
+        clickOutsideToClose: true
+      });
+    }
+    
     $scope.showUserCenter = function (e) {
       $mdDialog.show({
         controller: UserCenterController,
@@ -472,11 +470,11 @@ angular.module("app").controller("controller",
   });
 
 // ----- other controllers start -----
-function FilePreviewController($scope, $mdDialog, $http, file, user, path, showUserCenter, showToast, formatFileSize) {
+function FilePreviewController($scope, $mdDialog, $http, file, user, path, showUserCenter, showToast) {
   $scope.file = file;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
-  $scope.anonymous = false;
+  $scope.formatFileSize = Utility.formatFileSize;
 
   function getRate() {
     $scope.gettingRate = true;
@@ -548,7 +546,6 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, path, showU
       });
   };
 
-  $scope.formatFileSize = formatFileSize;
 
   $scope.rateFile = function (rate) {
     if (angular.isNumber(rate)) {
@@ -604,7 +601,6 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
   $scope.lesson = lesson;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
-  $scope.anonymous = false;
 
   function getComment() {
     $scope.gettingComment = true;
@@ -810,7 +806,7 @@ function AboutController($scope, $mdDialog) {
     },
     {
       "q": "如何向这个站点提供学习资料？",
-      "a": ["关闭这个对话框，点击右上角的“我要贡献资源”。"]
+      "a": ["关闭这个对话框，点击右上角的“上传资料”。"]
     },
     {
       "q": "为什么不直接通过一个网盘来传递资料？",
