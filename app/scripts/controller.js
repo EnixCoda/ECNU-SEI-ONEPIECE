@@ -112,8 +112,14 @@ var Utility = {
 
 angular.module("app").controller("controller",
   function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia, $mdToast, $document) {
-    
-    // cannot define in Utility due to scope of $mdToast
+
+    function checkScreenSize() {
+      $scope.isNanoScreen = Math.min(Utility.getWindowSize().width, Utility.getWindowSize().height) < 340;
+      if ($scope.isNanoScreen) {
+        alert("检测到当前设备屏幕较小，已为您隐藏返回按钮。想要返回上级目录请点击当前路径中的文件夹名。点击“ONEPIECE”即可回到根目录。");
+      }
+    }
+
     function showToast(text, parentId, type, stayLong) {
       $mdToast.show(
         $mdToast.simple()
@@ -125,22 +131,35 @@ angular.module("app").controller("controller",
       );
     }
 
-    $scope.user = {};
-    loadFromCookie($scope.user);
-
-    $scope.isMobile = Utility.isMobile();
-    $scope.delay = $scope.isMobile ? 300 : 200;
-
-    function checkScreenSize () {
-      $scope.isNanoScreen = Math.min(Utility.getWindowSize().width, Utility.getWindowSize().height) < 340;
-      if ($scope.isNanoScreen) {
-        alert("检测到当前设备屏幕较小，已为您隐藏返回按钮。想要返回上级目录请点击当前路径中的文件夹名。点击“ONEPIECE”即可回到根目录。");
+    function download(file, toastBounds) {
+      if (file.gettingDownloadLink) return;
+      file.gettingDownloadLink = true;
+      var data = {
+        fileId: file.id.toString(),
+        filename: file.name.toString(),
+        path: $scope.directoryStack.map(
+          function (curDir, index) {
+            if (index > 0) return curDir.name;
+          }).join("/") + "/"
+      };
+      if ($scope.user.loggedIn) {
+        data.token = $scope.user.token;
       }
+      $http.post("controlCenter/getDownloadLink.php", data)
+        .then(function (response) {
+          file.gettingDownloadLink = false;
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            window.open(responseData["data"]["downloadLink"]);
+          } else {
+            showToast(responseData["msg"], toastBounds, "error");
+          }
+        }, function () {
+          file.gettingDownloadLink = false;
+          showToast("无法连接到服务器", toastBounds, "error")
+        });
     }
-    window.onresize = checkScreenSize();
 
-    var index, lessons;
-    
     function getIndex() {
       $scope.loadingIndex = true;
       var data = {};
@@ -171,8 +190,7 @@ angular.module("app").controller("controller",
             });
         });
     }
-    getIndex();
-    
+
     function getLessonsFrom(index) {
       var lessons = [];
       for (var i = 0; i < index.content.length; i++) {
@@ -192,15 +210,7 @@ angular.module("app").controller("controller",
       return lessons;
     }
 
-    $scope.goBack = function (step) {
-      if ($scope.directoryStack.length == 1) return false;
-      if (step >= $scope.directoryStack.length) step = $scope.directoryStack.length - 1;
-      for (var i = 0; i < step; i++) {
-        $scope.directoryStack.pop();
-      }
-      return true;
-    };
-
+    // guide user's way
     function targetInDirectory(target, dir) {
       if (dir.isDir) {
         for (var i = 0; i < dir.content.length; i++) {
@@ -228,18 +238,19 @@ angular.module("app").controller("controller",
         }
       }
     };
-
-    $scope.openNestedMenu = function ($mdOpenMenu, $e) {
-      $e.stopPropagation();
-      $mdOpenMenu($e);
+    $scope.goBack = function (step) {
+      if ($scope.directoryStack.length == 1) return false;
+      if (step >= $scope.directoryStack.length) step = $scope.directoryStack.length - 1;
+      for (var i = 0; i < step; i++) {
+        $scope.directoryStack.pop();
+      }
+      return true;
     };
 
+    // stylish
     $scope.getFileColor = Utility.getFileColor;
-
     $scope.getFileIcon = Utility.getFileIcon;
-
     $scope.formatFileSize = Utility.formatFileSize;
-
     $scope.getContentNameStyle = function (content) {
       if (content.isDir) {
         return "";
@@ -249,6 +260,13 @@ angular.module("app").controller("controller",
       }
     };
 
+    $scope.openNestedMenu = function ($mdOpenMenu, $e) {
+      $e.stopPropagation();
+      $mdOpenMenu($e);
+    };
+    $scope.download = download;
+
+    // provide search functionality to auto-complete
     $scope.lessonSearch = {
       querySearch: function (query) {
         function createFilterFor(query) {
@@ -282,34 +300,25 @@ angular.module("app").controller("controller",
       }
     };
 
-    $scope.download = function (file) {
-      if (file.gettingDownloadLink) return;
-      file.gettingDownloadLink = true;
-      var data = {
-        fileId: file.id.toString(),
-        filename: file.name.toString(),
-        path: $scope.directoryStack.map(
-          function (curDir, index) {
-            if (index > 0) return curDir.name;
-          }).join("/") + "/"
-      };
-      if ($scope.user.loggedIn) {
-        data.token = $scope.user.token;
-      }
-      $http.post("controlCenter/getDownloadLink.php", data)
-        .then(function (response) {
-          file.gettingDownloadLink = false;
-          var responseData = response.data;
-          if (responseData["res_code"] === 0) {
-            window.open(responseData["data"]["downloadLink"]);
-          } else {
-            showToast(responseData["msg"], "bodyToastBounds", "error");
-          }
-        }, function () {
-          file.gettingDownloadLink = false;
-          showToast("无法连接到服务器", "bodyToastBounds", "error")
-        });
-    };
+
+    // show dialogs start
+    function showFileDetail(file, e) {
+      $mdDialog.show({
+        controller: FilePreviewController,
+        templateUrl: "views/file_preview.html",
+        targetEvent: e,
+        locals: {
+          file: file,
+          user: $scope.user,
+          showUserCenter: $scope.showUserCenter,
+          formatFileSize: $scope.formatFileSize,
+          showToast: showToast,
+          download: download
+        },
+        fullscreen: $mdMedia('xs'),
+        clickOutsideToClose: true
+      });
+    }
 
     $scope.showLessonPreview = function (lesson, e) {
       $mdDialog.show({
@@ -326,25 +335,6 @@ angular.module("app").controller("controller",
         clickOutsideToClose: true
       });
     };
-
-    function showFileDetail(file, e) {
-      $mdDialog.show({
-        controller: FilePreviewController,
-        templateUrl: "views/file_preview.html",
-        targetEvent: e,
-        locals: {
-          file: file,
-          path: $scope.directoryStack,
-          user: $scope.user,
-          showUserCenter: $scope.showUserCenter,
-          showToast: showToast,
-          formatFileSize: $scope.formatFileSize
-        },
-        fullscreen: $mdMedia('xs'),
-        clickOutsideToClose: true
-      });
-    }
-    
     $scope.showUserCenter = function (e) {
       $mdDialog.show({
         controller: UserCenterController,
@@ -360,7 +350,6 @@ angular.module("app").controller("controller",
         $scope.user = user
       });
     };
-
     $scope.showContribute = function (e) {
       $mdDialog.show({
         controller: UploadController,
@@ -448,7 +437,6 @@ angular.module("app").controller("controller",
         }
       });
     };
-
     $scope.showAbout = function (e) {
       $mdDialog.show({
         controller: AboutController,
@@ -458,10 +446,21 @@ angular.module("app").controller("controller",
         clickOutsideToClose: true
       });
     };
+    // show dialogs end
+
+
+    // init
+    var index, lessons;
+    $scope.user = {};
+    loadFromCookie($scope.user);
+    getIndex();
+    $scope.isMobile = Utility.isMobile();
+    $scope.delay = $scope.isMobile ? 300 : 200;
+    window.onresize = checkScreenSize();
   });
 
 // ----- other controllers start -----
-function FilePreviewController($scope, $mdDialog, $http, file, user, path, showUserCenter, showToast) {
+function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCenter, showToast, download) {
   $scope.file = file;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
@@ -508,35 +507,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, path, showU
   getRate();
   getComment();
 
-  $scope.download = function () {
-    if (file.gettingDownloadLink) return;
-    file.gettingDownloadLink = true;
-    var data = {
-      fileId: file.id.toString(),
-      filename: file.name.toString(),
-      path: path.map(
-        function (curDir, index) {
-          if (index > 0)return curDir.name;
-        }).join("/") + "/"
-    };
-    if ($scope.user.loggedIn) {
-      data.token = $scope.user.token;
-    }
-    $http.post("controlCenter/getDownloadLink.php", data)
-      .then(function (response) {
-        file.gettingDownloadLink = false;
-        var responseData = response.data;
-        if (responseData["res_code"] === 0) {
-          window.open(responseData["data"]["downloadLink"]);
-        } else {
-          showToast(responseData["msg"], "filePreviewToastBounds", "error");
-        }
-      }, function () {
-        file.gettingDownloadLink = false;
-        showToast("无法连接到服务器", "filePreviewToastBounds", "error")
-      });
-  };
-
+  $scope.download = download;
 
   $scope.rateFile = function (rate) {
     if (angular.isNumber(rate)) {
@@ -762,15 +733,10 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path, showToa
 }
 
 function AboutController($scope, $mdDialog) {
-  $scope.hide = function () {
-    $mdDialog.hide();
-  };
   $scope.close = function () {
     $mdDialog.cancel();
   };
-  $scope.answer = function (answer) {
-    $mdDialog.hide(answer);
-  };
+
   $scope.qas = [
     {
       "q": "如何使用？",

@@ -21,11 +21,11 @@
         </div>
         <div layout layout-align="start center">
           <p>当前总分：</p>
-          <h3 ng-show="!gettingRate">{{totalScore}}</h3>
+          <h3 ng-show="!gettingRate" class="no-margin">{{totalScore}}</h3>
           <md-progress-circular ng-show="gettingRate" md-diameter="20" md-mode="indeterminate"></md-progress-circular>
         </div>
         <div flex></div>
-        <md-button class="md-fab md-mini background-blue" ng-click="download(file)"
+        <md-button class="md-fab md-mini background-blue" ng-click="download(file, 'filePreviewToastBounds')"
                    layout layout-align="center center">
           <md-tooltip md-direction="left">
             {{file.gettingDownloadLink?"正在获取下载链接":formatFileSize(file)}}

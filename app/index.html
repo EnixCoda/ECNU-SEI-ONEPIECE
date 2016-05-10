@@ -145,7 +145,7 @@
           <div flex></div>
           <div>{{!isNanoScreen&&!content.isDir&&content.score!=0?content.score:""}}</div>
           <md-button ng-if="!content.isDir" class="md-icon-button"
-                     ng-click="download(content)"
+                     ng-click="download(content, 'bodyToastBounds')"
                      layout
                      layout-align="center center">
             <md-tooltip md-direction="left">
