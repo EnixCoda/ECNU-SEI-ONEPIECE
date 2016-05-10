@@ -152,7 +152,6 @@ angular.module("app").controller("controller",
             $scope.loadingIndex = false;
             index = responseData["data"]["index"];
             $scope.directoryStack = [index];
-            $scope.currentDirectory = index;
             lessons = getLessonsFrom(index);
           } else {
             $scope.loadIndexFailed = true;
@@ -165,7 +164,6 @@ angular.module("app").controller("controller",
                 $scope.loadingIndex = false;
                 index = responseData;
                 $scope.directoryStack = [index];
-                $scope.currentDirectory = index;
                 lessons = getLessonsFrom(index);
               }, 1500);
             }, function () {
@@ -199,7 +197,6 @@ angular.module("app").controller("controller",
       if (step >= $scope.directoryStack.length) step = $scope.directoryStack.length - 1;
       for (var i = 0; i < step; i++) {
         $scope.directoryStack.pop();
-        setCurrentDirectory();
       }
       return true;
     };
@@ -218,13 +215,12 @@ angular.module("app").controller("controller",
     var disableGoTo = false; // prevent error which occurs when folder double clicked
     $scope.goTo = function (target, e) {
       if (disableGoTo) return;
-      var pos = targetInDirectory(target, $scope.currentDirectory);
+      var pos = targetInDirectory(target, $scope.directoryStack.slice(-1)[0]);
       if (pos !== false) {
         if (target.isDir) {
           disableGoTo = true;
           $timeout(function () {
             $scope.directoryStack.push(target);
-            setCurrentDirectory();
             disableGoTo = false;
           }, $scope.delay);
         } else {
@@ -232,10 +228,6 @@ angular.module("app").controller("controller",
         }
       }
     };
-
-    function setCurrentDirectory() {
-      $scope.currentDirectory = $scope.directoryStack.slice(-1)[0];
-    }
 
     $scope.openNestedMenu = function ($mdOpenMenu, $e) {
       $e.stopPropagation();
@@ -274,10 +266,9 @@ angular.module("app").controller("controller",
           var dummyPath = [].concat(target.path);
           while (dummyPath.length > 0) {
             var nextTarget = dummyPath.shift();
-            var pos = targetInDirectory(nextTarget, $scope.currentDirectory);
+            var pos = targetInDirectory(nextTarget, $scope.directoryStack.slice(-1)[0]);
             if (pos !== false) {
               $scope.directoryStack.push(nextTarget);
-              setCurrentDirectory();
             } else {
               while ($scope.goBack(1)) {
               }
