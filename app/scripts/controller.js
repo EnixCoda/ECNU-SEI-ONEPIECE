@@ -437,6 +437,7 @@ angular.module("app").controller("controller",
         }
       });
     };
+    $scope.showRanking = function (e) {};
     $scope.showAbout = function (e) {
       $mdDialog.show({
         controller: AboutController,
@@ -448,6 +449,29 @@ angular.module("app").controller("controller",
     };
     // show dialogs end
 
+    $scope.topFuncs = [
+      {
+        func: $scope.showUserCenter,
+        icon: "account_circle",
+        tip: "用户中心"
+      },
+      {
+        func: $scope.showContribute,
+        icon: "cloud_upload",
+        tip: "上传资料"
+      },
+      {
+        func: $scope.showRanking,
+        icon: "format_list_numbered",
+        tip: "贡献度排行"
+      },
+      {
+        func: $scope.showAbout,
+        icon: "info_outline",
+        tip: "关于本站"
+      }
+    ];
+    
 
     // init
     var index, lessons;

@@ -23,7 +23,8 @@
   <div ng-if="!loadingIndex" flex layout="column">
     <div class="top-banner md-whiteframe-3dp light-background-color left-offset-10" layout
          layout-align="space-between center" layout-wrap>
-      <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)" ng-show="directoryStack.length>1 && !isNanoScreen">
+      <md-button class="md-fab md-mini background-blue" ng-click="goBack(1)"
+                 ng-show="directoryStack.length>1 && !isNanoScreen">
         <md-icon class="material-icons color-white adjust-icon-top-margin-up-3">chevron_left</md-icon>
       </md-button>
       <div>
@@ -61,61 +62,24 @@
               <md-icon class="material-icons adjust-icon-top-margin-up-3 color-grey">more_vert</md-icon>
             </md-button>
             <md-menu-content width="3">
-              <md-menu-item>
-                <md-button ng-click="showUserCenter($event)" layout layout-align="center center">
-                  <md-icon class="material-icons adjust-icon-top-margin-down">account_circle</md-icon>
+              <md-menu-item ng-repeat="func in topFuncs">
+                <md-button ng-click="func.func($event)" layout layout-align="center center">
+                  <md-icon class="material-icons color-primary adjust-icon-top-margin-down">{{func.icon}}</md-icon>
                   <div flex></div>
-                  <p md-menu-align-target>用户中心</p>
-                </md-button>
-              </md-menu-item>
-              <md-menu-item>
-                <md-button ng-click="showContribute($event)" layout layout-align="center center">
-                  <md-icon class="material-icons adjust-icon-top-margin-down">cloud_upload</md-icon>
-                  <div flex></div>
-                  <p md-menu-align-target>上传资料</p>
-                </md-button>
-              </md-menu-item>
-              <md-menu-item>
-                <md-button ng-click="showRanking($event)" ng-disabled="true">
-                  <md-icon class="material-icons adjust-icon-top-margin-down">info_outline</md-icon>
-                  <div flex></div>
-                  <p md-menu-align-target>贡献度排行</p>
-                </md-button>
-              </md-menu-item>
-              <md-menu-item>
-                <md-button ng-click="showAbout($event)">
-                  <md-icon class="material-icons adjust-icon-top-margin-down">info_outline</md-icon>
-                  <div flex></div>
-                  <p md-menu-align-target>关于本站</p>
+                  <p md-menu-align-target>{{func.tip}}</p>
                 </md-button>
               </md-menu-item>
             </md-menu-content>
           </md-menu>
         </div>
         <div layout ng-if="!isMobile">
-          <md-button class="md-fab md-mini background-white" ng-click="showUserCenter($event)">
-            <md-icon ng-if="!user.name" class="material-icons adjust-icon-top-margin-up-3 color-primary">account_circle</md-icon>
-            <span ng-if="user.name" class="short-user-name color-primary">{{user.name?user.name[0]:""}}</span>
+          <md-button class="md-fab md-mini background-white" ng-class="!$first?'no-margin-left':''" ng-repeat="func in topFuncs" ng-click="func.func($event)">
+            <md-icon ng-if="(!user.name&&$index==0)||$index>0" class="material-icons adjust-icon-top-margin-up-3 color-primary">
+              {{func.icon}}
+            </md-icon>
+            <span ng-if="user.name&&$index==0" class="short-user-name color-primary">{{user.name?user.name[0]:""}}</span>
             <md-tooltip md-direction="bottom">
-              用户中心
-            </md-tooltip>
-          </md-button>
-          <md-button class="md-fab md-mini background-white no-margin-left" ng-click="showContribute($event)">
-            <md-icon class="material-icons adjust-icon-top-margin-up-3 color-primary">cloud_upload</md-icon>
-            <md-tooltip md-direction="bottom">
-              上传资料
-            </md-tooltip>
-          </md-button>
-          <md-button class="md-fab md-mini background-white no-margin-left" ng-click="showRanking($event)" ng-disabled="true">
-            <md-icon class="material-icons adjust-icon-top-margin-up-3">format_list_numbered</md-icon>
-            <md-tooltip md-direction="bottom">
-              贡献度排行
-            </md-tooltip>
-          </md-button>
-          <md-button class="md-fab md-mini background-white no-margin-left" ng-click="showAbout($event)">
-            <md-icon class="material-icons adjust-icon-top-margin-up-3 color-primary">info_outline</md-icon>
-            <md-tooltip md-direction="bottom">
-              关于本站
+              {{func.tip}}
             </md-tooltip>
           </md-button>
         </div>
@@ -133,7 +97,8 @@
           </span>
         </md-subheader>
         <md-divider></md-divider>
-        <md-list-item ng-repeat="content in directoryStack[directoryStack.length - 1].content" ng-click="goTo(content, $event)">
+        <md-list-item ng-repeat="content in directoryStack[directoryStack.length - 1].content"
+                      ng-click="goTo(content, $event)">
           <div layout layout-align="start center">
             <md-icon class="material-icons" ng-style="getFileColor(content)">
               {{content.isDir?"folder":getFileIcon(content)}}
