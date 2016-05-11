@@ -771,6 +771,18 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path, showToa
 function RankingController($scope, $mdDialog, $http, user, showToast) {
   $scope.gettingRanking = true;
 
+  $scope.gridRules = [
+    {row: 3, col: 4, color: "#e64a19"},
+    {row: 2, col: 2, color: "#ff5722"},
+    {row: 2, col: 2, color: "#ff7043"},
+    {row: 1, col: 4, color: "#ffc107"},
+    {row: 1, col: 4, color: "#ffca28"},
+    {row: 1, col: 4, color: "#ffd54f"},
+    {row: 1, col: 4, color: "#ffeb3b"},
+    {row: 1, col: 4, color: "#ffee58"},
+    {row: 1, col: 4, color: "#fff176"},
+  ];
+  
   var data = {};
   if (user.loggedIn) {
     data.token = user.token;
@@ -783,6 +795,17 @@ function RankingController($scope, $mdDialog, $http, user, showToast) {
       }
       $scope.gettingRanking = false;
     }, function () {
+      $scope.ranking = [
+        {score: 100, name: "匿名"},
+        {score: 100, name: ""},
+        {score: 100, name: "名"},
+        {score: 100, name: "匿"},
+        {score: 100, name: "A"},
+        {score: 100, name: "B"},
+        {score: 100, name: "C"},
+        {score: 100, name: "D"},
+        {score: 100, name: "E"},
+      ];
       showToast("无法获取排行", "rankingToastBounds", "error");
     });
 
