@@ -437,7 +437,19 @@ angular.module("app").controller("controller",
         }
       });
     };
-    $scope.showRanking = function (e) {};
+    $scope.showRanking = function (e) {
+      $mdDialog.show({
+        controller: RankingController,
+        templateUrl: "views/ranking.html",
+        locals: {
+          user: $scope.user,
+          showToast: showToast
+        },
+        targetEvent: e,
+        fullscreen: $mdMedia('xs'),
+        clickOutsideToClose: true
+      });
+    };
     $scope.showAbout = function (e) {
       $mdDialog.show({
         controller: AboutController,
@@ -754,6 +766,30 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path, showToa
   $scope.close = function () {
     $mdDialog.cancel();
   };
+}
+
+function RankingController($scope, $mdDialog, $http, user, showToast) {
+  $scope.gettingRanking = true;
+
+  var data = {};
+  if (user.loggedIn) {
+    data.token = user.token;
+  }
+  $http.post("controlCenter/getRanking.php", data)
+    .then(function (response) {
+      var responseData = response.data;
+      if (responseData["res_code"] == 0) {
+        $scope.ranking = responseData["data"]["ranking"];
+      }
+      $scope.gettingRanking = false;
+    }, function () {
+      showToast("无法获取排行", "rankingToastBounds", "error");
+    });
+
+
+  $scope.close = function () {
+    $mdDialog.cancel();
+  }
 }
 
 function AboutController($scope, $mdDialog) {

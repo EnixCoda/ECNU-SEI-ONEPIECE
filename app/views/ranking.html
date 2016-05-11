@@ -1,0 +1,22 @@
+<md-dialog class="about-dialog">
+  <md-toolbar id="rankingToastBounds">
+    <div class="md-toolbar-tools">
+      <h4>贡献度排行</h4>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="close()">
+        <i class="material-icons color-white">close</i>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <md-list class="no-padding-top">
+      <md-subheader class="md-no-sticky">
+        <span>{{gettingRanking?"正在获取排行":""}}</span>
+      </md-subheader>
+      <md-list-item class="md-2-line" ng-repeat="rank in ranking">
+        <h3>{{ rank.name }}</h3>
+        <p>{{ rank.score }}</p>
+      </md-list-item>
+    </md-list>
+  </md-dialog-content>
+</md-dialog>
