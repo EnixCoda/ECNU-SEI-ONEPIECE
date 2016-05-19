@@ -126,7 +126,7 @@ module.exports = function (grunt) {
           patterns: [
             {
               match: /\.\.\/bower_components\/angular-material\/angular-material\./g,
-              replacement: '//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.'
+              replacement: '//ajax.useso.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.'
             }
           ]
         },
@@ -143,7 +143,7 @@ module.exports = function (grunt) {
           patterns: [
             {
               match: /\.\.\/bower_components\/angular.*?\//g,
-              replacement: '//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.5.0-rc.2/'
+              replacement: '//ajax.useso.com/ajax/libs/angularjs/1.5.0-rc.2/'
             }
           ]
         },
