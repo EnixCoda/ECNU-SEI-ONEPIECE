@@ -792,12 +792,13 @@ function RankingController($scope, $mdDialog, $http, user, showToast) {
       var responseData = response.data;
       if (responseData["res_code"] == 0) {
         $scope.ranking = responseData["data"]["ranking"];
+        $scope.userRank = responseData["data"]["userRank"];
       }
       $scope.gettingRanking = false;
     }, function () {
       $scope.ranking = [
         {score: 100, name: "匿名"},
-        {score: 100, name: ""},
+        {score: 100, name: "哈哈哈"},
         {score: 100, name: "名"},
         {score: 100, name: "匿"},
         {score: 100, name: "A"},
@@ -806,6 +807,7 @@ function RankingController($scope, $mdDialog, $http, user, showToast) {
         {score: 100, name: "D"},
         {score: 100, name: "E"},
       ];
+      $scope.userRank = 20;
       showToast("无法获取排行", "rankingToastBounds", "error");
     });
 

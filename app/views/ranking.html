@@ -8,16 +8,22 @@
       </md-button>
     </div>
   </md-toolbar>
-  <md-dialog-content layout-padding>
-    <md-grid-list ng-if="ranking" md-cols="4" md-row-height="2:1" md-gutter="8px">
-      <md-grid-tile md-rowspan="{{gridRules[$index].row}}" md-colspan="{{gridRules[$index].col}}"
-                    ng-repeat="rank in ranking" ng-style="{'background': gridRules[$index].color}">
-        <h2 ng-if="$index < 3">{{rank.name}} - {{rank.score}}</h2>
-        <md-grid-tile-footer ng-if="$index < 3" layout
-                             layout-align="center center"><h3>{{$index + 1}}</h3></md-grid-tile-footer>
-        <div ng-if="$index >= 3">{{rank.name}} - {{$index + 1}} - {{rank.score}}</div>
-      </md-grid-tile>
-    </md-grid-list>
+  <md-dialog-content layout="column" layout-align="center center" layout-padding>
+    <!--<md-grid-list ng-if="ranking" md-cols="4" md-row-height="2:1" md-gutter="8px">-->
+      <!--<md-grid-tile md-rowspan="{{gridRules[$index].row}}" md-colspan="{{gridRules[$index].col}}"-->
+                    <!--ng-repeat="rank in ranking" ng-style="{'background': gridRules[$index].color}">-->
+        <!--<h2 ng-if="$index < 3">{{rank.name}} - {{rank.score}}</h2>-->
+        <!--<md-grid-tile-footer ng-if="$index < 3" layout-->
+                             <!--layout-align="center center"><h3>{{$index + 1}}</h3></md-grid-tile-footer>-->
+        <!--<div ng-if="$index >= 3">{{rank.name}} - {{$index + 1}} - {{rank.score}}</div>-->
+      <!--</md-grid-tile>-->
+    <!--</md-grid-list>-->
+    <h2>{{ranking[0].name}} - {{ranking[0].score}}</h2>
+    <h3>{{ranking[1].name}} - {{ranking[1].score}}</h3>
+    <h3>{{ranking[2].name}} - {{ranking[2].score}}</h3>
+    <p ng-repeat="rank in ranking" ng-if="$index > 2">
+      {{rank.name}} - {{rank.score}}
+    </p>
     <div ng-if="userRank"><h4>你的排名：{{userRank}}</h4></div>
   </md-dialog-content>
 </md-dialog>
