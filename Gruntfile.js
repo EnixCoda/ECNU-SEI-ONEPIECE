@@ -12,16 +12,6 @@ module.exports = function (grunt) {
         }]
       }
     },
-    wiredep: {
-      task: {
-        src:     [
-          'app/index.html'
-        ],
-        options: {
-          exclude: ['/angular-messages/']
-        }
-      }
-    },
     concat:  {
       options:     {
         //separator: ';'
@@ -62,14 +52,6 @@ module.exports = function (grunt) {
           'dist/views/user_center.html': 'app/views/user_center.html',
           'dist/views/ranking.html': 'app/views/ranking.html'
         }
-      }
-    },
-    cdnify:  {
-      options: {
-        cdn: require('google-cdn-data')
-      },
-      dist:    {
-        html: ['dist/index.html']
       }
     },
     replace: {
@@ -215,6 +197,16 @@ module.exports = function (grunt) {
       controllers: {
         src: ['test/src/controllers/one.js'],
         dest: 'test/generated/controllers/one.js'
+      }
+    },
+    wiredep: {
+      task: {
+        src:     [
+          'app/index.html'
+        ],
+        options: {
+          exclude: ['/angular-messages/']
+        }
       }
     }
   });

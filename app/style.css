@@ -221,3 +221,11 @@ md-toast.md-warning-toast-theme .md-toast-content {
 .good-file {
     color: #ff5722;
 }
+
+.rankTable {
+    width: 100%;
+}
+
+.centeredText {
+    text-align: center;
+}

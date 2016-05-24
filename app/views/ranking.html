@@ -8,22 +8,47 @@
       </md-button>
     </div>
   </md-toolbar>
-  <md-dialog-content layout="column" layout-align="center center" layout-padding>
-    <!--<md-grid-list ng-if="ranking" md-cols="4" md-row-height="2:1" md-gutter="8px">-->
-      <!--<md-grid-tile md-rowspan="{{gridRules[$index].row}}" md-colspan="{{gridRules[$index].col}}"-->
-                    <!--ng-repeat="rank in ranking" ng-style="{'background': gridRules[$index].color}">-->
-        <!--<h2 ng-if="$index < 3">{{rank.name}} - {{rank.score}}</h2>-->
-        <!--<md-grid-tile-footer ng-if="$index < 3" layout-->
-                             <!--layout-align="center center"><h3>{{$index + 1}}</h3></md-grid-tile-footer>-->
-        <!--<div ng-if="$index >= 3">{{rank.name}} - {{$index + 1}} - {{rank.score}}</div>-->
-      <!--</md-grid-tile>-->
-    <!--</md-grid-list>-->
-    <h2>{{ranking[0].name}} - {{ranking[0].score}}</h2>
-    <h3>{{ranking[1].name}} - {{ranking[1].score}}</h3>
-    <h3>{{ranking[2].name}} - {{ranking[2].score}}</h3>
-    <p ng-repeat="rank in ranking" ng-if="$index > 2">
-      {{rank.name}} - {{rank.score}}
-    </p>
-    <div ng-if="userRank"><h4>你的排名：{{userRank}}</h4></div>
+  <md-dialog-content>
+    <md-list class="no-padding-top">
+      <md-list-item class="centeredText light-background-color">
+        <div flex="100" layout layout-align="space-between center">
+          <div>排名</div>
+          <div flex="25">用户</div>
+          <div>总分</div>
+          <div>上传</div>
+          <div>评价</div>
+        </div>
+        <md-divider></md-divider>
+      </md-list-item>
+      <md-list-item class="centeredText" ng-repeat="rank in ranking" ng-click="">
+        <div ng-if="userRank.pos !== $index + 1" flex="100" layout layout-align="space-between center">
+          <div>{{$index + 1}}</div>
+          <div flex="25">{{rank.name}}</div>
+          <div>{{rank.score}}</div>
+          <div>{{rank.upload}}</div>
+          <div>{{rank.rc}}</div>
+        </div>
+        <div ng-if="userRank.pos === $index + 1" flex="100" layout layout-align="space-between center">
+          <div><b>{{$index + 1}}</b></div>
+          <div flex="25"><b>{{rank.name}}</b></div>
+          <div><b>{{rank.score}}</b></div>
+          <div><b>{{rank.upload}}</b></div>
+          <div><b>{{rank.rc}}</b></div>
+        </div>
+        <md-divider ng-if="!$last"></md-divider>
+      </md-list-item>
+      <md-subheader ng-if="userRank" class="md-no-sticky">
+        <span>你的排名</span>
+      </md-subheader>
+      <md-list-item ng-if="userRank" class="centeredText" ng-click="">
+        <div flex="100" layout layout-align="space-between center">
+          <div>{{userRank.pos}}</div>
+          <div flex="25">{{userRank.name}}</div>
+          <div>{{userRank.score}}</div>
+          <div>{{userRank.upload}}</div>
+          <div>{{userRank.rc}}</div>
+        </div>
+      </md-list-item>
+    </md-list>
   </md-dialog-content>
 </md-dialog>

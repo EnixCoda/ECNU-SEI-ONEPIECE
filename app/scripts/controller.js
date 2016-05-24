@@ -90,6 +90,17 @@ var Utility = {
     var sizeBody = sizeToString.substring(0, sizeToString.indexOf(".") > -1 ? sizeToString.indexOf(".") + 2 : 3);
     return sizeBody + tail;
   },
+  previewable: function (file) {
+    var filename = file.name;
+    switch (filename) {
+      case "jpg":
+      case "png":
+      case "gif":
+        return true;
+      default:
+        return false;
+    }
+  },
   isMobile: function () {
     var userAgent = navigator.userAgent;
     var isAndroid = userAgent.indexOf("Android") > -1 || userAgent.indexOf("Linux") > -1;
@@ -210,7 +221,7 @@ angular.module("app").controller("controller",
       return lessons;
     }
 
-    // guide user's way
+    // guide explorer's way
     function targetInDirectory(target, dir) {
       if (dir.isDir) {
         for (var i = 0; i < dir.content.length; i++) {
@@ -461,6 +472,7 @@ angular.module("app").controller("controller",
     };
     // show dialogs end
 
+    // top right menu's content
     $scope.topFuncs = [
       {
         func: $scope.showUserCenter,
@@ -483,16 +495,16 @@ angular.module("app").controller("controller",
         tip: "关于本站"
       }
     ];
-    
+
 
     // init
+    window.onresize = checkScreenSize();
     var index, lessons;
     $scope.user = {};
     loadFromCookie($scope.user);
     getIndex();
     $scope.isMobile = Utility.isMobile();
     $scope.delay = $scope.isMobile ? 300 : 200;
-    window.onresize = checkScreenSize();
   });
 
 // ----- other controllers start -----
@@ -505,8 +517,8 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   function getRate() {
     $scope.gettingRate = true;
     $http.post("controlCenter/getRate.php", {
-        fileId: file.id.toString()
-      })
+      fileId: file.id.toString()
+    })
       .then(function (response) {
         $scope.gettingRate = false;
         var responseData = response.data;
@@ -524,8 +536,8 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   function getComment() {
     $scope.gettingComment = true;
     $http.post("controlCenter/getComment.php", {
-        fileId: file.id.toString()
-      })
+      fileId: file.id.toString()
+    })
       .then(function (response) {
         $scope.gettingComment = false;
         var responseData = response.data;
@@ -549,10 +561,10 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
     if (angular.isNumber(rate)) {
       showToast("正在提交评分", "filePreviewToastBounds", "success");
       $http.post("controlCenter/rateFile.php", {
-          score: rate,
-          fileId: file.id.toString(),
-          token: user.token
-        })
+        score: rate,
+        fileId: file.id.toString(),
+        token: user.token
+      })
         .then(function (response) {
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
@@ -571,11 +583,11 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
     if ($scope.comment) {
       showToast("正在提交评论", "filePreviewToastBounds", "success");
       $http.post("controlCenter/commentFile.php", {
-          username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
-          comment: $scope.comment,
-          fileId: file.id.toString(),
-          token: user.token
-        })
+        username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
+        comment: $scope.comment,
+        fileId: file.id.toString(),
+        token: user.token
+      })
         .then(function (response) {
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
@@ -599,12 +611,13 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
   $scope.lesson = lesson;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
+  $scope.anonymous = false;
 
   function getComment() {
     $scope.gettingComment = true;
     $http.post("controlCenter/getLessonComment.php", {
-        lessonName: lesson.name
-      })
+      lessonName: lesson.name
+    })
       .then(function (response) {
         $scope.gettingComment = false;
         var responseData = response.data;
@@ -625,11 +638,11 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
     if ($scope.comment) {
       showToast("正在提交评论", "lessonPreviewToastBounds", "success");
       $http.post("controlCenter/commentLesson.php", {
-          username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
-          comment: $scope.comment,
-          lessonName: lesson.name,
-          token: user.token
-        })
+        username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
+        comment: $scope.comment,
+        lessonName: lesson.name,
+        token: user.token
+      })
         .then(function (response) {
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
@@ -771,18 +784,6 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path, showToa
 function RankingController($scope, $mdDialog, $http, user, showToast) {
   $scope.gettingRanking = true;
 
-  $scope.gridRules = [
-    {row: 3, col: 4, color: "#e64a19"},
-    {row: 2, col: 2, color: "#ff5722"},
-    {row: 2, col: 2, color: "#ff7043"},
-    {row: 1, col: 4, color: "#ffc107"},
-    {row: 1, col: 4, color: "#ffca28"},
-    {row: 1, col: 4, color: "#ffd54f"},
-    {row: 1, col: 4, color: "#ffeb3b"},
-    {row: 1, col: 4, color: "#ffee58"},
-    {row: 1, col: 4, color: "#fff176"},
-  ];
-  
   var data = {};
   if (user.loggedIn) {
     data.token = user.token;
@@ -796,18 +797,7 @@ function RankingController($scope, $mdDialog, $http, user, showToast) {
       }
       $scope.gettingRanking = false;
     }, function () {
-      $scope.ranking = [
-        {score: 100, name: "匿名"},
-        {score: 100, name: "哈哈哈"},
-        {score: 100, name: "名"},
-        {score: 100, name: "匿"},
-        {score: 100, name: "A"},
-        {score: 100, name: "B"},
-        {score: 100, name: "C"},
-        {score: 100, name: "D"},
-        {score: 100, name: "E"},
-      ];
-      $scope.userRank = 20;
+      $scope.gettingRanking = false;
       showToast("无法获取排行", "rankingToastBounds", "error");
     });
 
