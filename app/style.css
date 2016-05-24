@@ -14,7 +14,7 @@ md-input-container .md-errors-spacer {
     min-height: 0;
 }
 
-body, input, textarea {
+body, input, textarea, ._md-subheader-content {
     font-family: Roboto, "黑体";
 }
 
@@ -78,8 +78,12 @@ body, input, textarea {
     overflow: auto;
 }
 
+.hide-overflow {
+    overflow: hidden;
+}
+
 .light-background-color {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 .set-height-to-ac {
@@ -228,4 +232,8 @@ md-toast.md-warning-toast-theme .md-toast-content {
 
 .centeredText {
     text-align: center;
+}
+
+.rank-fail {
+    height: 128px;
 }

@@ -448,17 +448,18 @@ angular.module("app").controller("controller",
         }
       });
     };
-    $scope.showRanking = function (e) {
+    $scope.showRank = function (e) {
       $mdDialog.show({
         controller: RankingController,
-        templateUrl: "views/ranking.html",
+        templateUrl: "views/rank.html",
         locals: {
           user: $scope.user,
-          showToast: showToast
+          showToast: showToast,
+          showUserCenter: $scope.showUserCenter
         },
         targetEvent: e,
         fullscreen: $mdMedia('xs'),
-        clickOutsideToClose: true
+        clickOutsideToClose: false
       });
     };
     $scope.showAbout = function (e) {
@@ -485,7 +486,7 @@ angular.module("app").controller("controller",
         tip: "上传资料"
       },
       {
-        func: $scope.showRanking,
+        func: $scope.showRank,
         icon: "format_list_numbered",
         tip: "贡献度排行"
       },
@@ -781,30 +782,87 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path, showToa
   };
 }
 
-function RankingController($scope, $mdDialog, $http, user, showToast) {
-  $scope.gettingRanking = true;
+function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, user, showToast, showUserCenter) {
+  $scope.user = user;
+  $scope.showUserCenter = showUserCenter;
 
+  $scope.status = "GETTING";
   var data = {};
   if (user.loggedIn) {
     data.token = user.token;
   }
-  $http.post("controlCenter/getRanking.php", data)
+  $http.post("controlCenter/getRank.php", data)
     .then(function (response) {
       var responseData = response.data;
       if (responseData["res_code"] == 0) {
-        $scope.ranking = responseData["data"]["ranking"];
+        $scope.rank = responseData["data"]["rank"];
         $scope.userRank = responseData["data"]["userRank"];
+        $scope.status="SUCCESS";
+      } else {
+        $scope.status="FAIL";
       }
-      $scope.gettingRanking = false;
     }, function () {
-      $scope.gettingRanking = false;
-      showToast("无法获取排行", "rankingToastBounds", "error");
+      $scope.status="FAIL";
+      showToast("无法获取排行", "rankToastBounds", "error");
     });
 
+  $scope.showRule = function () {
+    $mdBottomSheet.show({
+      template: '' +
+      '<md-bottom-sheet class="md-list md-has-header">' +
+      '  <md-list class="no-padding-top">' +
+      '    <md-subheader class="md-no-sticky">计分规则</md-subheader>' +
+      '    <md-divider></md-divider>' +
+      '    <md-list-item>' +
+      '      <div flex="100" layout layout-align="space-between center">' +
+      '        <div>上传新文件</div>' +
+      '        <div>+10分</div>' +
+      '      </div>' +
+      '    </md-list-item>' +
+      '    <md-list-item>' +
+      '      <div flex="100" layout layout-align="space-between center">' +
+      '        <div>文件被垃圾回收处理</div>' +
+      '        <div>-20分</div>' +
+      '      </div>' +
+      '    </md-list-item>' +
+      '    <md-list-item>' +
+      '      <div flex="100" layout layout-align="space-between center">' +
+      '        <div>为文件作出评分</div>' +
+      '        <div>+1分</div>' +
+      '      </div>' +
+      '    </md-list-item>' +
+      '    <md-list-item>' +
+      '      <div flex="100" layout layout-align="space-between center">' +
+      '        <div>为文件撰写评价</div>' +
+      '        <div>+3分</div>' +
+      '      </div>' +
+      '    </md-list-item>' +
+      '    <md-list-item>' +
+      '      <div>' +
+      '      *文件的评分将计入其上传者的总分' +
+      '      </div>' +
+      '    </md-list-item>' +
+      '  </md-list>' +
+      '  <div layout layout-align="end">' +
+      '    <md-button class="md-raised" ng-click="close()">关闭</md-button>' +
+      '  </div>' +
+      '</md-bottom-sheet>' +
+      '',
+      controller: RuleController,
+      clickOutsideToClose: false,
+      parent: $document[0].querySelector("#ruleBottomSheetBounds")
+    })
+  };
 
   $scope.close = function () {
     $mdDialog.cancel();
   }
+}
+
+function RuleController($scope, $mdBottomSheet) {
+  $scope.close = function () {
+    $mdBottomSheet.hide();
+  };
 }
 
 function AboutController($scope, $mdDialog) {
