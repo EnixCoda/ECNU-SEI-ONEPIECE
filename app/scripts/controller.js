@@ -278,9 +278,8 @@ angular.module("app").controller("controller",
     $scope.download = download;
     $scope.downloadLesson = function (lesson) {
       var data = {
-        key: directoryStack.map(function (cur) {
-          return cur.name;
-        }).join("/") + lesson.name
+        token: $scope.user.token,
+        lesson: lesson.name
       };
       $http.post("controlCenter/downloadLesson.php", data)
         .then(function (response) {
@@ -288,11 +287,11 @@ angular.module("app").controller("controller",
             if (responseData["res_code"] == 0) {
               window.open(responseData["data"]["link"]);
             } else {
-              showToast(responseData["msg"], "", "error", false);
+              showToast(responseData["msg"], "bodyToastBounds", "error", false);
             }
           },
           function () {
-            showToast("下载课程文件失败", "", "error", false);
+            showToast("下载课程文件失败", "bodyToastBounds", "error", false);
           });
     };
 

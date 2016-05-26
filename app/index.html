@@ -149,7 +149,7 @@
                 </md-button>
               </md-menu-item>
               <md-menu-item>
-                <md-button ng-click="downloadLesson(content)">
+                <md-button ng-click="downloadLesson(content)" ng-disabled="!user.loggedIn">
                   <md-icon class="material-icons adjust-icon-top-margin-down">file_download</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>打包下载</p>
