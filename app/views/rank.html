@@ -50,24 +50,27 @@
           </md-progress-circular>
         </div>
       </md-list-item>
-      <md-list-item ng-if="status=='FAIL'">
-        <div flex="100" layout layout-align="center center">
-          获取排名失败
-        </div>
-      </md-list-item>
-      <md-list-item ng-if="user.loggedIn && status=='SUCCESS'" class="centeredText" ng-click="">
-        <div flex="100" layout layout-align="space-between center">
-          <div>{{userRank.pos}}</div>
-          <div flex="25">{{userRank.name}}</div>
-          <div>{{userRank.total}}</div>
-          <div>{{userRank.upload}}</div>
-          <div>{{userRank.rc}}</div>
-        </div>
-      </md-list-item>
-      <md-list-item ng-show="!user.loggedIn">
+      <div ng-if="user.loggedIn">
+        <md-list-item ng-if="status=='FAIL'">
+          <div flex="100" layout layout-align="center center">
+            获取排名失败
+          </div>
+        </md-list-item>
+        <md-list-item ng-if="status=='SUCCESS'" class="centeredText" ng-click="">
+          <div flex="100" layout layout-align="space-between center">
+            <div>{{userRank.pos}}</div>
+            <div flex="25">{{userRank.name}}</div>
+            <div>{{userRank.total}}</div>
+            <div>{{userRank.upload}}</div>
+            <div>{{userRank.rc}}</div>
+          </div>
+        </md-list-item>
+      </div>
+      <md-list-item ng-show="!user.loggedIn" layout layout-padding="space-between center">
         <div>使用校内数据库账户登录后即可查看你的排名。</div>
-        <div flex></div>
-        <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
+        <div>
+          <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
+        </div>
       </md-list-item>
     </md-list>
     <div id="ruleBottomSheetBounds" layout layout-align="end">

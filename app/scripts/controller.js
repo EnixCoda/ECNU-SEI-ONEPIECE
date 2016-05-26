@@ -276,6 +276,25 @@ angular.module("app").controller("controller",
       $mdOpenMenu($e);
     };
     $scope.download = download;
+    $scope.downloadLesson = function (lesson) {
+      var data = {
+        key: directoryStack.map(function (cur) {
+          return cur.name;
+        }).join("/") + lesson.name
+      };
+      $http.post("controlCenter/downloadLesson.php", data)
+        .then(function (response) {
+            var responseData = response["data"];
+            if (responseData["res_code"] == 0) {
+              window.open(responseData["data"]["link"]);
+            } else {
+              showToast(responseData["msg"], "", "error", false);
+            }
+          },
+          function () {
+            showToast("下载课程文件失败", "", "error", false);
+          });
+    };
 
     // provide search functionality to auto-complete
     $scope.lessonSearch = {
@@ -525,6 +544,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
         var responseData = response.data;
         if (responseData["res_code"] === 0) {
           $scope.totalScore = responseData["data"]["total_score"];
+          file.score = $scope.totalScore;
         } else {
           showToast(responseData["msg"], "filePreviewToastBounds", "error");
         }
@@ -797,12 +817,12 @@ function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, 
       if (responseData["res_code"] == 0) {
         $scope.rank = responseData["data"]["rank"];
         $scope.userRank = responseData["data"]["userRank"];
-        $scope.status="SUCCESS";
+        $scope.status = "SUCCESS";
       } else {
-        $scope.status="FAIL";
+        $scope.status = "FAIL";
       }
     }, function () {
-      $scope.status="FAIL";
+      $scope.status = "FAIL";
       showToast("无法获取排行", "rankToastBounds", "error");
     });
 
@@ -811,7 +831,7 @@ function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, 
       template: '' +
       '<md-bottom-sheet class="md-list md-has-header">' +
       '  <md-list class="no-padding-top">' +
-      '    <md-subheader class="md-no-sticky">计分规则</md-subheader>' +
+      '    <md-subheader class="md-no-sticky"><h3>计分规则</h3></md-subheader>' +
       '    <md-divider></md-divider>' +
       '    <md-list-item>' +
       '      <div flex="100" layout layout-align="space-between center">' +
@@ -843,6 +863,7 @@ function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, 
       '      </div>' +
       '    </md-list-item>' +
       '  </md-list>' +
+      '  <md-divider></md-divider>' +
       '  <div layout layout-align="end">' +
       '    <md-button class="md-raised" ng-click="close()">关闭</md-button>' +
       '  </div>' +
