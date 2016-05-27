@@ -234,6 +234,6 @@ md-toast.md-warning-toast-theme .md-toast-content {
     text-align: center;
 }
 
-.rank-fail {
-    height: 128px;
+.rank-supporter {
+    min-height: 288px;
 }
