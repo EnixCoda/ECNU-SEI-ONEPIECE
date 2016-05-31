@@ -1,0 +1,112 @@
+<md-dialog class="upload-dialog">
+  <md-toolbar id="editToastBounds">
+    <div class="md-toolbar-tools">
+      <h2>修改文件或文件夹</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="close()">
+        <md-icon md-svg-src="md-close" aria-label="Close dialog"></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <md-content layout-padding>
+      <div>
+        * 在此你可以为站内文件作出修改：<br>
+        * 为文件或文件夹进行重命名、移动、“删除”等操作。<br>
+        * “删除”操作不会将文件从站点删除，而是移入对应课程下的“压缩空间”目录。<br>
+        * “压缩空间”中存储的文件均为过期/无用文件，为避免不当使用，该目录仅对贡献度较高的用户开放。<br>
+        * 为了站内文件的有序性，请仔细阅读根目录的“管理规则.txt”后根据规则进行操作。<br>
+        * 你提交的修改可能不会立即生效，为防止不当使用，当一定数量的用户提交了同样的修改意见后控制台才会执行对应修改操作。<br>
+      </div>
+      <md-divider></md-divider>
+      <div>
+        你将要{{actionName}}的是：{{original}}
+      </div>
+      <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="移动" ng-click="nameAction('移动')">
+          <md-content layout-padding>
+            <div layout layout-align="space-between center">
+              <div layout="column">
+                <div>
+                  * 操作范例：<br>
+                  * 假设你需要将“专业必修课程”下的“C语言程序设计”移动至“专业选修课程”下<br>
+                  * 则应在下方菜单中选择 ONEPIECE, 专业选修课程, C语言程序设计(通常需要新建该文件夹)<br>
+                </div>
+                <div>目标位置：</div>
+                <div layout layout-wrap>
+                  <md-input-container class="locator-input-container" ng-repeat="dir in newPath track by $index">
+                    <md-select aria-label="locator" ng-if="$index === 0" ng-model="dir">
+                      <md-option ng-value="dir">{{dir.name}}</md-option>
+                    </md-select>
+                    <md-select aria-label="locator" ng-if="$index > 0" ng-model="newPath[$index]"
+                               ng-change="cutTail($index)">
+                      <md-option ng-repeat="content in newPath[$index - 1].content" ng-if="content.isDir"
+                                 ng-value="content">
+                        {{content.name}}
+                      </md-option>
+                      <md-option ng-if="$index > 1" ng-click="createDir($index - 1)" ng-value="0">
+                        <i>新建文件夹* </i>
+                      </md-option>
+                    </md-select>
+                  </md-input-container>
+                  <md-input-container class="locator-input-container" ng-show="!namingDirDepth" aria-label="locator">
+                    <md-select aria-label="locator" ng-model="nextDir" ng-change="pushNext()">
+                      <md-option ng-repeat="item in newPath[newPath.length - 1].content" ng-if="item.isDir"
+                                 ng-value="item">
+                        {{item.name}}
+                      </md-option>
+                      <md-option ng-if="newPath.length > 1" ng-click="createDir(newPath.length)" ng-value="0">
+                        <i>新建文件夹* </i>
+                      </md-option>
+                    </md-select>
+                  </md-input-container>
+                  <md-input-container class="locator-input-container" ng-show="namingDirDepth" aria-label="locator">
+                    <label>
+                      新文件夹名(回车确认)
+                    </label>
+                    <input ng-keypress="namingDirKeyPress($event)" ng-blur="cancelCreateDir()" ng-model="newDirName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
+                  </md-input-container>
+                </div>
+              </div>
+            </div>
+            <div layout layout-align="end center">
+              <md-button ng-disabled="newPath.length<3" class="md-raised" ng-class="newPath.length<3?'':'md-primary'"
+                         ng-click="submit('MOVE')">提交
+              </md-button>
+            </div>
+          </md-content>
+        </md-tab>
+        <md-tab label="删除" ng-click="nameAction('删除')">
+          <md-content layout-padding>
+            <div>
+              * 请确认该文件或该文件夹内的文件都至少满足以下条件之一:<br>
+              * - 资料过时/已有替代品<br>
+              * - 资料质量过低<br>
+              * - 不适用于学习用途<br>
+            </div>
+            <div layout layout-align="end center">
+              <md-button class="md-raised md-warn" ng-click="submit('TRASH')">提交
+              </md-button>
+            </div>
+          </md-content>
+        </md-tab>
+        <md-tab label="重命名" ng-click="nameAction('重命名')">
+          <md-content layout-padding>
+            <div layout layout-align="center center">
+              <md-input-container aria-label="new name">
+                <label>
+                  新名称
+                </label>
+                <input ng-model="newName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
+              </md-input-container>
+            </div>
+            <div layout layout-align="end center">
+              <md-button ng-disabled="!newName" class="md-raised md-primary" ng-click="submit('RENAME')">提交
+              </md-button>
+            </div>
+          </md-content>
+        </md-tab>
+      </md-tabs>
+    </md-content>
+  </md-dialog-content>
+</md-dialog>

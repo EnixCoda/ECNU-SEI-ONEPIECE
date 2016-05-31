@@ -127,7 +127,7 @@
               </md-progress-circular>
             </div>
           </md-button>
-          <md-menu class="no-padding-top no-padding-bottom" ng-if="content.isLesson"
+          <md-menu class="no-padding-top no-padding-bottom" ng-if="!content.isDir && directoryStack.length > 2"
                    md-position-mode="target-right target">
             <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)"
                        layout-align="center center">
@@ -135,13 +135,36 @@
             </md-button>
             <md-menu-content width="3">
               <md-menu-item>
+                <md-button ng-click="showEdit(content, $event)" ng-disabled="!user.loggedIn">
+                  <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
+                  <div flex></div>
+                  <p md-menu-align-target>修改文件</p>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item>
+                <md-button ng-click="" ng-disabled="true">
+                  <md-icon class="material-icons adjust-icon-top-margin-down">add</md-icon>
+                  <div flex></div>
+                  <p md-menu-align-target>其他功能</p>
+                </md-button>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+          <md-menu class="no-padding-top no-padding-bottom" ng-if="content.isDir && directoryStack.length > 1"
+                   md-position-mode="target-right target">
+            <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)"
+                       layout-align="center center">
+              <md-icon class="material-icons adjust-icon-top-margin-up-3 color-primary">more_vert</md-icon>
+            </md-button>
+            <md-menu-content width="3">
+              <md-menu-item ng-if="content.isLesson">
                 <md-button ng-click="showLessonPreview(content, $event)">
                   <md-icon class="material-icons adjust-icon-top-margin-down color-primary">feedback</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>课程评价</p>
                 </md-button>
               </md-menu-item>
-              <md-menu-item>
+              <md-menu-item ng-if="content.isLesson">
                 <md-button ng-click="downloadLesson(content)" ng-disabled="!user.loggedIn">
                   <md-icon class="material-icons adjust-icon-top-margin-down color-primary">file_download</md-icon>
                   <div flex></div>
@@ -149,10 +172,10 @@
                 </md-button>
               </md-menu-item>
               <md-menu-item>
-                <md-button ng-disabled="true">
-                  <md-icon class="material-icons adjust-icon-top-margin-down">report_problem</md-icon>
+                <md-button ng-click="showEdit(content, $event)" ng-disabled="!user.loggedIn">
+                  <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                   <div flex></div>
-                  <p md-menu-align-target>举报滥用</p>
+                  <p md-menu-align-target>修改文件夹</p>
                 </md-button>
               </md-menu-item>
               <md-menu-item>

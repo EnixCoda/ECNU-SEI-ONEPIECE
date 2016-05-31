@@ -349,6 +349,21 @@ angular.module("app").controller("controller",
       });
     }
 
+    $scope.showEdit = function (item, e) {
+      $mdDialog.show({
+        controller: EditController,
+        templateUrl: "views/edit.html",
+        targetEvent: e,
+        locals: {
+          item: item,
+          path: $scope.directoryStack,
+          user: $scope.user,
+          showToast: showToast
+        },
+        fullscreen: $mdMedia('xs'),
+        clickOutsideToClose: true
+      });
+    };
     $scope.showLessonPreview = function (lesson, e) {
       $mdDialog.show({
         controller: LessonPreviewController,
@@ -393,7 +408,7 @@ angular.module("app").controller("controller",
           showToast: showToast
         },
         onComplete: function (uploadControllerScope) {
-          var QUploader = Qiniu.uploader({
+          uploadControllerScope.QUploader = Qiniu.uploader({
             runtimes: 'html5',
             browse_button: 'pickfiles',
             uptoken_url: 'controlCenter/genToken.php',
@@ -462,7 +477,6 @@ angular.module("app").controller("controller",
               }
             }
           });
-          uploadControllerScope.QUploader = QUploader;
         }
       });
     };
@@ -527,6 +541,133 @@ angular.module("app").controller("controller",
   });
 
 // ----- other controllers start -----
+function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
+  $scope.original = [].concat(path).concat([item]).map(function (cur) {
+    return cur.name;
+  }).join("/");
+
+  $scope.actionName = "移动";
+  $scope.nameAction = function (actionName) {
+    $scope.actionName = actionName;
+  };
+  //          view of Qiniu
+  // MOVE     uuid + old prefix + old name >> new prefix + old name
+  // TRASH    uuid + old prefix + old name >> new prefix + old name // another kind of move
+  // RENAME   uuid + old prefix + old name >> old prefix + new name
+
+  // server   uuid + old prefix + new prefix: all files with old prefix >> with new prefix
+
+  // MOVE/TRASH
+  $scope.newPath = [].concat(path);
+  var newPath = $scope.newPath;
+  $scope.nextDir = undefined;
+  $scope.newDirName = "";
+  $scope.namingDirDepth = 0;
+
+  $scope.cutTail = function (depth) {
+    while (newPath.length > depth + 1) {
+      newPath.pop();
+    }
+  };
+
+  $scope.createDir = function (depth) {
+    while (newPath.length > depth + 1) {
+      newPath.pop();
+    }
+    $scope.namingDirDepth = depth;
+  };
+
+  $scope.namingDirKeyPress = function (e) {
+    if (e.keyCode == 13 && $scope.newDirName) {
+      $scope.saveDir($scope.newDirName);
+    }
+  };
+
+  $scope.pushNext = function () {
+    if ($scope.nextDir) {
+      $scope.newPath.push($scope.nextDir);
+    }
+  };
+
+  $scope.saveDir = function (name) {
+    var newDir = {
+      name: name,
+      content: [],
+      isDir: true
+    };
+    if ($scope.newPath[$scope.newPath.length - 1] === 0) {
+      $scope.newPath.pop();
+    }
+    $scope.newPath[$scope.newPath.length - 1].content.push(newDir);
+    $scope.newPath.push(newDir);
+    $scope.namingDirDepth = 0;
+    $scope.newDirName = "";
+    $scope.nextDir = undefined;
+  };
+
+  $scope.cancelCreateDir = function () {
+    if ($scope.namingDirDepth) {
+      $scope.newPath[$scope.namingDirDepth] = $scope.newPath[$scope.namingDirDepth - 1]["content"].map(function (cur) {
+        if (cur.isDir) return cur;
+      })[0];
+      $scope.namingDirDepth = 0;
+      $scope.nextDir = undefined;
+    }
+  };
+
+  // RENAME
+  $scope.newName = "";
+
+  $scope.submit = function (type) {
+    var data = {
+      type: type,
+      token: user.token,
+      original: $scope.original
+    };
+    switch (type) {
+      case "MOVE":
+        if (newPath.length < 3) {
+          showToast("无法移动到目标路径", "editToastBounds", "warning");
+          return;
+        }
+        data["edit"] = newPath.map(function (cur) {
+          return cur.name;
+        }).join("/");
+        break;
+      case "TRASH":
+        data["edit"] = "";
+        break;
+      case "RENAME":
+        data["edit"] = [].concat(path).map(function (cur) {
+            return cur.name;
+          }).join("/") + "/" + $scope.newName;
+        break;
+      default:
+        return;
+    }
+    if (data["edit"] == $scope.original) {
+      showToast("未作出修改", "editToastBounds", "warning");
+      return;
+    }
+    $http.post("controlCenter/edit.php", data)
+      .then(function (response) {
+          var responseData = response["data"];
+          if (responseData["res_code"] == 0) {
+            showToast(responseData["msg"], "editToastBounds", "success")
+          } else {
+            showToast(responseData["msg"], "editToastBounds", "error");
+          }
+        },
+        function () {
+          showToast("无法连接到服务器", "editToastBounds", "error");
+        });
+  };
+
+  $scope.close = function () {
+    $mdDialog.cancel();
+  };
+}
+
 function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCenter, showToast, download) {
   $scope.file = file;
   $scope.user = user;
@@ -733,12 +874,12 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path, showToa
   $scope.showUserCenter = showUserCenter;
   $scope.path = path;
 
+  $scope.doneFiles = [];
+
   $scope.nextDir = undefined;
   $scope.newDirName = "";
   $scope.namingDirDepth = 0;
   $scope.uploadingCount = 0;
-
-  $scope.doneFiles = [];
 
   $scope.cutTail = function (depth) {
     while (path.length > depth + 1) {
@@ -747,7 +888,7 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path, showToa
   };
 
   $scope.createDir = function (depth) {
-    while (path.length > depth) {
+    while (path.length > depth + 1) {
       path.pop();
     }
     $scope.namingDirDepth = depth;
@@ -779,6 +920,16 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path, showToa
     $scope.namingDirDepth = 0;
     $scope.newDirName = "";
     $scope.nextDir = undefined;
+  };
+
+  $scope.cancelCreateDir = function () {
+    if ($scope.namingDirDepth) {
+      $scope.path[$scope.namingDirDepth] = $scope.path[$scope.namingDirDepth - 1]["content"].map(function (cur) {
+        if (cur.isDir) return cur;
+      })[0];
+      $scope.namingDirDepth = 0;
+      $scope.nextDir = undefined;
+    }
   };
 
   $scope.startUpload = function () {

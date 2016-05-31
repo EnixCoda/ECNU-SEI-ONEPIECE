@@ -15,7 +15,7 @@
         * 请遵照管理规则确定你要上传的资料的名称、位置。<br>
         * 请确认你要上传的是本站没有的高质量资料，或质量远高于本站已有的资料。<br>
         * 每个文件大小限制为200MB。<br>
-        * 注：目前本站不支持iOS设备通过Safari浏览器访问时上传文件，Edge浏览器。<br>
+        * 注：目前不支持Edge浏览器/iOS版Safari浏览器访问时上传文件。<br>
       </div>
       <md-divider></md-divider>
       <div ng-show="!user.loggedIn">
@@ -27,8 +27,7 @@
           <div layout="column">
             <div>目标上传位置：</div>
             <div layout layout-wrap>
-              <md-input-container class="locator-input-container" ng-repeat="dir in path track by $index"
-              >
+              <md-input-container class="locator-input-container" ng-repeat="dir in path track by $index">
                 <md-select aria-label="locator" ng-if="$index === 0" ng-model="dir">
                   <md-option ng-value="dir">{{dir.name}}</md-option>
                 </md-select>
@@ -36,7 +35,7 @@
                   <md-option ng-repeat="content in path[$index - 1].content" ng-if="content.isDir" ng-value="content">
                     {{content.name}}
                   </md-option>
-                  <md-option ng-if="$index > 1" ng-click="createDir($index)" ng-value="0">
+                  <md-option ng-if="$index > 1" ng-click="createDir($index - 1)" ng-value="0">
                     <i>新建文件夹* </i>
                   </md-option>
                 </md-select>
@@ -46,16 +45,16 @@
                   <md-option ng-repeat="item in path[path.length - 1].content" ng-if="item.isDir" ng-value="item">
                     {{item.name}}
                   </md-option>
-                  <md-option ng-if="path.length > 1" ng-click="createDir(path.length + 1)" ng-value="0">
+                  <md-option ng-if="path.length > 1" ng-click="createDir(path.length)" ng-value="0">
                     <i>新建文件夹* </i>
                   </md-option>
                 </md-select>
               </md-input-container>
               <md-input-container class="locator-input-container" ng-show="namingDirDepth" aria-label="locator">
                 <label>
-                  新文件夹名
+                  新文件夹名(回车确认)
                 </label>
-                <input ng-keypress="namingDirKeyPress($event)" ng-model="newDirName">
+                <input ng-keypress="namingDirKeyPress($event)" ng-blur="cancelCreateDir()" ng-model="newDirName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
               </md-input-container>
             </div>
           </div>
