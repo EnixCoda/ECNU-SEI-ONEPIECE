@@ -20,7 +20,44 @@
       </div>
       <md-divider></md-divider>
       <div>
-        你将要{{actionName}}的是：{{original}}
+        你要{{actionName}}的是：{{original}}
+      </div>
+      <md-divider></md-divider>
+      <div ng-if="getEditsStatus != 2">
+        <div ng-if="getEditsStatus==0">
+          <md-progress-circular md-mode="indeterminate" md-diameter="20"></md-progress-circular>
+        </div>
+        <div ng-if="getEditsStatus==1">
+          <md-list>
+            <md-subheader>
+              已提交的修改意见
+            </md-subheader>
+            <md-list-item ng-repeat="move in edits.MOVE">
+              <p>移动到"{{move[0]}}"</p>
+              <md-button class="md-raised md-secondary md-icon-button" ng-click="submit('MOVE', move[0])">
+                {{move[1]}}
+                <md-tooltip md-direction="left">+1</md-tooltip>
+              </md-button>
+            </md-list-item>
+            <md-list-item ng-repeat="rename in edits.RENAME">
+              <p>重命名为"{{rename[0]}}"</p>
+              <md-button class="md-raised md-secondary md-icon-button" ng-click="submit('RENAME', rename[0])">
+                {{rename[1]}}
+                <md-tooltip md-direction="left">+1</md-tooltip>
+              </md-button>
+            </md-list-item>
+            <md-list-item ng-if="edits.TRASH > 0">
+              <p>删除</p>
+              <md-button class="md-raised md-secondary md-icon-button" ng-click="submit('TRASH', '')">
+                {{edits.TRASH}}
+                <md-tooltip md-direction="left">+1</md-tooltip>
+              </md-button>
+            </md-list-item>
+          </md-list>
+        </div>
+        <div ng-if="getEditsStatus==2">
+          获取其他修改意见失败
+        </div>
       </div>
       <md-tabs md-dynamic-height md-border-bottom>
         <md-tab label="移动" ng-click="nameAction('移动')">
@@ -31,6 +68,7 @@
                   * 操作范例：<br>
                   * 假设你需要将“专业必修课程”下的“C语言程序设计”移动至“专业选修课程”下<br>
                   * 则应在下方菜单中选择 ONEPIECE, 专业选修课程, C语言程序设计(通常需要新建该文件夹)<br>
+                  * 注：如此设计，虽然有时需要手动建立文件夹可以，但令“移动”功能具备“重命名”的能力，可以避免重复提交重命名请求<br>
                 </div>
                 <div>目标位置：</div>
                 <div layout layout-wrap>
@@ -64,7 +102,8 @@
                     <label>
                       新文件夹名(回车确认)
                     </label>
-                    <input ng-keypress="namingDirKeyPress($event)" ng-blur="cancelCreateDir()" ng-model="newDirName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
+                    <input ng-keypress="namingDirKeyPress($event)" ng-blur="cancelCreateDir()" ng-model="newDirName"
+                           ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
                   </md-input-container>
                 </div>
               </div>

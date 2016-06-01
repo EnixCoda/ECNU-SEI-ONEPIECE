@@ -542,9 +542,32 @@ angular.module("app").controller("controller",
 
 // ----- other controllers start -----
 function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
+  var statuses = ["GETTING", "SUCCESS", "FAIL"];
+  $scope.getEditsStatus = 0;
+
+  $http.post("controlCenter/getEdit.php", {
+    path: path.map(function (cur) {
+      return cur.name;
+    }).join("/") + "/" + item.name
+  })
+    .then(function (response) {
+        var responseData = response["data"];
+        if (responseData["res_code"] == 0) {
+          $scope.edits = responseData["data"]["edits"];
+          $scope.getEditsStatus = 1;
+        } else {
+          showToast(responseData["msg"], "editToastBounds", "error");
+          $scope.getEditsStatus = 2;
+        }
+      },
+      function () {
+        showToast("无法连接到服务器", "editToastBounds", "error");
+        $scope.getEditsStatus = 2;
+      });
+
   $scope.original = [].concat(path).concat([item]).map(function (cur) {
     return cur.name;
-  }).join("/");
+  }).slice(1).join("/");
 
   $scope.actionName = "移动";
   $scope.nameAction = function (actionName) {
@@ -618,32 +641,36 @@ function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
   // RENAME
   $scope.newName = "";
 
-  $scope.submit = function (type) {
+  $scope.submit = function (type, edit) {
     var data = {
       type: type,
       token: user.token,
       original: $scope.original
     };
-    switch (type) {
-      case "MOVE":
-        if (newPath.length < 3) {
-          showToast("无法移动到目标路径", "editToastBounds", "warning");
-          return;
-        }
-        data["edit"] = newPath.map(function (cur) {
-          return cur.name;
-        }).join("/");
-        break;
-      case "TRASH":
-        data["edit"] = "";
-        break;
-      case "RENAME":
-        data["edit"] = [].concat(path).map(function (cur) {
+    if (!edit) {
+      switch (type) {
+        case "MOVE":
+          if (newPath.length < 3) {
+            showToast("无法移动到目标路径", "editToastBounds", "warning");
+            return;
+          }
+          data["edit"] = newPath.map(function (cur) {
             return cur.name;
-          }).join("/") + "/" + $scope.newName;
-        break;
-      default:
-        return;
+          }).slice(1).join("/");
+          break;
+        case "TRASH":
+          data["edit"] = "";
+          break;
+        case "RENAME":
+          data["edit"] = [].concat(path).map(function (cur) {
+              return cur.name;
+            }).slice(1).join("/") + "/" + $scope.newName;
+          break;
+        default:
+          return;
+      }
+    } else {
+      data["edit"] = edit;
     }
     if (data["edit"] == $scope.original) {
       showToast("未作出修改", "editToastBounds", "warning");
