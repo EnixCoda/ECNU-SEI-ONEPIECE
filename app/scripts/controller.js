@@ -575,14 +575,7 @@ function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
   $scope.nameAction = function (actionName) {
     $scope.actionName = actionName;
   };
-  //          view of Qiniu
-  // MOVE     uuid + old prefix + old name >> new prefix + old name
-  // TRASH    uuid + old prefix + old name >> new prefix + old name // another kind of move
-  // RENAME   uuid + old prefix + old name >> old prefix + new name
-
-  // server   uuid + old prefix + new prefix: all files with old prefix >> with new prefix
-
-  // MOVE/TRASH
+  
   $scope.newPath = [].concat(path);
   var newPath = $scope.newPath;
   $scope.nextDir = undefined;
@@ -772,11 +765,12 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   $scope.sendComment = function () {
     if ($scope.comment) {
       showToast("正在提交评论", "filePreviewToastBounds", "success");
-      $http.post("controlCenter/commentFile.php", {
+      $http.post("controlCenter/comment.php", {
         username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
         comment: $scope.comment,
         fileId: file.id.toString(),
-        token: user.token
+        token: user.token,
+        type: "file"
       })
         .then(function (response) {
           var responseData = response.data;
@@ -827,11 +821,12 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
   $scope.sendComment = function () {
     if ($scope.comment) {
       showToast("正在提交评论", "lessonPreviewToastBounds", "success");
-      $http.post("controlCenter/commentLesson.php", {
+      $http.post("controlCenter/comment.php", {
         username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
         comment: $scope.comment,
         lessonName: lesson.name,
-        token: user.token
+        token: user.token,
+        type: "lesson"
       })
         .then(function (response) {
           var responseData = response.data;
