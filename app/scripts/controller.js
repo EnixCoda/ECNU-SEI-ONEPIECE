@@ -542,6 +542,8 @@ angular.module("app").controller("controller",
 
 // ----- other controllers start -----
 function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
+  $scope.item = item;
+
   var statuses = ["GETTING", "SUCCESS", "FAIL"];
   $scope.getEditsStatus = 0;
 

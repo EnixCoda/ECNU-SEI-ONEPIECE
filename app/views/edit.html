@@ -18,11 +18,6 @@
         * 为了站内文件的有序性，请仔细阅读根目录的“管理规则.txt”后根据规则进行操作。<br>
         * 你提交的修改可能不会立即生效，为防止不当使用，当一定数量的用户提交了同样的修改意见后控制台才会执行对应修改操作。<br>
       </div>
-      <md-divider></md-divider>
-      <div>
-        你要{{actionName}}的是：{{original}}
-      </div>
-      <md-divider></md-divider>
       <div ng-if="getEditsStatus != 2">
         <div ng-if="getEditsStatus==0">
           <md-progress-circular md-mode="indeterminate" md-diameter="20"></md-progress-circular>
@@ -30,7 +25,7 @@
         <div ng-if="getEditsStatus==1">
           <md-list>
             <md-subheader>
-              已提交的修改意见
+              已提交的修改意见汇总：
             </md-subheader>
             <md-list-item ng-repeat="move in edits.MOVE">
               <p>移动到"{{move[0]}}"</p>
@@ -58,6 +53,10 @@
         <div ng-if="getEditsStatus==2">
           获取其他修改意见失败
         </div>
+      </div>
+      <md-divider></md-divider>
+      <div>
+        你要{{actionName}}的是：{{original}}
       </div>
       <md-tabs md-dynamic-height md-border-bottom>
         <md-tab label="移动" ng-click="nameAction('移动')">
@@ -118,7 +117,7 @@
         <md-tab label="删除" ng-click="nameAction('删除')">
           <md-content layout-padding>
             <div>
-              * 请确认该文件或该文件夹内的文件都至少满足以下条件之一:<br>
+              * 请确认{{item.isDir?"该文件夹内的文件":"该文件"}}都至少满足以下条件之一:<br>
               * - 资料过时/已有替代品<br>
               * - 资料质量过低<br>
               * - 不适用于学习用途<br>
