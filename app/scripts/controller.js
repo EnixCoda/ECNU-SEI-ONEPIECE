@@ -719,7 +719,8 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   function getComment() {
     $scope.gettingComment = true;
     $http.post("controlCenter/getComment.php", {
-      fileId: file.id.toString()
+      key: file.id.toString(),
+      type: "file"
     })
       .then(function (response) {
         $scope.gettingComment = false;
@@ -768,7 +769,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
       $http.post("controlCenter/comment.php", {
         username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
         comment: $scope.comment,
-        fileId: file.id.toString(),
+        key: file.id.toString(),
         token: user.token,
         type: "file"
       })
@@ -799,8 +800,9 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
 
   function getComment() {
     $scope.gettingComment = true;
-    $http.post("controlCenter/getLessonComment.php", {
-      lessonName: lesson.name
+    $http.post("controlCenter/getComment.php", {
+      key: lesson.name,
+      type: "lesson"
     })
       .then(function (response) {
         $scope.gettingComment = false;
@@ -824,7 +826,7 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
       $http.post("controlCenter/comment.php", {
         username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
         comment: $scope.comment,
-        lessonName: lesson.name,
+        key: lesson.name,
         token: user.token,
         type: "lesson"
       })
