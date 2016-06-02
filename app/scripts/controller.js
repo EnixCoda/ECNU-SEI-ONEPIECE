@@ -544,7 +544,7 @@ angular.module("app").controller("controller",
 function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
   $scope.item = item;
 
-  var statuses = ["GETTING", "SUCCESS", "FAIL"];
+  // statuses: ["GETTING", "SUCCESS", "FAIL"]
   $scope.getEditsStatus = 0;
 
   $http.post("controlCenter/getEdit.php", {
@@ -1127,7 +1127,7 @@ function setCookie(cookieName, cookieValue, expires) {
 function clearCookie() {
   var OneMonthAgo = new Date();
   OneMonthAgo.setMonth(OneMonthAgo.getMonth() - 1);
-  var expire_s = OneMonthAgo.toGMTString();
+  var expire_s = OneMonthAgo.toUTCString();
   setCookie("stuId", "", expire_s);
   setCookie("token", "", expire_s);
   setCookie("cademy", "", expire_s);
@@ -1137,7 +1137,7 @@ function clearCookie() {
 function saveToCookie(user) {
   var OneMonthLater = new Date();
   OneMonthLater.setDate(OneMonthLater.getDate() + 30);
-  var expire_s = OneMonthLater.toGMTString();
+  var expire_s = OneMonthLater.toUTCString();
   setCookie("stuId", user.id, expire_s);
   setCookie("token", user.token, expire_s);
   setCookie("cademy", user.cademy, expire_s);
