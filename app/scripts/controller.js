@@ -549,7 +549,7 @@ function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
   $scope.getEditsStatus = 0;
 
   $http.post("controlCenter/getEdit.php", {
-    path: path.map(function (cur) {
+    path: path.slice(1).map(function (cur) {
       return cur.name;
     }).join("/") + "/" + item.name
   })
