@@ -50,7 +50,7 @@ module.exports = function (grunt) {
           'dist/views/file_preview.html': 'app/views/file_preview.html',
           'dist/views/lesson_preview.html': 'app/views/lesson_preview.html',
           'dist/views/user_center.html': 'app/views/user_center.html',
-          'dist/views/rank.html': 'app/views/rank.html',
+          'dist/views/ranking.html': 'app/views/ranking.html',
           'dist/views/edit.html': 'app/views/edit.html'
         }
       }
@@ -109,7 +109,7 @@ module.exports = function (grunt) {
           patterns: [
             {
               match: /\.\.\/bower_components\/angular-material\/angular-material\./g,
-              replacement: '//ajax.useso.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.'
+              replacement: '//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.'
             }
           ]
         },
@@ -126,7 +126,7 @@ module.exports = function (grunt) {
           patterns: [
             {
               match: /\.\.\/bower_components\/angular.*?\//g,
-              replacement: '//ajax.useso.com/ajax/libs/angularjs/1.5.0-rc.2/'
+              replacement: '//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/'
             }
           ]
         },

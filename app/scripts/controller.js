@@ -148,7 +148,6 @@ angular.module("app").controller("controller",
       if (file.gettingDownloadLink) return;
       file.gettingDownloadLink = true;
       var data = {
-        fileId: file.id.toString(),
         filename: file.name.toString(),
         path: $scope.directoryStack.map(
           function (curDir, index) {
@@ -158,7 +157,9 @@ angular.module("app").controller("controller",
       if ($scope.user.loggedIn) {
         data.token = $scope.user.token;
       }
-      $http.post("controlCenter/getDownloadLink.php", data)
+      $http.get(["file", file.id.toString(), "download"].join("/"), {
+        params: data
+      })
         .then(function (response) {
           file.gettingDownloadLink = false;
           var responseData = response.data;
@@ -175,9 +176,7 @@ angular.module("app").controller("controller",
 
     function getIndex() {
       $scope.loadingIndex = true;
-      var data = {};
-      if ($scope.user.token) data.token = $scope.user.token;
-      $http.post("controlCenter/getIndex.php", data)
+      $http.get("index")
         .then(function (response) {
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
@@ -280,10 +279,11 @@ angular.module("app").controller("controller",
     $scope.download = download;
     $scope.downloadLesson = function (lesson) {
       var data = {
-        token: $scope.user.token,
-        lesson: lesson.name
+        token: $scope.user.token
       };
-      $http.post("controlCenter/downloadLesson.php", data)
+      $http.get(["lesson", lesson.name, "download"].join("/"), {
+        params: data
+      })
         .then(function (response) {
             var responseData = response["data"];
             if (responseData["res_code"] == 0) {
@@ -412,7 +412,7 @@ angular.module("app").controller("controller",
           uploadControllerScope.QUploader = Qiniu.uploader({
             runtimes: 'html5',
             browse_button: 'pickfiles',
-            uptoken_url: 'controlCenter/genToken.php',
+            uptoken_url: 'uploadToken',
             get_new_uptoken: true,
             domain: '7xt1vj.com1.z0.glb.clouddn.com',
             max_file_size: '200mb',
@@ -437,12 +437,11 @@ angular.module("app").controller("controller",
               'FileUploaded': function (up, file, info) {
                 info = JSON.parse(info);
                 var data = {
-                  username: uploadControllerScope.anonymous ? "匿名" : uploadControllerScope.username ? uploadControllerScope.username : uploadControllerScope.user.name,
                   token: uploadControllerScope.user.token,
                   fileId: info["etag"],
                   filePath: info["key"]
                 };
-                $http.post("controlCenter/contribute.php", data)
+                $http.post("contribute", data)
                   .then(function (response) {
                   }, function () {
                   });
@@ -480,10 +479,10 @@ angular.module("app").controller("controller",
         }
       });
     };
-    $scope.showRank = function (e) {
+    $scope.showRanking = function (e) {
       $mdDialog.show({
         controller: RankingController,
-        templateUrl: "views/rank.html",
+        templateUrl: "views/ranking.html",
         locals: {
           user: $scope.user,
           showToast: showToast,
@@ -518,7 +517,7 @@ angular.module("app").controller("controller",
         tip: "上传资料"
       },
       {
-        func: $scope.showRank,
+        func: $scope.showRanking,
         icon: "format_list_numbered",
         tip: "贡献度排行"
       },
@@ -548,25 +547,31 @@ function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
   // statuses: ["GETTING", "SUCCESS", "FAIL"]
   $scope.getEditsStatus = 0;
 
-  $http.post("controlCenter/getEdit.php", {
-    path: path.slice(1).map(function (cur) {
-      return cur.name;
-    }).join("/") + "/" + item.name
-  })
-    .then(function (response) {
-        var responseData = response["data"];
-        if (responseData["res_code"] == 0) {
-          $scope.edits = responseData["data"]["edits"];
-          $scope.getEditsStatus = 1;
-        } else {
-          showToast(responseData["msg"], $scope.toastBound, "error");
+  function getEdit () {
+    $http.get("edit", {
+      params: {
+        path: path.slice(1).map(function (cur) {
+          return cur.name;
+        }).join("/") + "/" + item.name
+      }
+    })
+      .then(function (response) {
+          var responseData = response["data"];
+          if (responseData["res_code"] == 0) {
+            $scope.edits = responseData["data"]["edits"];
+            $scope.getEditsStatus = 1;
+          } else {
+            showToast(responseData["msg"], $scope.toastBound, "error");
+            $scope.getEditsStatus = 2;
+          }
+        },
+        function () {
+          showToast("无法连接到服务器", $scope.toastBound, "error");
           $scope.getEditsStatus = 2;
-        }
-      },
-      function () {
-        showToast("无法连接到服务器", $scope.toastBound, "error");
-        $scope.getEditsStatus = 2;
-      });
+        });
+  }
+
+  getEdit();
 
   $scope.original = [].concat(path).concat([item]).map(function (cur) {
     return cur.name;
@@ -655,7 +660,7 @@ function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
           }).slice(1).join("/");
           break;
         case "TRASH":
-          data["edit"] = "";
+          data["edit"] = "-";
           break;
         case "RENAME":
           data["edit"] = [].concat(path).map(function (cur) {
@@ -672,11 +677,12 @@ function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
       showToast("未作出修改", $scope.toastBound, "warning");
       return;
     }
-    $http.post("controlCenter/edit.php", data)
+    $http.post("edit", data)
       .then(function (response) {
           var responseData = response["data"];
           if (responseData["res_code"] == 0) {
-            showToast(responseData["msg"], $scope.toastBound, "success")
+            showToast(responseData["msg"], $scope.toastBound, "success");
+            getEdit();
           } else {
             showToast(responseData["msg"], $scope.toastBound, "error");
           }
@@ -701,9 +707,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
 
   function getRate() {
     $scope.gettingRate = true;
-    $http.post("controlCenter/getRate.php", {
-      fileId: file.id.toString()
-    })
+    $http.get(["file", file.id.toString(), "score"].join("/"))
       .then(function (response) {
         $scope.gettingRate = false;
         var responseData = response.data;
@@ -721,10 +725,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
 
   function getComment() {
     $scope.gettingComment = true;
-    $http.post("controlCenter/getComment.php", {
-      key: file.id.toString(),
-      type: "file"
-    })
+    $http.get(["file", file.id.toString(), "comment"].join("/"))
       .then(function (response) {
         $scope.gettingComment = false;
         var responseData = response.data;
@@ -747,9 +748,8 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   $scope.rateFile = function (rate) {
     if (angular.isNumber(rate)) {
       showToast("正在提交评分", $scope.toastBound, "success");
-      $http.post("controlCenter/rateFile.php", {
+      $http.post(["file", file.id.toString(), "score"].join("/"), {
         score: rate,
-        fileId: file.id.toString(),
         token: user.token
       })
         .then(function (response) {
@@ -769,12 +769,10 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   $scope.sendComment = function () {
     if ($scope.comment) {
       showToast("正在提交评论", $scope.toastBound, "success");
-      $http.post("controlCenter/comment.php", {
+      $http.post(["file", file.id.toString(), "comment"].join("/"), {
         username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
         comment: $scope.comment,
-        key: file.id.toString(),
-        token: user.token,
-        type: "file"
+        token: user.token
       })
         .then(function (response) {
           var responseData = response.data;
@@ -805,10 +803,7 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
 
   function getComment() {
     $scope.gettingComment = true;
-    $http.post("controlCenter/getComment.php", {
-      key: lesson.name,
-      type: "lesson"
-    })
+    $http.get(["file", lesson.name, "comment"].join("/"))
       .then(function (response) {
         $scope.gettingComment = false;
         var responseData = response.data;
@@ -828,12 +823,10 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
   $scope.sendComment = function () {
     if ($scope.comment) {
       showToast("正在提交评论", $scope.toastBound, "success");
-      $http.post("controlCenter/comment.php", {
+      $http.post(["lesson", lesson.name, "comment"].join("/"), {
         username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
         comment: $scope.comment,
-        key: lesson.name,
-        token: user.token,
-        type: "lesson"
+        token: user.token
       })
         .then(function (response) {
           var responseData = response.data;
@@ -867,7 +860,7 @@ function UserCenterController($scope, $mdDialog, $http, user, showToast) {
   $scope.logIn = function () {
     if (!$scope.user.id || !$scope.user.password) return;
     $scope.loggingIn = true;
-    $http.post("controlCenter/login.php", {
+    $http.post("login", {
       id: $scope.user.id,
       password: $scope.user.password
     })
@@ -991,7 +984,7 @@ function UploadController($scope, $mdDialog, user, showUserCenter, path, showToa
 }
 
 function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, user, showToast, showUserCenter) {
-  $scope.toastBound = "rankToastBounds";
+  $scope.toastBound = "rankingToastBounds";
 
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
@@ -1001,12 +994,14 @@ function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, 
   if (user.loggedIn) {
     data.token = user.token;
   }
-  $http.post("controlCenter/getRank.php", data)
+  $http.get("ranking", {
+    params: data
+  })
     .then(function (response) {
       var responseData = response.data;
       if (responseData["res_code"] == 0) {
-        $scope.rank = responseData["data"]["rank"];
-        $scope.userRank = responseData["data"]["userRank"];
+        $scope.ranking = responseData["data"]["ranking"];
+        $scope.userRanking = responseData["data"]["userRanking"];
         $scope.status = "SUCCESS";
       } else {
         $scope.status = "FAIL";

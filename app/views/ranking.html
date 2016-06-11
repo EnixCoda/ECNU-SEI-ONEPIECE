@@ -9,14 +9,14 @@
     </div>
   </md-toolbar>
   <md-dialog-content>
-    <md-list class="no-padding-top rank-supporter">
+    <md-list class="no-padding-top ranking-supporter">
       <md-list-item class="centeredText light-background-color">
         <div flex="100" layout layout-align="space-between center">
           <div>排名</div>
           <div flex="25">用户</div>
-          <div>总分</div>
           <div>上传</div>
           <div>评价</div>
+          <div>总分</div>
         </div>
         <md-divider></md-divider>
       </md-list-item>
@@ -31,13 +31,13 @@
           获取排名失败
         </div>
       </md-list-item>
-      <md-list-item class="centeredText" ng-repeat="rank in rank" ng-click="">
+      <md-list-item class="centeredText" ng-repeat="ranking in ranking" ng-click="">
         <div flex="100" layout layout-align="space-between center">
           <div>{{$index + 1}}</div>
-          <div flex="25">{{rank.name}}</div>
-          <div>{{rank.total}}</div>
-          <div>{{rank.upload}}</div>
-          <div>{{rank.rc}}</div>
+          <div flex="25">{{ranking.name}}</div>
+          <div>{{ranking.upload}}</div>
+          <div>{{ranking.rc}}</div>
+          <div>{{ranking.total}}</div>
         </div>
         <md-divider></md-divider>
       </md-list-item>
@@ -58,11 +58,11 @@
         </md-list-item>
         <md-list-item ng-if="status=='SUCCESS'" class="centeredText" ng-click="">
           <div flex="100" layout layout-align="space-between center">
-            <div>{{userRank.pos}}</div>
-            <div flex="25">{{userRank.name}}</div>
-            <div>{{userRank.total}}</div>
-            <div>{{userRank.upload}}</div>
-            <div>{{userRank.rc}}</div>
+            <div>{{userRanking.pos}}</div>
+            <div flex="25">{{userRanking.name}}</div>
+            <div>{{userRanking.upload}}</div>
+            <div>{{userRanking.rc}}</div>
+            <div>{{userRanking.total}}</div>
           </div>
         </md-list-item>
       </div>

@@ -226,7 +226,7 @@ md-toast.md-warning-toast-theme .md-toast-content {
     color: #ff5722;
 }
 
-.rankTable {
+.rankingTable {
     width: 100%;
 }
 
@@ -234,6 +234,6 @@ md-toast.md-warning-toast-theme .md-toast-content {
     text-align: center;
 }
 
-.rank-supporter {
+.ranking-supporter {
     min-height: 288px;
 }
