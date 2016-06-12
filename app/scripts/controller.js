@@ -421,8 +421,8 @@ angular.module("app").controller("controller",
                 xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
               }
               var url = 'uploadToken'
-                +'?token=' + uploadControllerScope.user.token
-                +'&key=' + encodeURI(uploadControllerScope.path.slice(1).map(function (cur) {
+                + '?token=' + uploadControllerScope.user.token
+                + '&key=' + encodeURI(uploadControllerScope.path.slice(1).map(function (cur) {
                   return cur.name;
                 }).concat([file.name]).join("/"));
               xmlHttp.open('GET', url, false);
@@ -692,9 +692,7 @@ function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
           data["edit"] = "-";
           break;
         case "RENAME":
-          data["edit"] = [].concat(path).map(function (cur) {
-              return cur.name;
-            }).slice(1).join("/") + "/" + $scope.newName;
+          data["edit"] = $scope.newName;
           break;
         default:
           return;
@@ -702,10 +700,7 @@ function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
     } else {
       data["edit"] = edit;
     }
-    if (data["edit"] == $scope.original) {
-      showToast("未作出修改", $scope.toastBound, "warning");
-      return;
-    }
+    showToast("正在提交", $scope.toastBound, "success");
     $http.post("edit", data)
       .then(function (response) {
           var responseData = response["data"];
