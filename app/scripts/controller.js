@@ -412,10 +412,42 @@ angular.module("app").controller("controller",
           uploadControllerScope.QUploader = Qiniu.uploader({
             runtimes: 'html5',
             browse_button: 'pickfiles',
-            uptoken_url: 'uploadToken',
+            // uptoken_url: 'uploadToken',
+            uptoken_func: function (file) {
+              var xmlHttp = {};
+              if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+              } else {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+              }
+              var url = 'uploadToken'
+                +'?token=' + uploadControllerScope.user.token
+                +'&key=' + encodeURI(uploadControllerScope.path.slice(1).map(function (cur) {
+                  return cur.name;
+                }).concat([file.name]).join("/"));
+              xmlHttp.open('GET', url, false);
+              xmlHttp.setRequestHeader("If-Modified-Since", "0");
+              try {
+                xmlHttp.send();
+                if (xmlHttp.status === 200) {
+                  var res = JSON.parse(xmlHttp.responseText);
+                  if (res["res_code"] == 0) {
+                    file.validToken = true;
+                    return res["data"]["uptoken"];
+                  } else {
+                    showToast(file.name + " 上传失败：" + res["msg"], uploadControllerScope.toastBound, "error", true);
+                  }
+                } else {
+                  showToast("服务器错误", uploadControllerScope.toastBound, "error", true);
+                }
+              } catch (err) {
+                showToast("无法连接到服务器", uploadControllerScope.toastBound, "error", true);
+              }
+              return "";
+            },
             get_new_uptoken: true,
             domain: '7xt1vj.com1.z0.glb.clouddn.com',
-            max_file_size: '200mb',
+            max_file_size: '100mb',
             max_retries: 1,
             chunk_size: '4mb',
             dragdrop: true,
@@ -452,7 +484,9 @@ angular.module("app").controller("controller",
                 uploadControllerScope.$apply();
               },
               'Error': function (up, err, errTip) {
-                showToast("上传失败! " + err.file.name + ": " + errTip, uploadControllerScope.toastBound, "error", true);
+                if (err.file.validToken) {
+                  showToast("上传失败! " + err.file.name + ": " + errTip, uploadControllerScope.toastBound, "error", true);
+                }
                 up.removeFile(err.file);
                 uploadControllerScope.doneFiles.push(err.file);
                 uploadControllerScope.uploadingCount--;
@@ -461,21 +495,16 @@ angular.module("app").controller("controller",
               'UploadComplete': function () {
               },
               'Key': function (up, file) {
-                var dirNames = uploadControllerScope.path.slice(1).map(
-                  function (curDir) {
-                    return curDir.name;
+                return uploadControllerScope.path.slice(1).map(
+                  function (cur) {
+                    return cur.name;
                   }
-                );
-                var key;
-                if (dirNames.length > 0) {
-                  key = dirNames.join("/") + "/" + file.name;
-                } else {
-                  key = file.name;
-                }
-                return key;
+                ).concat([file.name]).join("/");
               }
             }
           });
+
+
         }
       });
     };
@@ -547,7 +576,7 @@ function EditController($scope, $mdDialog, $http, path, item, user, showToast) {
   // statuses: ["GETTING", "SUCCESS", "FAIL"]
   $scope.getEditsStatus = 0;
 
-  function getEdit () {
+  function getEdit() {
     $http.get("edit", {
       params: {
         path: path.slice(1).map(function (cur) {
