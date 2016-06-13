@@ -12,11 +12,11 @@
     <md-content layout="column" layout-padding>
       <div layout layout-align="start center">
         <div>
-          <md-button class="md-icon-button" ng-click="rateFile(1)" ng-disabled="!user.loggedIn">
-            <md-icon class="material-icons" ng-class="user.loggedIn?'thumbUp-enabled':''">thumb_up</md-icon>
+          <md-button class="md-icon-button" ng-click="rateFile(1)" ng-disabled="user.status != 'ONLINE'">
+            <md-icon class="material-icons" ng-class="user.status == 'ONLINE'?'thumbUp-enabled':''">thumb_up</md-icon>
           </md-button>
-          <md-button class="md-icon-button" ng-click="rateFile(-1)" ng-disabled="!user.loggedIn">
-            <md-icon class="material-icons" ng-class="user.loggedIn?'thumbUp-disabled':''">thumb_down</md-icon>
+          <md-button class="md-icon-button" ng-click="rateFile(-1)" ng-disabled="user.status != 'ONLINE'">
+            <md-icon class="material-icons" ng-class="user.status == 'ONLINE'?'thumbUp-disabled':''">thumb_down</md-icon>
           </md-button>
         </div>
         <div layout layout-align="start center">
@@ -61,7 +61,7 @@
         <md-progress-circular md-diameter="20" md-mode="indeterminate"></md-progress-circular>
         <p class="left-offset-10"> 正在加载评论... </p>
       </div>
-      <div ng-show="user.loggedIn" class="user-comment-area md-whiteframe-5dp" layout="column">
+      <div ng-show="user.status == 'ONLINE'" class="user-comment-area md-whiteframe-5dp" layout="column">
         <div layout layout-wrap>
           <md-input-container flex class="no-margin">
             <label for="comment">你的评论</label>
@@ -84,7 +84,7 @@
           </div>
         </div>
       </div>
-      <div ng-show="!user.loggedIn">
+      <div ng-show="user.status != 'ONLINE'">
         使用校内数据库账户登录后即可评价。
         <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
       </div>

@@ -135,7 +135,7 @@
             </md-button>
             <md-menu-content width="3">
               <md-menu-item>
-                <md-button ng-click="showEdit(content, $event)" ng-disabled="!user.loggedIn">
+                <md-button ng-click="showEdit(content, $event)" ng-disabled="user.status != 'ONLINE'">
                   <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>修改文件</p>
@@ -165,14 +165,14 @@
                 </md-button>
               </md-menu-item>
               <md-menu-item ng-if="content.isLesson">
-                <md-button ng-click="downloadLesson(content)" ng-disabled="!user.loggedIn">
+                <md-button ng-click="downloadLesson(content)" ng-disabled="user.status != 'ONLINE'">
                   <md-icon class="material-icons adjust-icon-top-margin-down color-primary">file_download</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>打包下载</p>
                 </md-button>
               </md-menu-item>
               <md-menu-item>
-                <md-button ng-click="showEdit(content, $event)" ng-disabled="!user.loggedIn">
+                <md-button ng-click="showEdit(content, $event)" ng-disabled="user.status != 'ONLINE'">
                   <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>修改文件夹</p>
