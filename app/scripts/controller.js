@@ -216,7 +216,7 @@ var Downloader = {
     if (Downloader.user.status == "ONLINE") {
       data.token = Downloader.user.token;
     }
-    $http.get(["file", file.id.toString(), "download"].join("/"), {
+    Downloader.$http.get(["file", file.id.toString(), "download"].join("/"), {
       params: data
     })
       .then(function (response) {
@@ -237,7 +237,7 @@ var Downloader = {
     var data = {
       token: Downloader.user.token
     };
-    $http.get(["lesson", lesson.name, "download"].join("/"), {
+    Downloader.$http.get(["lesson", lesson.name, "download"].join("/"), {
       params: data
     })
       .then(function (response) {
@@ -311,6 +311,55 @@ var Explorer = {
   }
 };
 
+var CommentManager = {
+  new: function ($scope, $http, type, key) {
+    var commentManager = {};
+    commentManager.$scope = $scope;
+    commentManager.$http = $http;
+    commentManager.type = type;
+    commentManager.key = key;
+
+    commentManager.get = function () {
+      commentManager.$scope.gettingComment = true;
+      $http.get([commentManager.type, commentManager.key, "comment"].join("/"))
+        .then(function (response) {
+          commentManager.$scope.gettingComment = false;
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            commentManager.$scope.comments = responseData["data"]["comments"];
+          } else {
+            Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "error");
+          }
+        }, function () {
+          commentManager.$scope.gettingComment = false;
+          Toaster.show("无法获取评论", commentManager.$scope.toastBound, "error");
+        });
+    };
+
+    commentManager.send = function () {
+      Toaster.show("正在提交评论", commentManager.$scope.toastBound, "success");
+      commentManager.$http.post([commentManager.type, commentManager.key, "comment"].join("/"), {
+        username: commentManager.$scope.anonymous ? "匿名" : commentManager.$scope.username ? commentManager.$scope.username : user.name,
+        comment: commentManager.$scope.comment,
+        token: commentManager.$scope.user.token
+      })
+        .then(function (response) {
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            commentManager.get();
+            Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "success");
+          } else {
+            Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "error");
+          }
+        }, function () {
+          Toaster.show("无法连接到服务器", commentManager.$scope.toastBound, "error");
+        });
+    };
+    
+    return commentManager;
+  }
+};
+
 angular.module("app").controller("controller",
   function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia, $mdToast, $document) {
     $scope.toastBound = "bodyToastBounds";
@@ -320,7 +369,7 @@ angular.module("app").controller("controller",
     $scope.formatFileSize = Utility.formatFileSize;
     $scope.getContentNameStyle = Utility.getContentNameStyle;
 
-    $scope.downloadFile = downloadFile;
+    $scope.downloadFile = Downloader.downloadFile;
     $scope.downloadLesson = function (lesson) {
       var data = {
         token: $scope.user.token
@@ -346,36 +395,6 @@ angular.module("app").controller("controller",
       if ($scope.isNanoScreen) {
         alert("检测到当前设备屏幕较小，已为您隐藏返回按钮。想要返回上级目录请点击当前路径中的文件夹名。点击“ONEPIECE”即可回到根目录。");
       }
-    }
-
-    function downloadFile(file, toastBound) {
-      if (file.gettingDownloadLink) return;
-      file.gettingDownloadLink = true;
-      var data = {
-        filename: file.name.toString(),
-        path: $scope.directoryStack.map(
-          function (curDir, index) {
-            if (index > 0) return curDir.name;
-          }).join("/") + "/"
-      };
-      if ($scope.user.status == "ONLINE") {
-        data.token = $scope.user.token;
-      }
-      $http.get(["file", file.id.toString(), "download"].join("/"), {
-        params: data
-      })
-        .then(function (response) {
-          file.gettingDownloadLink = false;
-          var responseData = response.data;
-          if (responseData["res_code"] === 0) {
-            window.open(responseData["data"]["downloadLink"]);
-          } else {
-            Toaster.show(responseData["msg"], toastBound, "error");
-          }
-        }, function () {
-          file.gettingDownloadLink = false;
-          Toaster.show("无法连接到服务器", toastBound, "error")
-        });
     }
 
     function getIndex() {
@@ -841,13 +860,17 @@ function EditController($scope, $mdDialog, $http, path, item, user) {
   };
 }
 
-function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCenter, download) {
+function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCenter) {
+  $scope.toastBound = "filePreviewToastBounds";
+
   $scope.file = file;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
   $scope.formatFileSize = Utility.formatFileSize;
 
-  $scope.toastBound = "filePreviewToastBounds";
+  var commentManager = CommentManager.new($scope, $http, "file", file.id);
+
+  commentManager.get();
 
   function getRate() {
     $scope.gettingRate = true;
@@ -867,68 +890,32 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
       });
   }
 
-  function getComment() {
-    $scope.gettingComment = true;
-    $http.get(["file", file.id.toString(), "comment"].join("/"))
+  getRate();
+
+  $scope.downloadFile = Downloader.downloadFile;
+
+  $scope.rateFile = function (rate) {
+    Toaster.show("正在提交评分", $scope.toastBound, "success");
+    $http.post(["file", file.id.toString(), "score"].join("/"), {
+      score: rate,
+      token: user.token
+    })
       .then(function (response) {
-        $scope.gettingComment = false;
         var responseData = response.data;
         if (responseData["res_code"] === 0) {
-          $scope.comments = responseData["data"]["comments"];
+          Toaster.show(responseData["msg"], $scope.toastBound, "success");
         } else {
           Toaster.show(responseData["msg"], $scope.toastBound, "error");
         }
+        getRate();
       }, function () {
-        $scope.gettingComment = false;
-        Toaster.show("无法获取评论", $scope.toastBound, "error");
+        Toaster.show("无法连接到服务器", $scope.toastBound, "error");
       });
-  }
-
-  getRate();
-  getComment();
-
-  $scope.downloadFile = downloadFile;
-
-  $scope.rateFile = function (rate) {
-    if (angular.isNumber(rate)) {
-      Toaster.show("正在提交评分", $scope.toastBound, "success");
-      $http.post(["file", file.id.toString(), "score"].join("/"), {
-        score: rate,
-        token: user.token
-      })
-        .then(function (response) {
-          var responseData = response.data;
-          if (responseData["res_code"] === 0) {
-            Toaster.show(responseData["msg"], $scope.toastBound, "success");
-          } else {
-            Toaster.show(responseData["msg"], $scope.toastBound, "error");
-          }
-          getRate();
-        }, function () {
-          Toaster.show("无法连接到服务器", $scope.toastBound, "error");
-        });
-    }
   };
 
   $scope.sendComment = function () {
     if ($scope.comment) {
-      Toaster.show("正在提交评论", $scope.toastBound, "success");
-      $http.post(["file", file.id.toString(), "comment"].join("/"), {
-        username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
-        comment: $scope.comment,
-        token: user.token
-      })
-        .then(function (response) {
-          var responseData = response.data;
-          if (responseData["res_code"] === 0) {
-            getComment();
-            Toaster.show(responseData["msg"], $scope.toastBound, "success");
-          } else {
-            Toaster.show(responseData["msg"], $scope.toastBound, "error");
-          }
-        }, function () {
-          Toaster.show("无法连接到服务器", $scope.toastBound, "error")
-        });
+      commentManager.send();
     }
   };
 
@@ -938,51 +925,20 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
 }
 
 function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUserCenter) {
+  $scope.toastBound = "lessonPreviewToastBounds";
+
   $scope.lesson = lesson;
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
   $scope.anonymous = false;
 
-  $scope.toastBound = "lessonPreviewToastBounds";
+  var commentManager = CommentManager.new($scope, $http, "lesson", lesson.name);
 
-  function getComment() {
-    $scope.gettingComment = true;
-    $http.get(["file", lesson.name, "comment"].join("/"))
-      .then(function (response) {
-        $scope.gettingComment = false;
-        var responseData = response.data;
-        if (responseData["res_code"] === 0) {
-          $scope.comments = responseData["data"]["comments"];
-        } else {
-          Toaster.show(responseData["msg"], $scope.toastBound, "error");
-        }
-      }, function () {
-        $scope.gettingComment = false;
-        Toaster.show("无法获取评论", $scope.toastBound, "error");
-      });
-  }
-
-  getComment();
+  commentManager.get();
 
   $scope.sendComment = function () {
     if ($scope.comment) {
-      Toaster.show("正在提交评论", $scope.toastBound, "success");
-      $http.post(["lesson", lesson.name, "comment"].join("/"), {
-        username: $scope.anonymous ? "匿名" : $scope.username ? $scope.username : user.name,
-        comment: $scope.comment,
-        token: user.token
-      })
-        .then(function (response) {
-          var responseData = response.data;
-          if (responseData["res_code"] === 0) {
-            getComment();
-            Toaster.show(responseData["msg"], $scope.toastBound, "success");
-          } else {
-            Toaster.show(responseData["msg"], $scope.toastBound, "error");
-          }
-        }, function () {
-          Toaster.show("无法连接到服务器", $scope.toastBound, "error");
-        });
+      commentManager.send();
     }
   };
 
