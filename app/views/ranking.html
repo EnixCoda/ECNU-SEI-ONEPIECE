@@ -20,7 +20,7 @@
         </div>
         <md-divider></md-divider>
       </md-list-item>
-      <md-list-item ng-if="status=='GETTING'">
+      <md-list-item ng-if="status=='CONNECTING'">
         <div flex="100" layout layout-align="center center">
           <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
           </md-progress-circular>
@@ -44,7 +44,7 @@
       <md-subheader class="md-no-sticky">
         <span>你的排名</span>
       </md-subheader>
-      <md-list-item ng-if="status=='GETTING'">
+      <md-list-item ng-if="status=='CONNECTING'">
         <div flex="100" layout layout-align="center center">
           <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
           </md-progress-circular>

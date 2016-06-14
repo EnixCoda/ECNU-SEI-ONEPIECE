@@ -744,10 +744,10 @@ function EditController($scope, $mdDialog, $http, path, item, user) {
   $scope.original = [].concat(path).concat([item]).map(function (cur) {
     return cur.name;
   }).slice(1).join("/");
-  
+
   $scope.statuses = ["STANDBY", "CONNECTING", "SUCCESS", "FAIL"];
   $scope.getEditsStatus = $scope.statuses[0];
-  
+
   function getEdit() {
     $scope.getEditsStatus = $scope.statuses[1];
     $http.get("edit", {
@@ -781,13 +781,13 @@ function EditController($scope, $mdDialog, $http, path, item, user) {
   };
 
   $scope.explorer = Explorer.new([].concat(path));
-  
+
   $scope.namingDirKeyPress = function (e) {
     if (e.keyCode == 13 && $scope.explorer.newDirName) {
       $scope.explorer.saveDir($scope.explorer.newDirName);
     }
   };
-  
+
   // RENAME
   $scope.newName = "";
 
@@ -1026,7 +1026,7 @@ function UploadController($scope, $mdDialog, showUserCenter, user, path) {
       $scope.explorer.saveDir($scope.explorer.newDirName);
     }
   };
-  
+
   $scope.doneFiles = [];
   $scope.uploadingCount = 0;
 
@@ -1056,27 +1056,35 @@ function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, 
   $scope.user = user;
   $scope.showUserCenter = showUserCenter;
 
-  $scope.status = "GETTING";
-  var data = {};
-  if (user.status == "ONLINE") {
-    data.token = user.token;
+  $scope.statuses = ["STANDBY", "CONNECTING", "SUCCESS", "FAIL"];
+
+  $scope.status = $scope.statuses[0];
+
+  function getRanking() {
+    $scope.status = $scope.statuses[1];
+    var data = {};
+    if (user.status == "ONLINE") {
+      data.token = user.token;
+    }
+    $http.get("ranking", {
+      params: data
+    })
+      .then(function (response) {
+        var responseData = response.data;
+        if (responseData["res_code"] == 0) {
+          $scope.ranking = responseData["data"]["ranking"];
+          $scope.userRanking = responseData["data"]["userRanking"];
+          $scope.status = $scope.statuses[2];
+        } else {
+          $scope.status = $scope.statuses[3];
+        }
+      }, function () {
+        Toaster.show("无法获取排行", $scope.toastBound, "error");
+        $scope.status = $scope.statuses[3];
+      });
   }
-  $http.get("ranking", {
-    params: data
-  })
-    .then(function (response) {
-      var responseData = response.data;
-      if (responseData["res_code"] == 0) {
-        $scope.ranking = responseData["data"]["ranking"];
-        $scope.userRanking = responseData["data"]["userRanking"];
-        $scope.status = "SUCCESS";
-      } else {
-        $scope.status = "FAIL";
-      }
-    }, function () {
-      $scope.status = "FAIL";
-      Toaster.show("无法获取排行", $scope.toastBound, "error");
-    });
+
+  getRanking();
 
   $scope.showRule = function () {
     $mdBottomSheet.show({
@@ -1145,50 +1153,65 @@ function AboutController($scope, $mdDialog) {
 
   $scope.qas = [
     {
-      "q": "如何使用？",
-      "a": ["站点内所有资料都可以自由下载、查阅，用于学习用途。",
-        "每位登陆成功的同学都可以对站点内的资料/课程进行评分、评论等操作，也可以上传新的资料。",
-        "对于需要修整的资料（垃圾文件/过期资料/位置不当的资料），将在多位用户提交相同的修整请求后自动修整。",
-        "简而言之，每位用户都可以是本站的使用者、贡献者、管理者。"]
+      "q": "如何使用这个网站？",
+      "a": [
+        "站点内所有资料都可以自由下载、查阅，用于学习用途。",
+        "每位登陆的同学都可以对站点内的资料/课程进行评分、评论等操作，也可以上传新的资料、修改已有的资料。",
+        "对于需要修整的资料（过期/低质量/位置不当的资料），将在多位用户提交相同的修整请求后自动修整。",
+        "每位用户都是本站的使用者、贡献者、管理者。"
+      ]
     },
     {
-      "q": "为什么做这个网站？",
-      "a": ["每年学弟学妹的学习资料都是从学长学姐处转发获得的，次年又转发给各自的学弟学妹。" +
-      "这种“代代相传”的方法非常低效。" +
-      "加之每个人的社交圈有限，得到的资料往往不够全面，能够保存、传递下去的就更少了。许多优质的资料就此流失。" +
-      "通过这个网站集中传递、保存学习资料，可以有效避免上述问题。"]
+      "q": "做这个网站的目的是什么？",
+      "a": [
+        "每年学弟学妹的学习资料都是从学长学姐处转发获得的，次年又转发给各自的学弟学妹。" +
+        "这种“代代相传”的方法非常低效。" +
+        "另外因为每个人的社交圈有限，得到的资料往往不够全面，能够保存、传递下去的更是稀少。许多优质的资料就此流失。" +
+        "通过这个网站集中保存、传递学习资料，可以有效避免上述问题。"
+      ]
+    },
+    {
+      "q": "为什么不直接使用网盘来传递资料？",
+      "a": [
+        "大多数网盘目前不支持用户为文件作出评价，而评价是本站的重要功能：" +
+        "通过同学们不断地评价、反馈，筛选出站点内优质的资源、淘汰过期或不适宜的资源。" +
+        "由此站内资料经过同学们的动态调整，不断获得新资料、淘汰旧资料，将与时俱进、长期为同学们服务。",
+        "以站点的形式存在，更易于控制、提供更多功能。"
+      ]
     },
     {
       "q": "站内资料包括习题答案，不怕被校领导查水表吗？",
-      "a": ["本站是为了帮助同学们更方便地获取学习资料而建立的。" +
-      "提供答案、注解是为了方便做完习题后校对、深入理解。",
+      "a": [
+        "本站是为了帮助同学们更方便地获取学习资料而建立的。" +
+        "提供答案、注解是为了方便同学们做完习题后校对、深入理解。",
         "很多同学都会有这样的经历：做完习题后没有答案校对，" +
         "等老师批改完再看时，当时的思路和知识点已经记忆模糊，因此学习效率有所降低。",
         "此外，对于从本站获取答案进行抄袭、应付了事的部分同学，想必不使用本站也不会独立完成作业。" +
-        "因为他们还可以从其他网络资源、甚至同学那里获得答案。"]
+        "因为他们还可以从其他网络资源、甚至同学那里获得答案。"
+      ]
     },
     {
       "q": "如何向这个站点提供学习资料？",
-      "a": ["关闭这个对话框，点击右上角的“上传资料”。"]
-    },
-    {
-      "q": "为什么不直接通过一个网盘来传递资料？",
-      "a": ["1、大多数网盘目前不支持用户为文件作出评价，而评价是本站的重要功能：" +
-      "通过同学们不断地评价、反馈，筛选出站点内优质的资源、淘汰过期或不适宜的资源。",
-        "2、以站点的形式存在更易于控制、提供更多功能。",
-        "3、站长的个人喜好。"]
+      "a": [
+        "关闭这个对话框，点击右上角的“上传资料”。"
+      ]
     },
     {
       "q": "这个网站如何运营？",
-      "a": ["本站的运营需要少量资金和人力，通过把资料都存放于免费云存储省去了绝大部分设备费用，" +
-      "同时通过同学们的主动评价自动管理资料，不需要人工管理资料，但还是需要运维人员对站点进行维护。" +
-      "欢迎有志于参与本站管理的同学向站长提交你的申请，一起管理本站。" +
-      "要求：有基础的前端编程或服务器架设知识。"]
+      "a": [
+        "本站的运营需要少量资金和人力，通过把资料都存放于免费云存储省去了绝大部分存储费用，" +
+        "同时资料管理依赖于同学们的主动评价，因此不需要人工管理，但是不可避免地需要运维人员对站点进行维护。" +
+        "欢迎有志于参与本站管理的同学向站长提交你的申请，一起管理本站。" +
+        "简单的要求：具有基础的 前端编程 或 API开发(PHP) 能力。"
+      ]
     },
     {
       "q": "如何提交管理申请呢？",
-      "a": ["将你的申请文档以“我要贡献资源”内的方式提交，文件名前加上\"申请-\"字样即可（由此仅站长可以查阅申请），比如\"申请-姓名.xxx\"。" +
-      "内容包括但不限于你的姓名、院系、年级、班级、联络方式、自我简介。"]
+      "a": [
+        "将你的申请文档以“我要贡献资源”内的方式提交，文件名前加上\"申请-\"字样即可（比如“申请-张三.pdf”，这样申请就仅对管理员可见了）。" +
+        "或者直接发送邮件到 goldroger@163.com。" +
+        "内容包括但不限于你的姓名、院系、年级、班级、联络方式、自我简介。"
+      ]
     }
   ];
 }
