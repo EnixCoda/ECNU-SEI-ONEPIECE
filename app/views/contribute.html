@@ -18,7 +18,7 @@
         * 注：目前不支持Edge浏览器/iOS版Safari浏览器访问时上传文件。<br>
       </div>
       <md-divider></md-divider>
-      <div ng-show="user.status != 'OFFLINE'">
+      <div ng-show="user.status != 'ONLINE'">
         使用校内数据库账户登录后即可上传文件。
         <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
       </div>
@@ -27,34 +27,40 @@
           <div layout="column">
             <div>目标上传位置：</div>
             <div layout layout-wrap>
-              <md-input-container class="locator-input-container" ng-repeat="dir in path track by $index">
+              <md-input-container class="locator-input-container" ng-repeat="dir in explorer.path track by $index">
                 <md-select aria-label="locator" ng-if="$index === 0" ng-model="dir">
                   <md-option ng-value="dir">{{dir.name}}</md-option>
                 </md-select>
-                <md-select aria-label="locator" ng-if="$index > 0" ng-model="path[$index]" ng-change="cutTail($index)">
-                  <md-option ng-repeat="content in path[$index - 1].content" ng-if="content.isDir" ng-value="content">
+                <md-select aria-label="locator" ng-if="$index > 0" ng-model="explorer.path[$index]"
+                           ng-change="explorer.cutTail($index)">
+                  <md-option ng-repeat="content in explorer.path[$index - 1].content"
+                             ng-if="content.isDir" ng-value="content">
                     {{content.name}}
                   </md-option>
-                  <md-option ng-if="$index > 1" ng-click="createDir($index - 1)" ng-value="0">
+                  <md-option ng-if="$index > 1" ng-click="explorer.createDir($index)" ng-value="0">
                     <i>新建文件夹* </i>
                   </md-option>
                 </md-select>
               </md-input-container>
-              <md-input-container class="locator-input-container" ng-show="!namingDirDepth" aria-label="locator">
-                <md-select aria-label="locator" ng-model="nextDir" ng-change="pushNext()">
-                  <md-option ng-repeat="item in path[path.length - 1].content" ng-if="item.isDir" ng-value="item">
-                    {{item.name}}
+              <md-input-container class="locator-input-container" ng-show="!explorer.namingDirDepth"
+                                  aria-label="locator">
+                <md-select aria-label="locator" ng-model="explorer.nextDir" ng-change="explorer.pushNext()">
+                  <md-option ng-repeat="content in explorer.path[explorer.path.length - 1].content" ng-if="content.isDir"
+                             ng-value="content">
+                    {{content.name}}
                   </md-option>
-                  <md-option ng-if="path.length > 1" ng-click="createDir(path.length)" ng-value="0">
+                  <md-option ng-if="explorer.path.length > 1" ng-click="explorer.createDir(explorer.path.length)" ng-value="0">
                     <i>新建文件夹* </i>
                   </md-option>
                 </md-select>
               </md-input-container>
-              <md-input-container class="locator-input-container" ng-show="namingDirDepth" aria-label="locator">
+              <md-input-container class="locator-input-container" ng-show="explorer.namingDirDepth"
+                                  aria-label="locator">
                 <label for="newDirName">
                   新文件夹名(回车确认)
                 </label>
-                <input id="newDirName" ng-keypress="namingDirKeyPress($event)" ng-blur="cancelCreateDir()" ng-model="newDirName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
+                <input id="newDirName" ng-keypress="namingDirKeyPress($event)" ng-blur="explorer.cancelCreateDir()"
+                       ng-model="explorer.newDirName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
               </md-input-container>
             </div>
           </div>

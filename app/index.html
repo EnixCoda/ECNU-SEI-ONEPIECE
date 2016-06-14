@@ -110,7 +110,7 @@
           <div flex></div>
           <div>{{!isNanoScreen&&!content.isDir&&content.score!=0?content.score:""}}</div>
           <md-button ng-if="!content.isDir" class="md-icon-button"
-                     ng-click="download(content, 'bodyToastBounds')"
+                     ng-click="downloadFile(content, 'bodyToastBounds')"
                      layout
                      layout-align="center center">
             <md-tooltip md-direction="left">
@@ -135,7 +135,8 @@
             </md-button>
             <md-menu-content width="3">
               <md-menu-item>
-                <md-button ng-click="showEdit(content, $event)" ng-disabled="user.status != 'ONLINE'">
+                <md-button ng-click="showEdit(content, $event)">
+                <!--<md-button ng-click="showEdit(content, $event)" ng-disabled="user.status != 'ONLINE'">-->
                   <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>修改文件</p>
@@ -172,7 +173,8 @@
                 </md-button>
               </md-menu-item>
               <md-menu-item>
-                <md-button ng-click="showEdit(content, $event)" ng-disabled="user.status != 'ONLINE'">
+                <md-button ng-click="showEdit(content, $event)">
+                <!--<md-button ng-click="showEdit(content, $event)" ng-disabled="user.status != 'ONLINE'">-->
                   <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>修改文件夹</p>
