@@ -360,6 +360,54 @@ var CommentManager = {
   }
 };
 
+var RateManager = {
+  new: function ($scope, $http, file) {
+    var rateManager = {};
+    rateManager.$scope = $scope;
+    rateManager.$http = $http;
+    rateManager.file = file;
+
+    rateManager.get = function () {
+      rateManager.$scope.gettingRate = true;
+      rateManager.$http.get(["file", rateManager.file.id, "score"].join("/"))
+        .then(function (response) {
+          rateManager.$scope.gettingRate = false;
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            rateManager.$scope.totalScore = responseData["data"]["total_score"];
+            rateManager.file.score = rateManager.$scope.totalScore;
+          } else {
+            Toaster.show(responseData["msg"], rateManager.$scope.toastBound, "error");
+          }
+        }, function () {
+          rateManager.$scope.gettingRate = false;
+          Toaster.show("无法获取评分", rateManager.$scope.toastBound, "error");
+        });
+    };
+
+    rateManager.send = function (score) {
+      Toaster.show("正在提交评分", rateManager.$scope.toastBound, "success");
+      rateManager.$http.post(["file", rateManager.file.id, "score"].join("/"), {
+        score: score,
+        token: user.token
+      })
+        .then(function (response) {
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            Toaster.show(responseData["msg"], rateManager.$scope.toastBound, "success");
+          } else {
+            Toaster.show(responseData["msg"], rateManager.$scope.toastBound, "error");
+          }
+          rateManager.get();
+        }, function () {
+          Toaster.show("无法连接到服务器", rateManager.$scope.toastBound, "error");
+        });
+    };
+    
+    return rateManager;
+  }
+};
+
 angular.module("app").controller("controller",
   function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia, $mdToast, $document) {
     $scope.toastBound = "bodyToastBounds";
@@ -369,25 +417,11 @@ angular.module("app").controller("controller",
     $scope.formatFileSize = Utility.formatFileSize;
     $scope.getContentNameStyle = Utility.getContentNameStyle;
 
-    $scope.downloadFile = Downloader.downloadFile;
+    $scope.downloadFile = function (file) {
+      Downloader.downloadFile(file, $scope.toastBound);
+    };
     $scope.downloadLesson = function (lesson) {
-      var data = {
-        token: $scope.user.token
-      };
-      $http.get(["lesson", lesson.name, "download"].join("/"), {
-        params: data
-      })
-        .then(function (response) {
-            var responseData = response["data"];
-            if (responseData["res_code"] == 0) {
-              window.open(responseData["data"]["link"]);
-            } else {
-              Toaster.show(responseData["msg"], $scope.toastBound, "error", false);
-            }
-          },
-          function () {
-            Toaster.show("下载课程文件失败", $scope.toastBound, "error", false);
-          });
+      Downloader.downloadLesson(lesson, $scope.toastBound);
     };
 
     function checkNanoScreen() {
@@ -532,13 +566,12 @@ angular.module("app").controller("controller",
         locals: {
           file: file,
           user: $scope.user,
-          showUserCenter: $scope.showUserCenter,
-          downloadFile: downloadFile
+          showUserCenter: $scope.showUserCenter
         },
         fullscreen: $mdMedia('xs'),
         clickOutsideToClose: true
       });
-    }
+    };
     $scope.showEdit = function (item, e) {
       $mdDialog.show({
         controller: EditController,
@@ -656,10 +689,7 @@ angular.module("app").controller("controller",
                   fileId: info["etag"],
                   filePath: info["key"]
                 };
-                $http.post("contribute", data)
-                  .then(function (response) {
-                  }, function () {
-                  });
+                $http.post("uploaded", data);
                 up.removeFile(file);
                 file.success = true;
                 uploadControllerScope.doneFiles.push(file);
@@ -872,46 +902,15 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
 
   commentManager.get();
 
-  function getRate() {
-    $scope.gettingRate = true;
-    $http.get(["file", file.id.toString(), "score"].join("/"))
-      .then(function (response) {
-        $scope.gettingRate = false;
-        var responseData = response.data;
-        if (responseData["res_code"] === 0) {
-          $scope.totalScore = responseData["data"]["total_score"];
-          file.score = $scope.totalScore;
-        } else {
-          Toaster.show(responseData["msg"], $scope.toastBound, "error");
-        }
-      }, function () {
-        $scope.gettingRate = false;
-        Toaster.show("无法获取评分", $scope.toastBound, "error");
-      });
-  }
+  var rateManager = RateManager.new($scope, $http, file);
 
-  getRate();
+  rateManager.get();
 
-  $scope.downloadFile = Downloader.downloadFile;
-
-  $scope.rateFile = function (rate) {
-    Toaster.show("正在提交评分", $scope.toastBound, "success");
-    $http.post(["file", file.id.toString(), "score"].join("/"), {
-      score: rate,
-      token: user.token
-    })
-      .then(function (response) {
-        var responseData = response.data;
-        if (responseData["res_code"] === 0) {
-          Toaster.show(responseData["msg"], $scope.toastBound, "success");
-        } else {
-          Toaster.show(responseData["msg"], $scope.toastBound, "error");
-        }
-        getRate();
-      }, function () {
-        Toaster.show("无法连接到服务器", $scope.toastBound, "error");
-      });
+  $scope.downloadFile = function (file) {
+    Downloader.downloadFile(file, $scope.toastBound);
   };
+
+  $scope.rateFile = rateManager.send;
 
   $scope.sendComment = function () {
     if ($scope.comment) {
@@ -919,9 +918,7 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
     }
   };
 
-  $scope.cancel = function () {
-    $mdDialog.cancel();
-  };
+  $scope.cancel = $mdDialog.cancel;
 }
 
 function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUserCenter) {
