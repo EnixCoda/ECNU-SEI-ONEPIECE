@@ -355,6 +355,25 @@ var CommentManager = {
           Toaster.show("无法连接到服务器", commentManager.$scope.toastBound, "error");
         });
     };
+
+    commentManager.remove = function (commentId) {
+      Toaster.show("正在删除", commentManager.$scope.toastBound, "success");
+      commentManager.$http.delete([commentManager.type, commentManager.key, "comment"].join("/"), {
+        id: commentId,
+        token: commentManager.$scope.user.token
+      })
+        .then(function (response) {
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            commentManager.get();
+            Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "success");
+          } else {
+            Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "error");
+          }
+        }, function () {
+          Toaster.show("无法连接到服务器", commentManager.$scope.toastBound, "error");
+        });
+    };
     
     return commentManager;
   }
