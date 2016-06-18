@@ -89,13 +89,14 @@ var Logger = {
 // stylish tools
 var Utility = {
   getFileColor: function (file) {
-    var filename = file.name;
+    var filename = file.name.toLowerCase();
     if (file.isDir) return {color: "#00bcd4"};
     if (filename.indexOf(".") > -1 && filename[-1] != ".") {
       var color;
       var fileType = filename.substr(filename.lastIndexOf(".") + 1);
       switch (fileType) {
         case "jpg":
+        case "jpeg":
         case "png":
         case "gif":
           color = "#ff9800";
@@ -129,11 +130,12 @@ var Utility = {
     }
   },
   getFileIcon: function (file) {
-    var filename = file.name;
+    var filename = file.name.toLowerCase();
     if (filename.indexOf(".") > -1 && filename[-1] != ".") {
       var fileType = filename.substr(filename.lastIndexOf(".") + 1);
       switch (fileType) {
         case "jpg":
+        case "jpeg":
         case "png":
           return "image";
         case "gif":
@@ -347,7 +349,6 @@ var CommentManager = {
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
             commentManager.get();
-            Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "success");
           } else {
             Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "error");
           }
@@ -413,7 +414,6 @@ var RateManager = {
         .then(function (response) {
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
-            Toaster.show(responseData["msg"], rateManager.$scope.toastBound, "success");
           } else {
             Toaster.show(responseData["msg"], rateManager.$scope.toastBound, "error");
           }
