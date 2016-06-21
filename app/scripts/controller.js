@@ -790,7 +790,7 @@ angular.module("app").controller("controller",
     var index, lessons;
     checkNanoScreen();
     $scope.isMobile = Utility.isMobile();
-    $scope.delay = $scope.isMobile ? 300 : 200;
+    $scope.delay = $scope.isMobile ? 300 : 0;
     getIndex();
     Toaster.init($mdToast, $document);
     Logger.register($http);
@@ -1181,7 +1181,7 @@ function AboutController($scope, $mdDialog) {
       "q": "如何提交管理申请呢？",
       "a": [
         "将你的申请文档以“我要贡献资源”内的方式提交，文件名前加上\"申请-\"字样即可（比如“申请-张三.pdf”，这样申请就仅对管理员可见了）。" +
-        "或者直接发送邮件到 goldroger@163.com。" +
+        "或者直接发送邮件到 ecnuseionepiece@163.com。" +
         "内容包括但不限于你的姓名、院系、年级、班级、联络方式、自我简介。"
       ]
     }
