@@ -375,7 +375,7 @@ var CommentManager = {
           Toaster.show("无法连接到服务器", commentManager.$scope.toastBound, "error");
         });
     };
-    
+
     return commentManager;
   }
 };
@@ -422,7 +422,7 @@ var RateManager = {
           Toaster.show("无法连接到服务器", rateManager.$scope.toastBound, "error");
         });
     };
-    
+
     return rateManager;
   }
 };
