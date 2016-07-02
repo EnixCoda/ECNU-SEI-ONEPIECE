@@ -63,6 +63,22 @@ module.exports = function (grunt) {
           }
         ]
       },
+      qiniuUpload: {
+        options: {
+          patterns: [
+            {
+              match: /<script src="deps\/moxie.js"><\/script><script src="deps\/plupload.dev.js"><\/script><script src="deps\/qiniu.js">/g,
+              replacement: '<script src="qiniuUpload.min.js"></script>'
+            }
+          ]
+        },
+        files: [
+          {
+            src: ['dist/index.html'],
+            dest: './'
+          }
+        ]
+      },
       css: {
         options: {
           patterns: [
