@@ -15,10 +15,10 @@ var User = {
       id: null,
       token: null,
       cademy: null,
-      name: null,
-      statuses: statuses,
-      status: statuses[0]
+      name: null
     };
+    user.statuses = statuses;
+    user.status = statuses[0];
     return user;
   }
 };
@@ -33,15 +33,35 @@ var Toaster = {
       toaster.$document = $document;
     };
     toaster.show = function (text, boundId, type, stayLong) {
-      toaster.$mdToast.show(
-        toaster.$mdToast
-          .simple()
-          .textContent(text)
-          .position("top right")
-          .parent(toaster.$document[0].querySelector(boundId ? '#' + boundId : ''))
-          .theme(type + "-toast")
-          .hideDelay(stayLong ? 4500 : 1500)
-      );
+      // toaster.$mdToast.show(
+      //   toaster
+      //     .$mdToast
+      //     .simple()
+      //     .textContent(text)
+      //     .position("top right")
+      //     .parent(toaster.$document[0].querySelector(boundId ? '#' + boundId : ''))
+      //     .theme(type + "-toast")
+      //     .hideDelay(stayLong ? 4500 : 1500)
+      // );
+      toaster
+        .$mdToast
+        .show({
+          template: '' +
+          '<md-toast md-theme="' + type + '-toast" ' +
+          '    ng-class="{\'md-capsule\': toast.capsule}" ' +
+          '    class="ng-scope md-' + type + '-toast-theme">' +
+          '  <div class="md-toast-content">' +
+          '    <span flex="" class="md-toast-text ng-binding flex" role="alert" aria-relevant="all" aria-atomic="true">' +
+          '      ' + text +
+          '    </span>' +
+          '  </div>' +
+          '</md-toast>',
+          autoWrap: true,
+          position: "top right",
+          parent: toaster.$document[0].querySelector(boundId ? '#' + boundId : ''),
+          hideDelay: stayLong ? 4500 : 1500,
+          theme: type + "-toast"
+        });
     };
     return toaster;
   }
@@ -713,10 +733,10 @@ angular.module("app").controller("controller",
                 });
                 uploadControllerScope.$apply();
               },
-              'BeforeUpload': function (up, file) {
+              'BeforeUpload': function (/*up, file*/) {
                 uploadControllerScope.uploadingCount++;
               },
-              'UploadProgress': function (up, file) {
+              'UploadProgress': function (/*up, file*/) {
                 if (!uploadControllerScope.canceling) uploadControllerScope.$apply();
                 else uploadControllerScope.canceling = false;
               },
@@ -989,7 +1009,7 @@ function UserCenterController($scope, $mdDialog, $http, user) {
 
   var logger = Logger.new();
   logger.register($http);
-  
+
   $scope.keyLogIn = function (e) {
     if (e.keyCode == 13) $scope.logIn();
   };
@@ -1005,7 +1025,7 @@ function UserCenterController($scope, $mdDialog, $http, user) {
   $scope.close = function () {
     $mdDialog.hide(user);
   };
-  
+
   logger.onFinish($scope.close);
 }
 
