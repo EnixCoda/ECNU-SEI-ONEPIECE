@@ -4,7 +4,7 @@
       <div layout>
         <div ng-if="user.status == 'ONLINE'" layout layout-align="start center">当前用户：{{user.name}} - {{user.cademy}}</div>
         <div flex></div>
-        <md-button class="md-icon-button" ng-click="hide()">
+        <md-button class="md-icon-button" ng-click="close()">
           <md-icon class="material-icons">close</md-icon>
         </md-button>
       </div>
@@ -30,14 +30,14 @@
         </md-input-container>
       </form>
       <div layout>
-        <md-button ng-if="user.status != 'ONLINE'" flex class="md-raised"
+        <md-button ng-if="user.status == 'OFFLINE'" flex class="md-raised"
                    ng-class="user.id&&user.password?'md-primary':''" ng-click="logIn()">
           登陆
         </md-button>
-        <md-button ng-if="user.status == 'ONLINE'" flex class="md-raised" ng-click="logIn()" ng-disabled="true">
+        <md-button ng-if="user.status == 'CONNECTING'" flex class="md-raised" ng-click="logIn()" ng-disabled="true">
           请稍等
         </md-button>
-        <md-button flex class="md-raised" ng-click="logOut()" ng-if="user.status == 'ONLINE'">
+        <md-button ng-if="user.status == 'ONLINE'" flex class="md-raised" ng-click="logOut()">
           注销
         </md-button>
       </div>

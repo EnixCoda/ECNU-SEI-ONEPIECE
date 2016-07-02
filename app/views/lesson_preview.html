@@ -16,8 +16,8 @@
           <md-list-item ng-repeat="cmt in comments"
                         ng-class="cmt.comment.length>100?'md-2-line md-long-text':'md-2-line'">
             <div class="md-list-item-text">
-              <h3>{{cmt.username.length>0?cmt.username:"匿名"}} :</h3>
-              <p>{{ cmt.comment }}</p>
+              <h3>{{cmt.username.length>0?cmt.username:"匿名"}}</h3>
+              <p>{{cmt.comment}}</p>
             </div>
           </md-list-item>
         </md-list>
@@ -33,7 +33,7 @@
         <div layout layout-wrap>
           <md-input-container flex class="no-margin">
             <label for="comment">你的评论</label>
-            <textarea id="comment" ng-model="comment" md-maxlength="140" md-no-autogrow maxlength="140" rows="2"></textarea>
+            <textarea id="comment" ng-model="comment" md-maxlength="140" md-no-autogrow rows="2"></textarea>
           </md-input-container>
         </div>
         <div layout layout-align="space-between center" layout-wrap>
@@ -47,7 +47,8 @@
             </md-input-container>
           </div>
           <div>
-            <md-button class="md-raised" ng-class="comment?'md-primary':''" ng-click="sendComment()">提交</md-button>
+            <md-button class="md-raised" ng-class="comment?'md-primary':''" ng-click="sendComment()">提交
+            </md-button>
           </div>
         </div>
       </div>

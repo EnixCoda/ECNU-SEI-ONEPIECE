@@ -10,14 +10,15 @@ var config = {
 
 var User = {
   new: function () {
+    var statuses = ["OFFLINE", "CONNECTING", "ONLINE"];
     var user = {
       id: null,
       token: null,
       cademy: null,
       name: null,
-      status: 0
+      statuses: statuses,
+      status: statuses[0]
     };
-    user.statuses = ["OFFLINE", "CONNECTING", "ONLINE"];
     return user;
   }
 };
@@ -25,64 +26,82 @@ var user = User.new();
 
 // make mdToast
 var Toaster = {
-  init: function ($mdToast, $document) {
-    Toaster.$mdToast = $mdToast;
-    Toaster.$document = $document;
-  },
-  show: function (text, boundId, type, stayLong) {
-    Toaster.$mdToast.show(
-      Toaster.$mdToast.simple()
-        .textContent(text)
-        .position("top right")
-        .parent(Toaster.$document[0].querySelector(boundId ? '#' + boundId : ''))
-        .theme(type + "-toast")
-        .hideDelay(stayLong ? 4500 : 1500)
-    );
+  new: function () {
+    var toaster = {};
+    toaster.init = function ($mdToast, $document) {
+      toaster.$mdToast = $mdToast;
+      toaster.$document = $document;
+    };
+    toaster.show = function (text, boundId, type, stayLong) {
+      toaster.$mdToast.show(
+        toaster.$mdToast
+          .simple()
+          .textContent(text)
+          .position("top right")
+          .parent(toaster.$document[0].querySelector(boundId ? '#' + boundId : ''))
+          .theme(type + "-toast")
+          .hideDelay(stayLong ? 4500 : 1500)
+      );
+    };
+    return toaster;
   }
 };
+var toaster = Toaster.new();
 
 // login, logout, with password or token
 var Logger = {
-  register: function ($http) {
-    Logger.$http = $http;
-  },
-  logout: function (user) {
-    user.status = user.statuses[0];
-    clearTokenFromCookie();
-  },
-  login: function ($scope, user, data) {
-    user.status = user.statuses[1];
-    Logger.$http.post("login", data)
-      .then(function (response) {
-        var responseData = response.data;
-        if (responseData["res_code"] === 0) {
-          user.token = responseData["data"]["token"];
-          user.name = responseData["data"]["username"];
-          user.cademy = responseData["data"]["cademy"];
-          user.status = user.statuses[2];
-          saveTokenToCookie(user.token);
-        } else {
-          user.status = user.statuses[0];
-        }
-        Toaster.show(responseData["msg"], $scope.toastBound, "success", true);
-      }, function () {
-        Toaster.show("无法连接到服务器", $scope.toastBound, "error");
-      })
-  },
-  loginWithPassword: function ($scope, user) {
-    if (!user || !user.id || !user.password) return;
-    var data = {
-      id: user.id,
-      password: user.password
+  new: function () {
+    var logger = {
+      complete: function () {
+      }
     };
-    Logger.login($scope, user, data);
-  },
-  loginWithToken: function ($scope, user) {
-    if (!user || !user.token) return;
-    var data = {
-      token: user.token
+    logger.register = function ($http) {
+      logger.$http = $http;
     };
-    Logger.login($scope, user, data);
+    logger.onFinish = function (onFinish) {
+      logger.complete = onFinish;
+    };
+    logger.logout = function (user) {
+      user.status = user.statuses[0];
+      clearTokenFromCookie();
+    };
+    logger.login = function ($scope, user, data) {
+      user.status = user.statuses[1];
+      logger.$http.post("login", data)
+        .then(function (response) {
+          var responseData = response.data;
+          if (responseData["res_code"] === 0) {
+            user.token = responseData["data"]["token"];
+            user.name = responseData["data"]["username"];
+            user.cademy = responseData["data"]["cademy"];
+            user.status = user.statuses[2];
+            saveTokenToCookie(user.token);
+            toaster.show(responseData["msg"], $scope.toastBound, "success", true);
+            setTimeout(logger.complete, 2000);
+          } else {
+            user.status = user.statuses[0];
+            toaster.show(responseData["msg"], $scope.toastBound, "error", true);
+          }
+        }, function () {
+          toaster.show("无法连接到服务器", $scope.toastBound, "error");
+        })
+    };
+    logger.loginWithPassword = function ($scope, user) {
+      if (!user || !user.id || !user.password) return;
+      var data = {
+        id: user.id,
+        password: user.password
+      };
+      logger.login($scope, user, data);
+    };
+    logger.loginWithToken = function ($scope, user) {
+      if (!user || !user.token) return;
+      var data = {
+        token: user.token
+      };
+      logger.login($scope, user, data);
+    };
+    return logger;
   }
 };
 
@@ -227,11 +246,11 @@ var Downloader = {
         if (responseData["res_code"] === 0) {
           window.open(responseData["data"]["downloadLink"]);
         } else {
-          Toaster.show(responseData["msg"], toastBound, "error");
+          toaster.show(responseData["msg"], toastBound, "error");
         }
       }, function () {
         file.gettingDownloadLink = false;
-        Toaster.show("无法连接到服务器", toastBound, "error")
+        toaster.show("无法连接到服务器", toastBound, "error")
       });
   },
   downloadLesson: function (lesson, toastBound) {
@@ -247,11 +266,11 @@ var Downloader = {
           if (responseData["res_code"] == 0) {
             window.open(responseData["data"]["link"]);
           } else {
-            Toaster.show(responseData["msg"], toastBound, "error", false);
+            toaster.show(responseData["msg"], toastBound, "error", false);
           }
         },
         function () {
-          Toaster.show("下载课程文件失败", toastBound, "error", false);
+          toaster.show("下载课程文件失败", toastBound, "error", false);
         });
   }
 };
@@ -330,16 +349,16 @@ var CommentManager = {
           if (responseData["res_code"] === 0) {
             commentManager.$scope.comments = responseData["data"]["comments"];
           } else {
-            Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "error");
+            toaster.show(responseData["msg"], commentManager.$scope.toastBound, "error");
           }
         }, function () {
           commentManager.$scope.gettingComment = false;
-          Toaster.show("无法获取评论", commentManager.$scope.toastBound, "error");
+          toaster.show("无法获取评论", commentManager.$scope.toastBound, "error");
         });
     };
 
     commentManager.send = function () {
-      Toaster.show("正在提交评论", commentManager.$scope.toastBound, "success");
+      toaster.show("正在提交评论", commentManager.$scope.toastBound, "success");
       commentManager.$http.post([commentManager.type, commentManager.key, "comment"].join("/"), {
         username: commentManager.$scope.anonymous ? "匿名" : commentManager.$scope.username ? commentManager.$scope.username : user.name,
         comment: commentManager.$scope.comment,
@@ -350,15 +369,15 @@ var CommentManager = {
           if (responseData["res_code"] === 0) {
             commentManager.get();
           } else {
-            Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "error");
+            toaster.show(responseData["msg"], commentManager.$scope.toastBound, "error");
           }
         }, function () {
-          Toaster.show("无法连接到服务器", commentManager.$scope.toastBound, "error");
+          toaster.show("无法连接到服务器", commentManager.$scope.toastBound, "error");
         });
     };
 
     commentManager.remove = function (commentId) {
-      Toaster.show("正在删除", commentManager.$scope.toastBound, "success");
+      toaster.show("正在删除", commentManager.$scope.toastBound, "success");
       commentManager.$http.delete([commentManager.type, commentManager.key, "comment"].join("/"), {
         id: commentId,
         token: commentManager.$scope.user.token
@@ -367,12 +386,12 @@ var CommentManager = {
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
             commentManager.get();
-            Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "success");
+            toaster.show(responseData["msg"], commentManager.$scope.toastBound, "success");
           } else {
-            Toaster.show(responseData["msg"], commentManager.$scope.toastBound, "error");
+            toaster.show(responseData["msg"], commentManager.$scope.toastBound, "error");
           }
         }, function () {
-          Toaster.show("无法连接到服务器", commentManager.$scope.toastBound, "error");
+          toaster.show("无法连接到服务器", commentManager.$scope.toastBound, "error");
         });
     };
 
@@ -397,16 +416,16 @@ var RateManager = {
             rateManager.$scope.totalScore = responseData["data"]["total_score"];
             rateManager.file.score = rateManager.$scope.totalScore;
           } else {
-            Toaster.show(responseData["msg"], rateManager.$scope.toastBound, "error");
+            toaster.show(responseData["msg"], rateManager.$scope.toastBound, "error");
           }
         }, function () {
           rateManager.$scope.gettingRate = false;
-          Toaster.show("无法获取评分", rateManager.$scope.toastBound, "error");
+          toaster.show("无法获取评分", rateManager.$scope.toastBound, "error");
         });
     };
 
     rateManager.send = function (score) {
-      Toaster.show("正在提交评分", rateManager.$scope.toastBound, "success");
+      toaster.show("正在提交评分", rateManager.$scope.toastBound, "success");
       rateManager.$http.post(["file", rateManager.file.id, "score"].join("/"), {
         score: score,
         token: user.token
@@ -415,11 +434,11 @@ var RateManager = {
           var responseData = response.data;
           if (responseData["res_code"] === 0) {
           } else {
-            Toaster.show(responseData["msg"], rateManager.$scope.toastBound, "error");
+            toaster.show(responseData["msg"], rateManager.$scope.toastBound, "error");
           }
           rateManager.get();
         }, function () {
-          Toaster.show("无法连接到服务器", rateManager.$scope.toastBound, "error");
+          toaster.show("无法连接到服务器", rateManager.$scope.toastBound, "error");
         });
     };
 
@@ -670,13 +689,13 @@ angular.module("app").controller("controller",
                     file.validToken = true;
                     return res["data"]["uptoken"];
                   } else {
-                    Toaster.show(file.name + " 上传失败：" + res["msg"], uploadControllerScope.toastBound, "error", true);
+                    toaster.show(file.name + " 上传失败：" + res["msg"], uploadControllerScope.toastBound, "error", true);
                   }
                 } else {
-                  Toaster.show("服务器错误", uploadControllerScope.toastBound, "error", true);
+                  toaster.show("服务器错误", uploadControllerScope.toastBound, "error", true);
                 }
               } catch (err) {
-                Toaster.show("无法连接到服务器", uploadControllerScope.toastBound, "error", true);
+                toaster.show("无法连接到服务器", uploadControllerScope.toastBound, "error", true);
               }
               return "";
             },
@@ -717,7 +736,7 @@ angular.module("app").controller("controller",
               },
               'Error': function (up, err, errTip) {
                 if (err.file.validToken) {
-                  Toaster.show("上传失败! " + err.file.name + ": " + errTip, uploadControllerScope.toastBound, "error", true);
+                  toaster.show("上传失败! " + err.file.name + ": " + errTip, uploadControllerScope.toastBound, "error", true);
                 }
                 up.removeFile(err.file);
                 uploadControllerScope.doneFiles.push(err.file);
@@ -792,13 +811,14 @@ angular.module("app").controller("controller",
     $scope.isMobile = Utility.isMobile();
     $scope.delay = $scope.isMobile ? 300 : 0;
     getIndex();
-    Toaster.init($mdToast, $document);
-    Logger.register($http);
+    toaster.init($mdToast, $document);
+    var logger = Logger.new();
+    logger.register($http);
     // try log in with saved token
     var token = loadTokenFromCookie();
     if (token) {
       user.token = token;
-      Logger.loginWithToken($scope, user);
+      logger.loginWithToken($scope, user);
     }
     Downloader.register($http, user);
     $scope.user = user;
@@ -831,12 +851,12 @@ function EditController($scope, $mdDialog, $http, path, item, user) {
             $scope.edits = responseData["data"]["edits"];
             $scope.getEditsStatus = $scope.statuses[2];
           } else {
-            Toaster.show(responseData["msg"], $scope.toastBound, "error");
+            toaster.show(responseData["msg"], $scope.toastBound, "error");
             $scope.getEditsStatus = $scope.statuses[3];
           }
         },
         function () {
-          Toaster.show("无法连接到服务器", $scope.toastBound, "error");
+          toaster.show("无法连接到服务器", $scope.toastBound, "error");
           $scope.getEditsStatus = $scope.statuses[3];
         });
   }
@@ -869,7 +889,7 @@ function EditController($scope, $mdDialog, $http, path, item, user) {
       switch (type) {
         case "MOVE":
           if ($scope.explorer.path.length < 3) {
-            Toaster.show("无法移动到目标路径", $scope.toastBound, "warning");
+            toaster.show("无法移动到目标路径", $scope.toastBound, "warning");
             return;
           }
           data["edit"] = $scope.explorer.path.map(function (cur) {
@@ -888,19 +908,19 @@ function EditController($scope, $mdDialog, $http, path, item, user) {
     } else {
       data["edit"] = edit;
     }
-    Toaster.show("正在提交", $scope.toastBound, "success");
+    toaster.show("正在提交", $scope.toastBound, "success");
     $http.post("edit", data)
       .then(function (response) {
           var responseData = response["data"];
           if (responseData["res_code"] == 0) {
-            Toaster.show(responseData["msg"], $scope.toastBound, "success");
+            toaster.show(responseData["msg"], $scope.toastBound, "success");
             getEdit();
           } else {
-            Toaster.show(responseData["msg"], $scope.toastBound, "error");
+            toaster.show(responseData["msg"], $scope.toastBound, "error");
           }
         },
         function () {
-          Toaster.show("无法连接到服务器", $scope.toastBound, "error");
+          toaster.show("无法连接到服务器", $scope.toastBound, "error");
         });
   };
 
@@ -963,25 +983,30 @@ function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUse
   };
 }
 
-function UserCenterController($scope, $mdDialog, user) {
+function UserCenterController($scope, $mdDialog, $http, user) {
   $scope.toastBound = "userCenterToastBounds";
   $scope.user = user;
 
+  var logger = Logger.new();
+  logger.register($http);
+  
   $scope.keyLogIn = function (e) {
     if (e.keyCode == 13) $scope.logIn();
   };
 
   $scope.logIn = function () {
-    Logger.loginWithPassword($scope, user);
+    logger.loginWithPassword($scope, user);
   };
 
   $scope.logOut = function () {
-    Logger.logout(user);
+    logger.logout(user);
   };
 
-  $scope.hide = function () {
+  $scope.close = function () {
     $mdDialog.hide(user);
   };
+  
+  logger.onFinish($scope.close);
 }
 
 function UploadController($scope, $mdDialog, showUserCenter, user, path) {
@@ -1004,7 +1029,7 @@ function UploadController($scope, $mdDialog, showUserCenter, user, path) {
 
   $scope.startUpload = function () {
     if ($scope.explorer.path.length < 3) {
-      Toaster.show("无法上传到当前位置。请选择课程分类、课程名称。", $scope.toastBound, "warning");
+      toaster.show("无法上传到当前位置。请选择课程分类、课程名称。", $scope.toastBound, "warning");
     } else {
       $scope.QUploader.start();
     }
@@ -1018,7 +1043,7 @@ function UploadController($scope, $mdDialog, showUserCenter, user, path) {
   };
 
   $scope.close = function () {
-    $mdDialog.cancel();
+    $mdDialog.hide();
   };
 }
 
@@ -1051,7 +1076,7 @@ function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, 
           $scope.status = $scope.statuses[3];
         }
       }, function () {
-        Toaster.show("无法获取排行", $scope.toastBound, "error");
+        toaster.show("无法获取排行", $scope.toastBound, "error");
         $scope.status = $scope.statuses[3];
       });
   }
@@ -1108,7 +1133,7 @@ function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, 
   };
 
   $scope.close = function () {
-    $mdDialog.cancel();
+    $mdDialog.hide();
   }
 }
 
@@ -1120,7 +1145,7 @@ function RuleController($scope, $mdBottomSheet) {
 
 function AboutController($scope, $mdDialog) {
   $scope.close = function () {
-    $mdDialog.cancel();
+    $mdDialog.hide();
   };
 
   $scope.qas = [
