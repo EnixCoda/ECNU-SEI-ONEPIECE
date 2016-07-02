@@ -1,5 +1,4 @@
 module.exports = function (grunt) {
-
   grunt.initConfig({
     cssmin: {
       target: {
@@ -12,12 +11,12 @@ module.exports = function (grunt) {
         }]
       }
     },
-    concat:  {
-      options:     {
+    concat: {
+      options: {
         //separator: ';'
       },
-      scripts:     {
-        src:  ['app/scripts/*.js'],
+      scripts: {
+        src: ['app/scripts/*.js'],
         dest: 'dist/scripts.js'
       },
       qiniuUpload: {
@@ -28,19 +27,11 @@ module.exports = function (grunt) {
         src: ['app/deps/qiniu.min.map'],
         dest: 'dist/qiniu.min.map'
       }
-      // angularUpload: {
-      //   src: ['bower_components/ng-file-upload/ng-file-upload.min.js'],
-      //   dest: 'dist/ng-file-upload.min.js'
-      // }
-      //css: {
-      //  src: ['app/style.css'],
-      //  dest: 'dist/style.css'
-      //}
     },
     htmlmin: {
       dist: {
         options: {
-          removeComments:     true,
+          removeComments: true,
           collapseWhitespace: true
         },
         files: {
@@ -121,7 +112,6 @@ module.exports = function (grunt) {
         ]
       },
       angularJSCDN: {
-        ////ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
         options: {
           patterns: [
             {
@@ -160,38 +150,6 @@ module.exports = function (grunt) {
             dest: './'
           }
         ]
-      },
-      // angularUpload: {
-      //   options: {
-      //     patterns: [
-      //       {
-      //         match: /<script src="\.\.\/bower_components\/ng-file-upload\/ng-file-upload\.js">/g,
-      //         replacement: '<script src="ng-file-upload.min.js">'
-      //       }
-      //     ]
-      //   },
-      //   files: [
-      //     {
-      //       src: ['dist/index.html'],
-      //       dest: './'
-      //     }
-      //   ]
-      // },
-      qiniuUpload: {
-        options: {
-          patterns: [
-            {
-              match: /<script src="deps\/moxie.js"><\/script><script src="deps\/plupload.dev.js"><\/script><script src="deps\/qiniu.js">/g,
-              replacement: '<script src="qiniuUpload.min.js"></script>'
-            }
-          ]
-        },
-        files: [
-          {
-            src: ['dist/index.html'],
-            dest: './'
-          }
-        ]
       }
     },
     ngmin: {
@@ -202,7 +160,7 @@ module.exports = function (grunt) {
     },
     wiredep: {
       task: {
-        src:     [
+        src: [
           'app/index.html'
         ],
         options: {

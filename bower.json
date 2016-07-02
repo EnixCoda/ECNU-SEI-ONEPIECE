@@ -1,0 +1,22 @@
+{
+  "name": "ecnuseionepiece",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "ExinCoda <ggaao1994@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/ExinCoda/ECNU-SEI-ONEPIECE",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.7",
+    "angular-material": "^1.0.9"
+  }
+}
