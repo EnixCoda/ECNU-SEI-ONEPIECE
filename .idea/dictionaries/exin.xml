@@ -2,6 +2,34 @@
   <dictionary name="exin">
     <words>
       <w>cademy</w>
+      <w>clouddn</w>
+      <w>deps</w>
+      <w>docx</w>
+      <w>dragdrop</w>
+      <w>ecnu</w>
+      <w>endbower</w>
+      <w>etag</w>
+      <w>exin</w>
+      <w>fullscreen</w>
+      <w>funcs</w>
+      <w>length</w>
+      <w>nano</w>
+      <w>onepiece</w>
+      <w>pickfiles</w>
+      <w>plupload</w>
+      <w>pptx</w>
+      <w>qiniu</w>
+      <w>roboto</w>
+      <w>runtimes</w>
+      <w>sidenav</w>
+      <w>slideshow</w>
+      <w>subheader</w>
+      <w>theming</w>
+      <w>uptoken</w>
+      <w>ustc</w>
+      <w>vert</w>
+      <w>whiteframe</w>
+      <w>xmlhttp</w>
     </words>
   </dictionary>
 </component>
