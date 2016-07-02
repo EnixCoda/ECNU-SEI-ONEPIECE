@@ -30,11 +30,11 @@
         </md-input-container>
       </form>
       <div layout>
-        <md-button ng-if="!loggingIn && user.status != 'ONLINE'" flex class="md-raised"
+        <md-button ng-if="user.status != 'ONLINE'" flex class="md-raised"
                    ng-class="user.id&&user.password?'md-primary':''" ng-click="logIn()">
           登陆
         </md-button>
-        <md-button ng-if="loggingIn && user.status != 'ONLINE'" flex class="md-raised" ng-click="logIn()" ng-disabled="true">
+        <md-button ng-if="user.status == 'ONLINE'" flex class="md-raised" ng-click="logIn()" ng-disabled="true">
           请稍等
         </md-button>
         <md-button flex class="md-raised" ng-click="logOut()" ng-if="user.status == 'ONLINE'">

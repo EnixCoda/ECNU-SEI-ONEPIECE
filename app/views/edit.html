@@ -135,10 +135,10 @@
           <md-content layout-padding>
             <div layout layout-align="center center">
               <md-input-container aria-label="new name">
-                <label>
+                <label for="newDirNameInput">
                   新名称
                 </label>
-                <input ng-model="newName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
+                <input id="newDirNameInput" ng-model="newName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
               </md-input-container>
             </div>
             <div layout layout-align="end center">
