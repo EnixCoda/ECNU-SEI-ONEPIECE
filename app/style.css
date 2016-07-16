@@ -243,3 +243,18 @@ md-toast.md-warning-toast-theme .md-toast-content {
     height: 1em;
     overflow: hidden;
 }
+
+.back-btn {
+    transition-duration: 0.3s !important;
+    transition-property: all !important;
+}
+
+.back-btn.active {
+    margin-left: 8px;
+    opacity: 1;
+}
+
+.back-btn.hidden {
+    margin-left: 0;
+    opacity: 0;
+}
