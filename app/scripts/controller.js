@@ -2,6 +2,10 @@
  * Created by Exin on 2016/3/2.
  */
 
+window.onbeforeunload = function () {
+  return "页面即将刷新";
+};
+
 // STATIC VALUES
 var config = {
   GOOD_FILE_SCORE: 10,
