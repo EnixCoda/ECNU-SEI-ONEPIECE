@@ -15,7 +15,7 @@ md-input-container .md-errors-spacer {
 }
 
 body, input, textarea, ._md-subheader-content {
-    font-family: Roboto, "黑体";
+    font-family: Roboto sans-serif, "黑体";
 }
 
 .left-offset-10 {
