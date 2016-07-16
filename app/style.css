@@ -237,3 +237,9 @@ md-toast.md-warning-toast-theme .md-toast-content {
 .ranking-supporter {
     min-height: 288px;
 }
+
+.md-toolbar-tools h4 {
+    line-height: 1em;
+    height: 1em;
+    overflow: hidden;
+}
