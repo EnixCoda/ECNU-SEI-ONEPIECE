@@ -829,7 +829,7 @@ angular.module("app").controller("controller",
     var index, lessons;
     checkNanoScreen();
     $scope.isMobile = Utility.isMobile();
-    $scope.delay = $scope.isMobile ? 300 : 0;
+    $scope.delay = $scope.isMobile ? 0 : 300;
     getIndex();
     toaster.init($mdToast, $document);
     var logger = Logger.new();
@@ -1118,7 +1118,7 @@ function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, 
       '    </md-list-item>' +
       '    <md-list-item>' +
       '      <div flex="100" layout layout-align="space-between center">' +
-      '        <div>文件被垃圾回收处理</div>' +
+      '        <div>文件被压缩处理</div>' +
       '        <div>-20分</div>' +
       '      </div>' +
       '    </md-list-item>' +
