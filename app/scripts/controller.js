@@ -585,37 +585,30 @@ angular.module("app").controller("controller",
       $mdOpenMenu($e);
     };
 
-    // provide search functionality to auto-complete
-    $scope.lessonSearch = {
-      querySearch: function (query) {
-        function createFilterFor(query) {
-          return function filterFn(lesson) {
-            return (lesson.name.indexOf(query) > -1);
-          };
+    $scope.searchLesson = function () {
+      $scope.searchResults = lessons.filter(function (lesson) {
+        return lesson.name.indexOf(document.getElementById("searchLessonKey").value) === 0;
+      });
+    };
+    $scope.clearSearchKey = function () {
+      document.getElementById("searchLessonKey").value = "";
+    };
+    $scope.hideSearchResult = function (lesson) {
+      if (lesson) {
+        while ($scope.goBack(1)) {
         }
-
-        return query ? lessons.filter(createFilterFor(query)) : lessons;
-      },
-      selectedItemChange: function (item) {
-        function goDirectTo(target) {
-          while ($scope.goBack(1)) {
-          }
-          var dummyPath = [].concat(target.path);
-          while (dummyPath.length > 0) {
-            var nextTarget = dummyPath.shift();
-            var pos = targetInDirectory(nextTarget, $scope.directoryStack.slice(-1)[0]);
-            if (pos !== false) {
-              $scope.directoryStack.push(nextTarget);
-            } else {
-              while ($scope.goBack(1)) {
-              }
-              console.log("Path Error");
+        var dummyPath = [].concat(lesson.path);
+        while (dummyPath.length > 0) {
+          var nextTarget = dummyPath.shift();
+          var pos = targetInDirectory(nextTarget, $scope.directoryStack.slice(-1)[0]);
+          if (pos !== false) {
+            $scope.directoryStack.push(nextTarget);
+          } else {
+            while ($scope.goBack(1)) {
             }
+            console.log("Path Error");
           }
         }
-
-        if (!item) return;
-        goDirectTo(item);
       }
     };
 

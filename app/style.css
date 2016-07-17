@@ -6,10 +6,6 @@
     display: none;
 }
 
-md-content {
-    /*background-color: #fff;*/
-}
-
 md-input-container .md-errors-spacer {
     min-height: 0;
 }
@@ -22,6 +18,7 @@ body, input, textarea, ._md-subheader-content {
     padding-left: 10px;
 }
 
+/* padding */
 .no-padding-top {
     padding-top: 0;
 }
@@ -30,18 +27,7 @@ body, input, textarea, ._md-subheader-content {
     padding-bottom: 0;
 }
 
-.adjust-icon-top-margin-down {
-    margin-top: 5px;
-}
-
-.adjust-icon-top-margin-up {
-    margin-top: -5px;
-}
-
-.adjust-icon-top-margin-up-3 {
-    margin-top: -3px;
-}
-
+/* margin */
 .no-margin {
     margin: 0;
 }
@@ -54,6 +40,20 @@ body, input, textarea, ._md-subheader-content {
     margin-right: 0;
 }
 
+/* icon position */
+.adjust-icon-top-margin-down {
+    margin-top: 5px;
+}
+
+.adjust-icon-top-margin-up {
+    margin-top: -5px;
+}
+
+.adjust-icon-top-margin-up-3 {
+    margin-top: -3px;
+}
+
+/* color */
 .color-white {
     color: white !important;
 }
@@ -62,6 +62,7 @@ body, input, textarea, ._md-subheader-content {
     color: #02a8f3 !important;
 }
 
+/* background */
 .background-white {
     background-color: white !important;
 }
@@ -74,16 +75,16 @@ body, input, textarea, ._md-subheader-content {
     background-color: rgba(0, 0, 0, 0) !important;
 }
 
+.light-background-color {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
 .protect-overflow {
     overflow: auto;
 }
 
 .hide-overflow {
     overflow: hidden;
-}
-
-.light-background-color {
-    background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 .set-height-to-ac {
@@ -244,6 +245,7 @@ md-toast.md-warning-toast-theme .md-toast-content {
     overflow: hidden;
 }
 
+/* top left back button */
 .back-btn {
     transition-duration: 0.3s !important;
     transition-property: all !important;
@@ -257,4 +259,54 @@ md-toast.md-warning-toast-theme .md-toast-content {
 .back-btn.hidden {
     margin-left: 0;
     opacity: 0;
+}
+
+.lesson-search {
+    position: relative;
+}
+
+.lesson-search input {
+    border: 1px solid #fff;
+    border-radius: 2px;
+    padding: 10px 16px;
+    box-shadow: 0 2px 3px #aaa;
+    outline: none;
+}
+
+.lesson-search md-icon {
+    cursor: pointer;
+    position: absolute;
+    outline: none;
+    right: 8px;
+    top: 8px;
+    transition: all .5s;
+}
+
+.lesson-search input:focus ~ .search-results {
+    opacity: 1;
+}
+
+.lesson-search .search-results {
+    opacity: 0;
+    position: absolute;
+    background: #fff;
+    font-size: 16px;
+    z-index: 4;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    max-height: 200px;
+    overflow: auto;
+    width: 100%;
+    margin: -1px;
+}
+
+.lesson-search .search-result {
+    padding: 12px;
+    cursor: pointer;
+    outline: none;
+    transition: background .5s;
+}
+
+.lesson-search .search-result:hover {
+    background: #ddd;
 }

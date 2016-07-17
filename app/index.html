@@ -40,22 +40,16 @@
         <!--<div>{{$mdMedia('gt-xl')?'gt-xl':''}}</div>-->
       </div>
       <div layout layout-align="end center">
-        <md-autocomplete
-                md-selected-item="lessonSearch.selectedItem"
-                md-search-text="lessonSearch.searchText"
-                md-selected-item-change="lessonSearch.selectedItemChange(item)"
-                md-items="item in lessonSearch.querySearch(lessonSearch.searchText)"
-                md-item-text="item.name"
-                md-min-length="0" md-no-cache="true" md-delay="100"
-                placeholder="课程搜索">
-          <!--<i class="material-icons adjust-icon-top-margin-up">search</i>-->
-          <md-item-template>
-            <span md-highlight-text="lessonSearch.searchText" md-highlight-flags="g">{{item.name}}</span>
-          </md-item-template>
-          <md-not-found>
-            找不到 "{{lessonSearch.searchText}}"
-          </md-not-found>
-        </md-autocomplete>
+        <div class="lesson-search" ng-if="!isNanoScreen">
+          <input type="text" placeholder="搜索课程名" id="searchLessonKey" ng-model="searchLessonKey"
+                 ng-change="searchLesson()" ng-focus="searchLesson()" ng-blur="hideSearchResult()">
+          <div class="search-results">
+            <div class="search-result" ng-repeat="result in searchResults" ng-click="hideSearchResult(result)">
+              {{result.name}}
+            </div>
+          </div>
+          <md-icon class="material-icons color-gray" ng-click="clearSearchKey()">close</md-icon>
+        </div>
         <div ng-if="isMobile">
           <md-menu md-position-mode="target-right target">
             <md-button class="md-raised top-right-menu background-white" ng-click="$mdOpenMenu($event)">
