@@ -206,6 +206,24 @@ var Utility = {
     }
     return "attach_file";
   },
+  previewable: function (file) {
+    var filename = file.name.toLowerCase();
+    if (filename.indexOf(".") > -1 && filename[-1] != ".") {
+      var fileType = filename.substr(filename.lastIndexOf(".") + 1);
+      switch (fileType) {
+        case "jpg":
+        case "gif":
+        case "bmp":
+        case "png":
+        case "pdf":
+        case "txt":
+          return true;
+        default:
+          return false;
+      }
+    }
+    return false;
+  },
   formatFileSize: function (file) {
     var size = file.size;
     if (!size) return;
@@ -274,6 +292,29 @@ var Downloader = {
         }
       }, function () {
         file.gettingDownloadLink = false;
+        toaster.show("无法连接到服务器", toastBound, "error")
+      });
+  },
+  previewFile: function (file, toastBound) {
+    if (file.gettingPreviewLink) return;
+    file.gettingPreviewLink = true;
+    var data = {};
+    if (Downloader.user.status == "ONLINE") {
+      data.token = Downloader.user.token;
+    }
+    Downloader.$http.get(["file", file.id.toString(), "preview"].join("/"), {
+      params: data
+    })
+      .then(function (response) {
+        file.gettingPreviewLink = false;
+        var responseData = response.data;
+        if (responseData["res_code"] === 0) {
+          window.open(responseData["data"]["previewLink"], "_blank");
+        } else {
+          toaster.show(responseData["msg"], toastBound, "error");
+        }
+      }, function () {
+        file.gettingPreviewLink = false;
         toaster.show("无法连接到服务器", toastBound, "error")
       });
   },
@@ -992,6 +1033,12 @@ function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCen
   $scope.downloadFile = function (file) {
     Downloader.downloadFile(file, $scope.toastBound);
   };
+
+  $scope.previewFile = function (file) {
+    Downloader.previewFile(file, $scope.toastBound);
+  };
+
+  $scope.previewable = Utility.previewable;
 
   $scope.rateFile = rateManager.send;
 
