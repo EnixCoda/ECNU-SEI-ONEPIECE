@@ -44,9 +44,6 @@
           <input type="text" placeholder="搜索课程名" id="searchLessonKey" ng-model="searchLessonKey"
                  ng-change="searchLesson()" ng-focus="activeSearch()" ng-blur="hideSearchResult()">
           <div class="search-results">
-            <div class="search-result" ng-repeat="result in searchResults" ng-click="goDirectTo(result)">
-              {{result.name}}
-            </div>
           </div>
           <md-icon class="material-icons color-gray" ng-click="clearSearchKey()">close</md-icon>
         </div>

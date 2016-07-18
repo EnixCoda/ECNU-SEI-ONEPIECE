@@ -590,16 +590,33 @@ angular.module("app").controller("controller",
     };
 
     $scope.searchLesson = function () {
-      var key = document.getElementById("searchLessonKey").value;
-      var result = lessons.filter(function (lesson) {
-        return lesson.name.indexOf(key) === 0;
+      function listenerGenerator (lesson) {
+        return function (e) {
+          $scope.goDirectTo(lesson);
+          $scope.$apply();
+        };
+      }
+
+      var key = document.getElementById("searchLessonKey").value.toLowerCase();
+      var results = lessons.filter(function (lesson) {
+        return lesson.name.toLowerCase().indexOf(key) > -1;
       });
-      $scope.searchResults = result.length > 0 ? result : [{name: "找不到课程\"" + key + "\""}];
+      var searchResultsElement = document.querySelector(".search-results");
+      searchResultsElement.innerHTML = "";
+      results = results.length > 0 ? results : [{name: "找不到课程\"" + key + "\""}];
+      for (var i = 0; i < results.length; i++) {
+        var searchResultElement = document.createElement("div");
+        searchResultElement.classList.add("search-result");
+        searchResultElement.innerHTML = results[i].name;
+        var lesson = results[i];
+        searchResultElement.addEventListener("click", listenerGenerator(lesson));
+        searchResultsElement.appendChild(searchResultElement);
+      }
     };
 
     $scope.clearSearchKey = function () {
       document.getElementById("searchLessonKey").value = "";
-      $scope.hideSearchResult();
+      $scope.searchLesson();
     };
 
     $scope.hideSearchResult = function () {
