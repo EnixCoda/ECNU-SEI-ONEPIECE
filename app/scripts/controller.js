@@ -585,16 +585,31 @@ angular.module("app").controller("controller",
       $mdOpenMenu($e);
     };
 
-    $scope.searchLesson = function () {
-      $scope.searchResults = lessons.filter(function (lesson) {
-        return lesson.name.indexOf(document.getElementById("searchLessonKey").value) === 0;
-      });
+    $scope.activeSearch = function () {
+      $scope.searchLesson();
     };
+
+    $scope.searchLesson = function () {
+      var key = document.getElementById("searchLessonKey").value;
+      var result = lessons.filter(function (lesson) {
+        return lesson.name.indexOf(key) === 0;
+      });
+      $scope.searchResults = result.length > 0 ? result : [{name: "找不到课程\"" + key + "\""}];
+    };
+
     $scope.clearSearchKey = function () {
       document.getElementById("searchLessonKey").value = "";
+      $scope.hideSearchResult();
     };
-    $scope.hideSearchResult = function (lesson) {
-      if (lesson) {
+
+    $scope.hideSearchResult = function () {
+      setTimeout(function () {
+        $scope.lessonSearchActive = false;
+      }, 0);
+    };
+
+    $scope.goDirectTo = function (lesson) {
+      if (lesson && lesson.path) {
         while ($scope.goBack(1)) {
         }
         var dummyPath = [].concat(lesson.path);
@@ -606,13 +621,12 @@ angular.module("app").controller("controller",
           } else {
             while ($scope.goBack(1)) {
             }
-            console.log("Path Error");
           }
         }
       }
     };
 
-    // show dialogs start
+// show dialogs start
     $scope.showFileDetail = function (file, e) {
       $mdDialog.show({
         controller: FilePreviewController,
@@ -796,9 +810,9 @@ angular.module("app").controller("controller",
         clickOutsideToClose: true
       });
     };
-    // show dialogs end
+// show dialogs end
 
-    // top-right menu
+// top-right menu
     $scope.topFuncs = [
       {
         func: $scope.showUserCenter,
@@ -822,7 +836,7 @@ angular.module("app").controller("controller",
       }
     ];
 
-    // init
+// init
     var index, lessons;
     checkNanoScreen();
     $scope.isMobile = Utility.isMobile();
@@ -831,7 +845,7 @@ angular.module("app").controller("controller",
     toaster.init($mdToast, $document);
     var logger = Logger.new();
     logger.register($http);
-    // try log in with saved token
+// try log in with saved token
     var token = loadTokenFromCookie();
     if (token) {
       user.token = token;
@@ -839,7 +853,8 @@ angular.module("app").controller("controller",
     }
     Downloader.register($http, user);
     $scope.user = user;
-  });
+  })
+;
 
 // ----- other controllers start -----
 function EditController($scope, $mdDialog, $http, path, item, user) {

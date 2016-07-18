@@ -261,6 +261,7 @@ md-toast.md-warning-toast-theme .md-toast-content {
     opacity: 0;
 }
 
+/* lesson search */
 .lesson-search {
     position: relative;
 }
@@ -274,6 +275,7 @@ md-toast.md-warning-toast-theme .md-toast-content {
 }
 
 .lesson-search md-icon {
+    display: none;
     cursor: pointer;
     position: absolute;
     outline: none;
@@ -282,12 +284,16 @@ md-toast.md-warning-toast-theme .md-toast-content {
     transition: all .5s;
 }
 
+.lesson-search input:focus ~ md-icon {
+    display: block;
+}
+
 .lesson-search input:focus ~ .search-results {
-    opacity: 1;
+    visibility: visible;
 }
 
 .lesson-search .search-results {
-    opacity: 0;
+    visibility: hidden;
     position: absolute;
     background: #fff;
     font-size: 16px;
@@ -298,6 +304,7 @@ md-toast.md-warning-toast-theme .md-toast-content {
     overflow: auto;
     width: 100%;
     margin: -1px;
+    transition: visibility .1s;
 }
 
 .lesson-search .search-result {
