@@ -592,6 +592,7 @@ angular.module("app").controller("controller",
       function listenerGenerator(lesson) {
         return function (e) {
           $scope.lessonSearcher.goDirectTo(lesson);
+          document.querySelector(".lesson-search input").blur();
           $scope.$apply();
         };
       }
