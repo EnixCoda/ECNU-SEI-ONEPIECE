@@ -585,19 +585,18 @@ angular.module("app").controller("controller",
       $mdOpenMenu($e);
     };
 
-    $scope.activeSearch = function () {
-      $scope.searchLesson();
+    // lesson lessonSearcher
+    $scope.lessonSearcher = function () {
     };
-
-    $scope.searchLesson = function () {
-      function listenerGenerator (lesson) {
+    $scope.lessonSearcher.search = function () {
+      function listenerGenerator(lesson) {
         return function (e) {
-          $scope.goDirectTo(lesson);
+          $scope.lessonSearcher.goDirectTo(lesson);
           $scope.$apply();
         };
       }
 
-      var key = document.getElementById("searchLessonKey").value.toLowerCase();
+      var key = document.getElementById("lessonSearcherKey").value.toLowerCase();
       var results = lessons.filter(function (lesson) {
         return lesson.name.toLowerCase().indexOf(key) > -1;
       });
@@ -613,19 +612,14 @@ angular.module("app").controller("controller",
         searchResultsElement.appendChild(searchResultElement);
       }
     };
-
-    $scope.clearSearchKey = function () {
-      document.getElementById("searchLessonKey").value = "";
-      $scope.searchLesson();
+    $scope.lessonSearcher.active = function () {
+      this.search();
     };
-
-    $scope.hideSearchResult = function () {
-      setTimeout(function () {
-        $scope.lessonSearchActive = false;
-      }, 0);
+    $scope.lessonSearcher.clearKey = function () {
+      document.getElementById("lessonSearcherKey").value = "";
+      this.search();
     };
-
-    $scope.goDirectTo = function (lesson) {
+    $scope.lessonSearcher.goDirectTo = function (lesson) {
       if (lesson && lesson.path) {
         while ($scope.goBack(1)) {
         }
@@ -643,7 +637,7 @@ angular.module("app").controller("controller",
       }
     };
 
-// show dialogs start
+    // show dialogs start
     $scope.showFileDetail = function (file, e) {
       $mdDialog.show({
         controller: FilePreviewController,
@@ -827,9 +821,9 @@ angular.module("app").controller("controller",
         clickOutsideToClose: true
       });
     };
-// show dialogs end
+    // show dialogs end
 
-// top-right menu
+    // top-right menu
     $scope.topFuncs = [
       {
         func: $scope.showUserCenter,
@@ -853,7 +847,7 @@ angular.module("app").controller("controller",
       }
     ];
 
-// init
+    // init
     var index, lessons;
     checkNanoScreen();
     $scope.isMobile = Utility.isMobile();
@@ -862,7 +856,7 @@ angular.module("app").controller("controller",
     toaster.init($mdToast, $document);
     var logger = Logger.new();
     logger.register($http);
-// try log in with saved token
+    // try log in with saved token
     var token = loadTokenFromCookie();
     if (token) {
       user.token = token;
