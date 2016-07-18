@@ -290,6 +290,7 @@ md-toast.md-warning-toast-theme .md-toast-content {
 
 .lesson-search input:focus ~ .search-results {
     visibility: visible;
+    overflow: auto;
 }
 
 .lesson-search .search-results {
@@ -301,7 +302,7 @@ md-toast.md-warning-toast-theme .md-toast-content {
     border: 1px solid #ddd;
     border-radius: 2px;
     max-height: 200px;
-    overflow: auto;
+    overflow: hidden;
     width: 100%;
     margin: -1px;
     transition: visibility .1s;
