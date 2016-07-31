@@ -309,10 +309,13 @@ md-toast.md-warning-toast-theme .md-toast-content {
 }
 
 .lesson-search .search-result {
-    padding: 12px;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 10px;
     cursor: pointer;
     outline: none;
     transition: background .5s;
+    overflow: hidden;
 }
 
 .lesson-search .search-result:hover {
