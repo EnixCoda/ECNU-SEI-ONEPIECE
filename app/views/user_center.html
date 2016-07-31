@@ -3,6 +3,7 @@
     <md-content layout="column" layout-padding id="{{toastBound}}">
       <div layout>
         <div ng-if="user.status == 'ONLINE'" layout layout-align="start center">当前用户：{{user.name}} - {{user.cademy}}</div>
+        <md-subheader ng-if="user.status == 'OFFLINE'" layout layout-align="start center">校园数据库账户登录</md-subheader>
         <div flex></div>
         <md-button class="md-icon-button" ng-click="close()">
           <md-icon class="material-icons">close</md-icon>
