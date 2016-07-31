@@ -36,7 +36,7 @@ var Toaster = {
       toaster.$mdToast = $mdToast;
       toaster.$document = $document;
     };
-    toaster.show = function (text, boundId, type, stayLong) {
+    toaster.show = function (text, boundId, type, stayLong, position) {
       // toaster.$mdToast.show(
       //   toaster
       //     .$mdToast
@@ -47,6 +47,7 @@ var Toaster = {
       //     .theme(type + "-toast")
       //     .hideDelay(stayLong ? 4500 : 1500)
       // );
+      position = position || "top right";
       toaster
         .$mdToast
         .show({
@@ -61,7 +62,7 @@ var Toaster = {
           '  </div>' +
           '</md-toast>',
           autoWrap: true,
-          position: "top right",
+          position: position,
           parent: toaster.$document[0].querySelector(boundId ? '#' + boundId : ''),
           hideDelay: stayLong ? 4500 : 1500,
           theme: type + "-toast"
@@ -100,7 +101,7 @@ var Logger = {
             user.cademy = responseData["data"]["cademy"];
             user.status = user.statuses[2];
             saveTokenToCookie(user.token);
-            toaster.show(responseData["msg"], $scope.toastBound, "success", true);
+            toaster.show(responseData["msg"], $scope.toastBound, "success", true, "top left");
             setTimeout(logger.complete, 2000);
           } else {
             user.status = user.statuses[0];
