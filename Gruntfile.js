@@ -78,7 +78,7 @@ module.exports = function (grunt) {
                 '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular-aria.min.js"></script>',
                 '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>',
                 '<script src="qiniuUpload.min.js"></script>',
-                '<script src="scripts.js"></script>'
+                '<script src="scripts.min.js"></script>'
               ].join('')
             }
           ]
@@ -95,7 +95,10 @@ module.exports = function (grunt) {
           patterns: [
             {
               match: /<!--head stylesheets-->(.|[\n])*<!--end head stylesheets-->/m,
-              replacement: '<link rel="stylesheet" href="style.min.css"/>'
+              replacement: [
+                '<link rel="stylesheet" href="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">',
+                '<link rel="stylesheet" href="style.min.css"/>'
+              ].join('')
             }
           ]
         },
@@ -135,8 +138,8 @@ module.exports = function (grunt) {
             {
               match: /<!--head stylesheets-->(.|[\n])*<!--end head stylesheets-->/m,
               replacement: [
-                '<link rel="stylesheet" href="style.min.css"/>',
-                '<link rel="stylesheet" href="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">'
+                '<link rel="stylesheet" href="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">',
+                '<link rel="stylesheet" href="style.min.css"/>'
               ].join('')
             }
           ]

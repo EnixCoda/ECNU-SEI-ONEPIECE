@@ -4,8 +4,7 @@
 
 (function () {
   'use strict';
-  document.onready = function () {
-  };
+
   window.onbeforeunload = function () {
     return '页面即将刷新';
   };
@@ -62,7 +61,7 @@
       user.status = statuses[0];
       return user;
     }
-  };
+  }; // TODO: use service
   var user = User.new();
 
 // make mdToast
@@ -88,15 +87,15 @@
         toaster
           .$mdToast
           .show({
-            template: '<md-toast md-theme="' + type + '-toast" ' +
-            '    ng-class="{\'md-capsule\': toast.capsule}" ' +
-            '    class="ng-scope md-' + type + '-toast-theme">' +
-            '  <div class="md-toast-content">' +
-            '    <span flex="" class="md-toast-text ng-binding flex" role="alert" aria-relevant="all" aria-atomic="true">' +
-            '      ' + text +
-            '    </span>' +
-            '  </div>' +
-            '</md-toast>',
+            template: `
+              <md-toast md-theme="${type}-toast" ng-class="{'md-capsule': toast.capsule}" class="ng-scope md-${type}-toast-theme">
+                <div class="md-toast-content">
+                  <span flex class="md-toast-text ng-binding flex" role="alert" aria-relevant="all" aria-atomic="true">
+                    ${text}
+                  </span>
+                </div>
+              </md-toast>
+            `,
             autoWrap: true,
             position: position,
             parent: toaster.$document[0].querySelector(boundId ? '#' + boundId : ''),
@@ -550,7 +549,7 @@
     }
   };
 
-  angular.module('app').controller('controller',
+  angular.module('onepiece').controller('MainController',
     function ($scope, $http, $mdSidenav, $mdDialog, $timeout, $mdMedia, $mdToast, $document) {
       $scope.toastBound = 'bodyToastBounds';
 
@@ -668,7 +667,7 @@
       };
       $scope.lessonSearcher.search = function () {
         function listenerGenerator(lesson) {
-          return function (e) {
+          return function () {
             $scope.lessonSearcher.goDirectTo(lesson);
             document.querySelector('.lesson-search input').blur();
             $scope.$apply();
@@ -719,7 +718,7 @@
       // show dialogs start
       $scope.showFileDetail = function (file, e) {
         $mdDialog.show({
-          controller: FilePreviewController,
+          controller: 'FilePreviewController',
           templateUrl: 'views/file_preview.html',
           targetEvent: e,
           locals: {
@@ -733,7 +732,7 @@
       };
       $scope.showEdit = function (item, e) {
         $mdDialog.show({
-          controller: EditController,
+          controller: 'EditController',
           templateUrl: 'views/edit.html',
           targetEvent: e,
           locals: {
@@ -747,7 +746,7 @@
       };
       $scope.showLessonPreview = function (lesson, e) {
         $mdDialog.show({
-          controller: LessonPreviewController,
+          controller: 'LessonPreviewController',
           templateUrl: 'views/lesson_preview.html',
           targetEvent: e,
           locals: {
@@ -761,7 +760,7 @@
       };
       $scope.showUserCenter = function (e) {
         $mdDialog.show({
-          controller: UserCenterController,
+          controller: 'UserCenterController',
           templateUrl: 'views/user_center.html',
           targetEvent: e,
           locals: {
@@ -773,7 +772,7 @@
       };
       $scope.showContribute = function (e) {
         $mdDialog.show({
-          controller: UploadController,
+          controller: 'UploadController',
           templateUrl: 'views/contribute.html',
           targetEvent: e,
           fullscreen: $mdMedia('xs'),
@@ -880,7 +879,7 @@
       };
       $scope.showRanking = function (e) {
         $mdDialog.show({
-          controller: RankingController,
+          controller: 'RankingController',
           templateUrl: 'views/ranking.html',
           locals: {
             showUserCenter: $scope.showUserCenter,
@@ -893,7 +892,7 @@
       };
       $scope.showAbout = function (e) {
         $mdDialog.show({
-          controller: AboutController,
+          controller: 'AboutController',
           templateUrl: 'views/about.html',
           targetEvent: e,
           fullscreen: $mdMedia('xs'),
@@ -943,11 +942,10 @@
       }
       Downloader.register($http, user);
       $scope.user = user;
-    })
-  ;
+    });
 
 // ----- other controllers start -----
-  function EditController($scope, $mdDialog, $http, path, item, user) {
+  angular.module('onepiece').controller('EditController', function ($scope, $mdDialog, $http, path, item, user) {
     $scope.toastBound = 'editToastBounds';
 
     $scope.item = item;
@@ -1049,9 +1047,9 @@
     $scope.close = function () {
       $mdDialog.cancel();
     };
-  }
+  });
 
-  function FilePreviewController($scope, $mdDialog, $http, file, user, showUserCenter) {
+  angular.module('onepiece').controller('FilePreviewController', function ($scope, $mdDialog, $http, file, user, showUserCenter) {
     $scope.toastBound = 'filePreviewToastBounds';
 
     $scope.file = file;
@@ -1086,9 +1084,9 @@
     };
 
     $scope.cancel = $mdDialog.cancel;
-  }
+  });
 
-  function LessonPreviewController($scope, $mdDialog, $http, lesson, user, showUserCenter) {
+  angular.module('onepiece').controller('LessonPreviewController', function ($scope, $mdDialog, $http, lesson, user, showUserCenter) {
     $scope.toastBound = 'lessonPreviewToastBounds';
 
     $scope.lesson = lesson;
@@ -1109,9 +1107,9 @@
     $scope.cancel = function () {
       $mdDialog.cancel();
     };
-  }
+  });
 
-  function UserCenterController($scope, $mdDialog, $http, user) {
+  angular.module('onepiece').controller('UserCenterController', function ($scope, $mdDialog, $http, user) {
     $scope.toastBound = 'userCenterToastBounds';
     $scope.user = user;
 
@@ -1135,9 +1133,9 @@
     };
 
     logger.onFinish($scope.close);
-  }
+  });
 
-  function UploadController($scope, $mdDialog, showUserCenter, user, path) {
+  angular.module('onepiece').controller('UploadController', function ($scope, $mdDialog, showUserCenter, user, path) {
     $scope.toastBound = 'uploadControllerToastBounds';
 
     $scope.showUserCenter = showUserCenter;
@@ -1173,9 +1171,9 @@
     $scope.close = function () {
       $mdDialog.hide();
     };
-  }
+  });
 
-  function RankingController($scope, $mdDialog, $mdBottomSheet, $document, $http, user, showUserCenter) {
+  angular.module('onepiece').controller('RankingController', function ($scope, $mdDialog, $mdBottomSheet, $document, $http, user, showUserCenter) {
     $scope.toastBound = 'rankingToastBounds';
 
     $scope.user = user;
@@ -1254,7 +1252,7 @@
         '  </div>' +
         '</md-bottom-sheet>' +
         '',
-        controller: RuleController,
+        controller: 'RuleController',
         clickOutsideToClose: false,
         parent: $document[0].querySelector('#ruleBottomSheetBounds')
       })
@@ -1263,15 +1261,15 @@
     $scope.close = function () {
       $mdDialog.hide();
     }
-  }
+  });
 
-  function RuleController($scope, $mdBottomSheet) {
+  angular.module('onepiece').controller('RuleController', function ($scope, $mdBottomSheet) {
     $scope.close = function () {
       $mdBottomSheet.hide();
     };
-  }
+  });
 
-  function AboutController($scope, $mdDialog) {
+  angular.module('onepiece').controller('AboutController', function ($scope, $mdDialog) {
     $scope.close = function () {
       $mdDialog.hide();
     };
@@ -1327,7 +1325,7 @@
           '本站的运营需要少量资金和人力，通过把资料都存放于免费云存储省去了绝大部分存储费用，' +
           '同时资料管理依赖于同学们的主动评价，因此不需要人工管理，但是不可避免地需要运维人员对站点进行维护。' +
           '欢迎有志于参与本站管理的同学向站长提交你的申请，一起管理本站。' +
-          '简单的要求：具有基础的 前端编程 或 API开发(PHP) 能力。'
+          '简单的要求：具有基础的 前/后端开发 能力。'
         ]
       },
       {
@@ -1339,7 +1337,6 @@
         ]
       }
     ];
-  }
-
+  });
 // ----- other controllers end -----
 }());

@@ -3,7 +3,7 @@
  */
 
 angular
-  .module('app', [
+  .module('onepiece', [
     'ngMaterial'
   ])
   .config(function ($mdThemingProvider) {
