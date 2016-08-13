@@ -168,12 +168,6 @@ module.exports = function (grunt) {
         ]
       }
     },
-    ngmin: {
-      controllers: {
-        src: ['test/src/controllers/one.js'],
-        dest: 'test/generated/controllers/one.js'
-      }
-    },
     wiredep: {
       task: {
         src: [
@@ -183,12 +177,20 @@ module.exports = function (grunt) {
           exclude: ['/angular-messages/']
         }
       }
+    },
+    ngAnnotate: {
+      options: {
+        // Task-specific options go here.
+      },
+      my_target: {
+        // Target-specific file lists and/or options go here.
+      }
     }
   });
 
-  grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-wiredep');
   grunt.loadNpmTasks('grunt-replace');
+  grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
