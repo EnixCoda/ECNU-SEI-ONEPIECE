@@ -2,6 +2,7 @@
   "name": "ecnuseionepiece",
   "version": "1.0.0",
   "description": "",
+  "repository": "github.com/ExinCoda/ECNU-SEI-ONEPIECE",
   "main": "index.js",
   "devDependencies": {
     "google-cdn-data": "^0.1.23",
@@ -9,6 +10,7 @@
     "grunt-contrib-concat": "^1.0.0",
     "grunt-contrib-cssmin": "^1.0.1",
     "grunt-contrib-htmlmin": "^0.6.0",
+    "grunt-contrib-watch": "^1.0.0",
     "grunt-google-cdn": "^0.4.3",
     "grunt-ng-annotate": "^2.0.2",
     "grunt-replace": "^0.11.0",
