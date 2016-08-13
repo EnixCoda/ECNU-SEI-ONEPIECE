@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>*BETA* ECNU SEI Onepiece</title>
+  <!--head stylesheets-->
   <!--bower:css-->
   <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css"/>
   <!--endbower-->
   <link rel="stylesheet" href="style.css">
+  <!--end head stylesheets-->
   <link href="//fonts.lug.ustc.edu.cn/icon?family=Material+Icons" rel="stylesheet">
   <link href='//fonts.lug.ustc.edu.cn/css?family=Roboto' rel='stylesheet'>
 </head>
@@ -27,18 +29,6 @@
                  ng-class="directoryStack.length>1 ? 'active':'hidden'">
         <md-icon class="material-icons color-white adjust-icon-top-margin-up-3">chevron_left</md-icon>
       </md-button>
-      <div>
-        <!--<div>{{$mdMedia('xs')?'xs':''}}</div>-->
-        <!--<div>{{$mdMedia('sm')?'sm':''}}</div>-->
-        <!--<div>{{$mdMedia('md')?'md':''}}</div>-->
-        <!--<div>{{$mdMedia('lg')?'lg':''}}</div>-->
-        <!--<div>{{$mdMedia('xl')?'xl':''}}</div>-->
-        <!--<div>{{$mdMedia('gt-xs')?'gt-xs':''}}</div>-->
-        <!--<div>{{$mdMedia('gt-sm')?'gt-sm':''}}</div>-->
-        <!--<div>{{$mdMedia('gt-md')?'gt-md':''}}</div>-->
-        <!--<div>{{$mdMedia('gt-lg')?'gt-lg':''}}</div>-->
-        <!--<div>{{$mdMedia('gt-xl')?'gt-xl':''}}</div>-->
-      </div>
       <div layout layout-align="end center">
         <div class="lesson-search" ng-if="!isNanoScreen">
           <input type="text" placeholder="搜索课程名" id="lessonSearcherKey" ng-model="lessonSearcherKey"
@@ -198,6 +188,7 @@
   </div>
 </md-content>
 </body>
+<!--foot scripts-->
 <!--bower:js-->
 <script src="../bower_components/angular/angular.js"></script>
 <script src="../bower_components/angular-animate/angular-animate.js"></script>
@@ -209,4 +200,5 @@
 <!--endbower-->
 <script src="scripts/app.js"></script>
 <script src="scripts/controller.js"></script>
+<!--end foot scripts-->
 </html>

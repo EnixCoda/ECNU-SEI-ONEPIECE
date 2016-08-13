@@ -1,4 +1,14 @@
+var fs = require('fs');
 module.exports = function (grunt) {
+  'use strict';
+  grunt.loadNpmTasks('grunt-wiredep');
+  grunt.loadNpmTasks('grunt-replace');
+  grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.loadNpmTasks('grunt-contrib-htmlmin');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+
   grunt.initConfig({
     cssmin: {
       target: {
@@ -13,25 +23,35 @@ module.exports = function (grunt) {
     },
     concat: {
       options: {
-        //separator: ';'
+        // banner: '',
+        // separator: ';',
+        // footer: '',
+        // stripBanners: true,
+        // Replace all 'use strict' statements in the code with a single one at the top
+        banner: "'use strict';\n",
+        process: function (src, filepath) {
+          // return '// Source: ' + filepath + '\n' + src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+          return src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+        }
       },
-      scripts: {
-        src: ['app/scripts/*.js'],
-        dest: 'dist/scripts.js'
+      dev: {
+        files: {
+          'dist/scripts.js': ['app/scripts/*.js'],
+          'dist/qiniuUpload.js': ['app/deps/*.js', '!app/deps/*.min.js'],
+        }
       },
-      qiniuUpload: {
-        src: ['app/deps/*.min.js'],
-        dest: 'dist/qiniuUpload.min.js'
-      },
-      qiniuMap: {
-        src: ['app/deps/qiniu.min.map'],
-        dest: 'dist/qiniu.min.map'
+      deploy: {
+        files: {
+          'dist/scripts.js': ['app/scripts/*.js'], // TODO: when to use ngAnnotate?
+          'dist/qiniuUpload.min.js': ['app/deps/*.min.js'],
+          'dist/qiniu.min.map': ['app/deps/qiniu.min.map']
+        }
       }
     },
     htmlmin: {
       dist: {
         options: {
-          removeComments: true,
+          removeComments: false,
           collapseWhitespace: true
         },
         files: {
@@ -47,12 +67,19 @@ module.exports = function (grunt) {
       }
     },
     replace: {
-      scripts: {
+      scriptsDeploy: {
         options: {
           patterns: [
             {
-              match: /<script src="scripts\/.*?.js"><\/script>/g,
-              replacement: ''
+              match: /<!--foot scripts-->(.|[\n])*<!--end foot scripts-->/m,
+              replacement: [
+                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular.min.js"></script>',
+                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular-animate.min.js"></script>',
+                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular-aria.min.js"></script>',
+                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>',
+                '<script src="qiniuUpload.min.js"></script>',
+                '<script src="scripts.js"></script>'
+              ].join('')
             }
           ]
         },
@@ -63,27 +90,11 @@ module.exports = function (grunt) {
           }
         ]
       },
-      qiniuUpload: {
+      cssDeploy: {
         options: {
           patterns: [
             {
-              match: /<script src="deps\/moxie.js"><\/script><script src="deps\/plupload.dev.js"><\/script><script src="deps\/qiniu.js">/g,
-              replacement: '<script src="qiniuUpload.min.js"></script>'
-            }
-          ]
-        },
-        files: [
-          {
-            src: ['dist/index.html'],
-            dest: './'
-          }
-        ]
-      },
-      css: {
-        options: {
-          patterns: [
-            {
-              match: /<link rel="stylesheet" href="style\.css">/g,
+              match: /<!--head stylesheets-->(.|[\n])*<!--end head stylesheets-->/m,
               replacement: '<link rel="stylesheet" href="style.min.css"/>'
             }
           ]
@@ -95,12 +106,19 @@ module.exports = function (grunt) {
           }
         ]
       },
-      scriptConcated: {
+      scriptsDev: {
         options: {
           patterns: [
             {
-              match: /<\/html>/g,
-              replacement: '<script src="scripts.js"></script></html>'
+              match: /<!--foot scripts-->(.|[\n])*<!--end foot scripts-->/m,
+              replacement: [
+                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular.js"></script>',
+                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular-animate.js"></script>',
+                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular-aria.js"></script>',
+                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.js"></script>',
+                '<script src="qiniuUpload.js"></script>',
+                '<script src="scripts.js"></script>'
+              ].join('')
             }
           ]
         },
@@ -111,12 +129,15 @@ module.exports = function (grunt) {
           }
         ]
       },
-      angularMaterial: {
+      cssDev: {
         options: {
           patterns: [
             {
-              match: /\.\.\/bower_components\/angular-material\/angular-material\./g,
-              replacement: '//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.'
+              match: /<!--head stylesheets-->(.|[\n])*<!--end head stylesheets-->/m,
+              replacement: [
+                '<link rel="stylesheet" href="style.min.css"/>',
+                '<link rel="stylesheet" href="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">'
+              ].join('')
             }
           ]
         },
@@ -127,46 +148,6 @@ module.exports = function (grunt) {
           }
         ]
       },
-      angularJSCDN: {
-        options: {
-          patterns: [
-            {
-              match: /\.\.\/bower_components\/angular.*?\//g,
-              replacement: '//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/'
-            }
-          ]
-        },
-        files: [
-          {
-            src: ['dist/index.html'],
-            dest: './'
-          }
-        ]
-      },
-      angularJSCDNminify: {
-        options: {
-          patterns: [
-            {
-              match: /angular\.js/g,
-              replacement: 'angular.min.js'
-            },
-            {
-              match: /angular-animate\.js/g,
-              replacement: 'angular-animate.min.js'
-            },
-            {
-              match: /angular-aria\.js/g,
-              replacement: 'angular-aria.min.js'
-            }
-          ]
-        },
-        files: [
-          {
-            src: ['dist/index.html'],
-            dest: './'
-          }
-        ]
-      }
     },
     wiredep: {
       task: {
@@ -178,23 +159,25 @@ module.exports = function (grunt) {
         }
       }
     },
-    ngAnnotate: {
+    ngAnnotate: { // TODO: use this
       options: {
         // Task-specific options go here.
       },
       my_target: {
         // Target-specific file lists and/or options go here.
       }
+    },
+    watch: {
+      files: ['app/**/*'],
+      tasks: ['dev']
     }
   });
 
-  grunt.loadNpmTasks('grunt-wiredep');
-  grunt.loadNpmTasks('grunt-replace');
-  grunt.loadNpmTasks('grunt-ng-annotate');
-  grunt.loadNpmTasks('grunt-contrib-htmlmin');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.event.on('watch', function (action, path, target) {
+    grunt.log.writeln(target + ': ' + path + ' has ' + action);
+  });
 
-  grunt.registerTask('default', ['cssmin', 'concat', 'htmlmin', 'replace']);
+  grunt.registerTask('dev', ['cssmin', 'htmlmin', 'concat:dev', 'replace:scriptsDev', 'replace:cssDev']);
+  grunt.registerTask('deploy', ['cssmin', 'concat:deploy', 'ngAnnotate', 'htmlmin', 'replace:scriptsDev', 'replace:cssDev']);
 
 };
