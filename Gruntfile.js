@@ -8,17 +8,17 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.initConfig({
+    clean: {
+      dist: ['dist']
+    },
     cssmin: {
       target: {
-        files: [{
-          expand: true,
-          cwd: 'app',
-          src: ['*.css', '!*.min.css'],
-          dest: 'dist',
-          ext: '.min.css'
-        }]
+        files: {
+          'dist/onepiece.min.css': 'app/app.css'
+        }
       }
     },
     concat: {
@@ -28,21 +28,22 @@ module.exports = function (grunt) {
         // footer: '',
         // stripBanners: true,
         // Replace all 'use strict' statements in the code with a single one at the top
-        banner: "'use strict';\n",
-        process: function (src, filepath) {
-          // return '// Source: ' + filepath + '\n' + src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
-          return src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
-        }
+        // banner: "'use strict';\n",
+        // process: function (src, filepath) {
+        //   return '// Source: ' + filepath + '\n' + src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+        //   // return src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+        // }
       },
       dev: {
         files: {
-          'dist/scripts.js': ['app/scripts/*.js'],
+          'dist/onepiece.js': ['dist/scripts/app.js', 'dist/scripts/*.js'],
           'dist/qiniuUpload.js': ['app/deps/*.js', '!app/deps/*.min.js'],
+          'dist/index.json': ['app/index.json']
         }
       },
       deploy: {
         files: {
-          'dist/scripts.js': ['app/scripts/*.js'], // TODO: when to use ngAnnotate?
+          'dist/onepiece.js': ['app/scripts/*.js'],
           'dist/qiniuUpload.min.js': ['app/deps/*.min.js'],
           'dist/qiniu.min.map': ['app/deps/qiniu.min.map']
         }
@@ -54,16 +55,21 @@ module.exports = function (grunt) {
           removeComments: false,
           collapseWhitespace: true
         },
-        files: {
-          'dist/index.html': 'app/index.html',
-          'dist/views/about.html': 'app/views/about.html',
-          'dist/views/contribute.html': 'app/views/contribute.html',
-          'dist/views/file_preview.html': 'app/views/file_preview.html',
-          'dist/views/lesson_preview.html': 'app/views/lesson_preview.html',
-          'dist/views/user_center.html': 'app/views/user_center.html',
-          'dist/views/ranking.html': 'app/views/ranking.html',
-          'dist/views/edit.html': 'app/views/edit.html'
-        }
+        files: [
+          {
+            expand: true,
+            dest: './dist/',
+            cwd: './',
+            src: ['app/index.html'],
+            flatten: true
+          },
+          {
+            expand: true,
+            dest: './dist/pages/',
+            src: ['app/pages/**/*.html'],
+            flatten: true
+          },
+        ]
       }
     },
     replace: {
@@ -78,7 +84,7 @@ module.exports = function (grunt) {
                 '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular-aria.min.js"></script>',
                 '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>',
                 '<script src="qiniuUpload.min.js"></script>',
-                '<script src="scripts.min.js"></script>'
+                '<script src="onepiece.min.js"></script>'
               ].join('')
             }
           ]
@@ -97,7 +103,7 @@ module.exports = function (grunt) {
               match: /<!--head stylesheets-->(.|[\n])*<!--end head stylesheets-->/m,
               replacement: [
                 '<link rel="stylesheet" href="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">',
-                '<link rel="stylesheet" href="style.min.css"/>'
+                '<link rel="stylesheet" href="onepiece.min.css"/>'
               ].join('')
             }
           ]
@@ -115,12 +121,12 @@ module.exports = function (grunt) {
             {
               match: /<!--foot scripts-->(.|[\n])*<!--end foot scripts-->/m,
               replacement: [
-                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular.js"></script>',
-                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular-animate.js"></script>',
-                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.4.9/angular-aria.js"></script>',
-                '<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.js"></script>',
+                '<script src="../bower_components/angular/angular.js"></script>',
+                '<script src="../bower_components/angular-animate/angular-animate.js"></script>',
+                '<script src="../bower_components/angular-aria/angular-aria.js"></script>',
+                '<script src="../bower_components/angular-material/angular-material.js"></script>',
                 '<script src="qiniuUpload.js"></script>',
-                '<script src="scripts.js"></script>'
+                '<script src="onepiece.js"></script>'
               ].join('')
             }
           ]
@@ -138,8 +144,8 @@ module.exports = function (grunt) {
             {
               match: /<!--head stylesheets-->(.|[\n])*<!--end head stylesheets-->/m,
               replacement: [
-                '<link rel="stylesheet" href="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">',
-                '<link rel="stylesheet" href="style.min.css"/>'
+                '<link rel="stylesheet" href="../bower_components/angular-material/angular-material.css"/>',
+                '<link rel="stylesheet" href="onepiece.min.css"/>'
               ].join('')
             }
           ]
@@ -162,12 +168,22 @@ module.exports = function (grunt) {
         }
       }
     },
-    ngAnnotate: { // TODO: use this
+    ngAnnotate: {
       options: {
-        // Task-specific options go here.
+        add: true,
+        regexp: /.*/,
+        singleQuotes: true,
       },
-      my_target: {
-        // Target-specific file lists and/or options go here.
+      dev: {
+        files: [
+          {
+            expand: true,
+            src: ['app/**/*.js', '!app/deps/*'],
+            flatten: true,
+            ext: '.js',
+            dest: 'dist/scripts/'
+          }
+        ]
       }
     },
     watch: {
@@ -180,7 +196,21 @@ module.exports = function (grunt) {
     grunt.log.writeln(target + ': ' + path + ' has ' + action);
   });
 
-  grunt.registerTask('dev', ['cssmin', 'htmlmin', 'concat:dev', 'replace:scriptsDev', 'replace:cssDev']);
-  grunt.registerTask('deploy', ['cssmin', 'concat:deploy', 'ngAnnotate', 'htmlmin', 'replace:scriptsDev', 'replace:cssDev']);
+  grunt.registerTask('inject', 'inject angular HTML templates into js', function () {
+    var fs = require('fs');
+    var data = fs.readFileSync('dist/onepiece.js', {encoding: 'utf-8'});
+    grunt.log.writeln('onepiece.js loaded!');
+    let matchs = data.match(/templateUrl: '(.*)'/g);
+    if (matchs) {
+      matchs.forEach(function (match) {
+        let toInject = fs.readFileSync('dist/pages/' + /templateUrl: '(.*)'/.exec(match)[1], {encoding: 'utf-8'});
+        grunt.log.writeln(match);
+        data = data.replace(match, `template: \`${toInject}\``);
+      });
+    }
+    grunt.log.writeln(fs.writeFileSync('dist/onepiece.js', data, {encoding: 'utf-8'}));
+  });
+  grunt.registerTask('dev', ['clean', 'htmlmin', 'cssmin', 'ngAnnotate', 'concat:dev', 'replace:scriptsDev', 'replace:cssDev', 'inject']);
+  grunt.registerTask('deploy', ['clean', 'htmlmin', 'cssmin', 'ngAnnotate', 'concat:deploy', 'replace:scriptsDeploy', 'replace:cssDeploy', 'inject']);
 
 };
