@@ -4,17 +4,18 @@
 
 angular.module('onepiece')
   .controller('UploadController',
-    function ($scope, $mdDialog, showUserCenter, user, path) {
+    function ($scope, $mdDialog, showUserCenter, user, path, explorer, toast) {
       $scope.toastBound = 'uploadControllerToastBounds';
 
       $scope.showUserCenter = showUserCenter;
       $scope.user = user;
       $scope.path = path;
 
-      $scope.explorer = Explorer.new(path);
+      $scope.explorer = explorer;
+      explorer.setPath(path);
 
       $scope.namingDirKeyPress = function (e) {
-        if (e.keyCode == 13 && $scope.explorer.newDirName) {
+        if (e.keyCode === 13 && $scope.explorer.newDirName) {
           $scope.explorer.saveDir($scope.explorer.newDirName);
         }
       };

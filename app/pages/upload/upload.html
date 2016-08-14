@@ -18,11 +18,7 @@
         * 注：目前不支持Edge浏览器/iOS版Safari浏览器访问时上传文件。<br>
       </div>
       <md-divider></md-divider>
-      <div ng-show="user.status != 'ONLINE'">
-        使用校内数据库账户登录后即可上传文件。
-        <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
-      </div>
-      <div ng-show="user.status == 'ONLINE'">
+      <div ng-show="user.status === 'ONLINE'">
         <div layout layout-align="space-between center">
           <div layout="column">
             <div>目标上传位置：</div>
@@ -110,20 +106,12 @@
           </md-list>
         </div>
         <div ng-show="QUploader.files.length>0" class="upload-footer" layout layout-align="space-between center">
-          <div layout layout-align="start center">
-            <md-checkbox class="no-margin" ng-model="anonymous">
-              匿名
-            </md-checkbox>
-            <md-input-container flex-xs class="no-margin" ng-show="!anonymous">
-              <label for="username">留个昵称</label>
-              <input type="text" id="username" ng-model="username" placeholder="{{user.name}}">
-            </md-input-container>
-          </div>
-          <md-button class="md-raised" ng-class="path.length<3?'':'md-primary'" ng-click="startUpload()"
-                     ng-disabled="uploadingCount>0">开始上传
+          <sign></sign>
+          <md-button class="md-raised" ng-class="path.length<3?'':'md-primary'" ng-click="startUpload()" ng-disabled="uploadingCount>0">开始上传
           </md-button>
         </div>
       </div>
+      <need-login></need-login>
     </md-content>
   </md-dialog-content>
 </md-dialog>

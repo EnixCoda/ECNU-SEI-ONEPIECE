@@ -56,12 +56,12 @@
         <div layout ng-if="!isMobile">
           <md-button class="md-fab md-mini background-white" ng-class="!$first?'no-margin-left':''"
                      ng-repeat="func in topFuncs" ng-click="func.func($event)">
-            <md-icon ng-if="(!user.name&&$index==0)||$index>0"
+            <md-icon ng-if="(!user.name && $index === 0) || $index > 0"
                      class="material-icons adjust-icon-top-margin-up-3 color-primary">
               {{func.icon}}
             </md-icon>
-            <span ng-if="user.name&&$index==0"
-                  class="short-user-name color-primary">{{user.name?user.name[0]:""}}</span>
+            <span ng-if="user.name && $index === 0"
+                  class="short-user-name color-primary">{{user.name ? user.name[0] : ""}}</span>
             <md-tooltip md-direction="bottom">
               {{func.tip}}
             </md-tooltip>
@@ -92,7 +92,7 @@
             </div>
           </div>
           <div flex></div>
-          <div>{{!isNanoScreen&&!content.isDir&&content.score!=0?content.score:""}}</div>
+          <div>{{!isNanoScreen&&!content.isDir&&content.score!==0?content.score:""}}</div>
           <md-button ng-if="!content.isDir" class="md-icon-button"
                      ng-click="downloadFile(content)"
                      layout
@@ -119,8 +119,8 @@
             </md-button>
             <md-menu-content width="3">
               <md-menu-item>
-                <md-button ng-click="showEdit(content, $event)">
-                  <!--<md-button ng-click="showEdit(content, $event)" ng-disabled="user.status != 'ONLINE'">-->
+                <md-button ng-disabled="user.status !== 'ONLINE'" ng-click="showEdit(content, $event)">
+                  <!--<md-button ng-click="showEdit(content, $event)" ng-disabled="user.status !== 'ONLINE'">-->
                   <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>修改文件</p>
@@ -150,15 +150,15 @@
                 </md-button>
               </md-menu-item>
               <md-menu-item ng-if="content.isLesson">
-                <md-button ng-click="downloadLesson(content)" ng-disabled="user.status != 'ONLINE'">
+                <md-button ng-click="downloadLesson(content)" ng-disabled="user.status !== 'ONLINE'">
                   <md-icon class="material-icons adjust-icon-top-margin-down color-primary">file_download</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>打包下载</p>
                 </md-button>
               </md-menu-item>
               <md-menu-item>
-                <md-button ng-click="showEdit(content, $event)">
-                  <!--<md-button ng-click="showEdit(content, $event)" ng-disabled="user.status != 'ONLINE'">-->
+                <md-button ng-disabled="user.status !== 'ONLINE'" ng-click="showEdit(content, $event)">
+                  <!--<md-button ng-click="showEdit(content, $event)" ng-disabled="user.status !== 'ONLINE'">-->
                   <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                   <div flex></div>
                   <p md-menu-align-target>修改文件夹</p>

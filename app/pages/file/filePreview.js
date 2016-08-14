@@ -4,39 +4,29 @@
 
 angular.module('onepiece')
   .controller('FilePreviewController',
-    function ($scope, $mdDialog, $http, file, user, showUserCenter) {
+    function ($scope, $mdDialog, $http, file, user, comment, utility, downloader, showUserCenter) {
       $scope.toastBound = 'filePreviewToastBounds';
 
       $scope.file = file;
       $scope.user = user;
       $scope.showUserCenter = showUserCenter;
-      $scope.formatFileSize = Utility.formatFileSize;
+      $scope.formatFileSize = utility.formatFileSize;
 
-      var commentManager = CommentManager.new($scope, $http, 'file', file.id);
-
-      commentManager.get();
-
-      var rateManager = RateManager.new($scope, $http, file);
-
-      rateManager.get();
+      // rate.get();
+      comment.set('lesson', file);
+      comment.get();
 
       $scope.downloadFile = function (file) {
-        Downloader.downloadFile(file, $scope.toastBound);
+        downloader.downloadFile(file, $scope.toastBound);
       };
 
       $scope.previewFile = function (file) {
-        Downloader.previewFile(file, $scope.toastBound);
+        downloader.previewFile(file, $scope.toastBound);
       };
 
-      $scope.previewable = Utility.previewable;
+      $scope.previewable = utility.previewable;
 
-      $scope.rateFile = rateManager.send;
-
-      $scope.sendComment = function () {
-        if ($scope.comment) {
-          commentManager.send();
-        }
-      };
+      // $scope.rateFile = rate.send;
 
       $scope.cancel = $mdDialog.cancel;
     });

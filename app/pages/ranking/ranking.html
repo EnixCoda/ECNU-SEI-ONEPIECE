@@ -20,13 +20,13 @@
         </div>
         <md-divider></md-divider>
       </md-list-item>
-      <md-list-item ng-if="status=='CONNECTING'">
+      <md-list-item ng-if="status==='CONNECTING'">
         <div flex="100" layout layout-align="center center">
           <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
           </md-progress-circular>
         </div>
       </md-list-item>
-      <md-list-item ng-if="status=='FAIL'">
+      <md-list-item ng-if="status==='FAIL'">
         <div flex="100" layout layout-align="center center">
           获取排名失败
         </div>
@@ -44,19 +44,19 @@
       <md-subheader class="md-no-sticky">
         <span>你的排名</span>
       </md-subheader>
-      <md-list-item ng-if="status=='CONNECTING'">
+      <md-list-item ng-if="status==='CONNECTING'">
         <div flex="100" layout layout-align="center center">
           <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
           </md-progress-circular>
         </div>
       </md-list-item>
-      <div ng-if="user.status == 'ONLINE'">
-        <md-list-item ng-if="status=='FAIL'">
+      <div ng-if="user.status === 'ONLINE'">
+        <md-list-item ng-if="status==='FAIL'">
           <div flex="100" layout layout-align="center center">
             获取排名失败
           </div>
         </md-list-item>
-        <md-list-item ng-if="status=='SUCCESS'" class="centeredText" ng-click="">
+        <md-list-item ng-if="status==='SUCCESS'" class="centeredText" ng-click="">
           <div flex="100" layout layout-align="space-between center">
             <div>{{userRanking.pos}}</div>
             <div flex="25">{{userRanking.name}}</div>
@@ -66,12 +66,7 @@
           </div>
         </md-list-item>
       </div>
-      <md-list-item ng-show="user.status != 'ONLINE'" layout layout-padding="space-between center">
-        <div>使用校内数据库账户登录后即可查看你的排名。</div>
-        <div>
-          <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
-        </div>
-      </md-list-item>
+      <need-login></need-login>
     </md-list>
     <div id="ruleBottomSheetBounds" layout layout-align="end">
       <md-button ng-click="showRule()">评分规则</md-button>

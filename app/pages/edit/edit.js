@@ -4,7 +4,7 @@
 
 angular.module('onepiece')
   .controller('EditController',
-    function ($scope, $mdDialog, $http, path, item, user) {
+    function ($scope, $mdDialog, $http, explorer, path, item, user, toast) {
       $scope.toastBound = 'editToastBounds';
 
       $scope.item = item;
@@ -26,7 +26,7 @@ angular.module('onepiece')
         })
           .then(function (response) {
               var responseData = response['data'];
-              if (responseData['res_code'] == 0) {
+              if (responseData['res_code'] === 0) {
                 $scope.edits = responseData['data']['edits'];
                 $scope.getEditsStatus = $scope.statuses[2];
               } else {
@@ -47,10 +47,11 @@ angular.module('onepiece')
         $scope.actionName = actionName;
       };
 
-      $scope.explorer = Explorer.new([].concat(path));
+      $scope.explorer = explorer;
+      explorer.setPath(path);
 
       $scope.namingDirKeyPress = function (e) {
-        if (e.keyCode == 13 && $scope.explorer.newDirName) {
+        if (e.keyCode === 13 && $scope.explorer.newDirName) {
           $scope.explorer.saveDir($scope.explorer.newDirName);
         }
       };
@@ -91,7 +92,7 @@ angular.module('onepiece')
         $http.post('edit', data)
           .then(function (response) {
               var responseData = response['data'];
-              if (responseData['res_code'] == 0) {
+              if (responseData['res_code'] === 0) {
                 toast.show(responseData['msg'], $scope.toastBound, 'success');
                 getEdit();
               } else {

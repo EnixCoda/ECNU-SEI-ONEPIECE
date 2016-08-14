@@ -12,6 +12,6 @@ angular
     $mdThemingProvider.theme('warning-toast');
   });
 
-window.onbeforeunload = function () {
-  return '页面即将刷新';
-};
+// window.onbeforeunload = function () {
+//   return '页面即将刷新';
+// };

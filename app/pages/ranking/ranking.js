@@ -4,7 +4,7 @@
 
 angular.module('onepiece')
   .controller('RankingController',
-    function ($scope, $mdDialog, $mdBottomSheet, $document, $http, user, showUserCenter) {
+    function ($scope, $mdDialog, $mdBottomSheet, $document, $http, user, toast, showUserCenter) {
       $scope.toastBound = 'rankingToastBounds';
 
       $scope.user = user;
@@ -17,7 +17,7 @@ angular.module('onepiece')
       function getRanking() {
         $scope.status = $scope.statuses[1];
         var data = {};
-        if (user.status == 'ONLINE') {
+        if (user.status === 'ONLINE') {
           data.token = user.token;
         }
         $http.get('ranking', {
@@ -25,7 +25,7 @@ angular.module('onepiece')
         })
           .then(function (response) {
             var responseData = response.data;
-            if (responseData['res_code'] == 0) {
+            if (responseData['res_code'] === 0) {
               $scope.ranking = responseData['data']['ranking'];
               $scope.userRanking = responseData['data']['userRanking'];
               $scope.status = $scope.statuses[2];

@@ -4,7 +4,7 @@
 
 angular.module('onepiece')
   .controller('MainController',
-    function ($scope, $http, $mdDialog, $timeout, $mdMedia, user, toast, utility, downloader, cookie) {
+    function ($scope, $http, $mdDialog, $timeout, $mdMedia, SJAX, showUserCenter, explorer, user, toast, utility, downloader, cookie) {
       $scope.toastBound = 'bodyToastBounds';
 
       $scope.getFileColor = utility.getFileColor;
@@ -76,7 +76,7 @@ angular.module('onepiece')
       function targetInDirectory(target, dir) {
         if (dir.isDir) {
           for (var i = 0; i < dir.content.length; i++) {
-            if (dir.content[i].name == target.name) {
+            if (dir.content[i].name === target.name) {
               return i;
             }
           }
@@ -101,7 +101,7 @@ angular.module('onepiece')
         }
       };
       $scope.goBack = function (step) {
-        if ($scope.directoryStack.length == 1) return false;
+        if ($scope.directoryStack.length === 1) return false;
         if (step >= $scope.directoryStack.length) step = $scope.directoryStack.length - 1;
         for (var i = 0; i < step; i++) {
           $scope.directoryStack.pop();
@@ -170,15 +170,15 @@ angular.module('onepiece')
       };
 
       // show dialogs start
+      $scope.showUserCenter = showUserCenter;
+
       $scope.showFileDetail = function (file, e) {
         $mdDialog.show({
           controller: 'FilePreviewController',
           templateUrl: 'file_preview.html',
           targetEvent: e,
           locals: {
-            file: file,
-            user: $scope.user,
-            showUserCenter: $scope.showUserCenter
+            file: file
           },
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true
@@ -191,7 +191,6 @@ angular.module('onepiece')
           targetEvent: e,
           locals: {
             item: item,
-            user: $scope.user,
             path: $scope.directoryStack
           },
           fullscreen: $mdMedia('xs'),
@@ -204,21 +203,7 @@ angular.module('onepiece')
           templateUrl: 'lesson_preview.html',
           targetEvent: e,
           locals: {
-            lesson: lesson,
-            user: $scope.user,
-            showUserCenter: $scope.showUserCenter
-          },
-          fullscreen: $mdMedia('xs'),
-          clickOutsideToClose: true
-        });
-      };
-      $scope.showUserCenter = function (e) {
-        $mdDialog.show({
-          controller: 'UserCenterController',
-          templateUrl: 'user_center.html',
-          targetEvent: e,
-          locals: {
-            user: $scope.user
+            lesson: lesson
           },
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true
@@ -226,14 +211,13 @@ angular.module('onepiece')
       };
       $scope.showContribute = function (e) {
         $mdDialog.show({
+          // TODO: injections
           controller: 'UploadController',
           templateUrl: 'upload.html',
           targetEvent: e,
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: false,
           locals: {
-            showUserCenter: $scope.showUserCenter,
-            user: $scope.user,
             path: $scope.directoryStack
           },
           onComplete: function (uploadControllerScope) {
@@ -242,37 +226,30 @@ angular.module('onepiece')
               browse_button: 'pickfiles',
               // uptoken_url: 'uploadToken',
               uptoken_func: function (file) {
-                var xmlHttp = {};
-                if (window.XMLHttpRequest) {
-                  xmlHttp = new XMLHttpRequest();
-                } else {
-                  xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
-                }
-                var url = 'uploadToken'
-                  + '?token=' + uploadControllerScope.user.token
-                  + '&key=' + encodeURI(uploadControllerScope.path.slice(1).map(function (cur) {
+                return SJAX.run('GET', 'uploadToken', {
+                  token: user.token,
+                  key: uploadControllerScope.path.slice(1).map(function (cur) {
                     return cur.name;
-                  }).concat([file.name]).join('/'));
-                xmlHttp.open('GET', url, false);
-                xmlHttp.setRequestHeader('If-Modified-Since', '0');
-                // TODO: use $http
-                try {
-                  xmlHttp.send();
-                  if (xmlHttp.status === 200) {
-                    var res = JSON.parse(xmlHttp.responseText);
-                    if (res['res_code'] == 0) {
-                      file.validToken = true;
-                      return res['data']['uptoken'];
-                    } else {
-                      toast.show(file.name + ' 上传失败：' + res['msg'], uploadControllerScope.toastBound, 'error', true);
-                    }
+                  }).concat([file.name]).join('/')
+                }, function (responseText) {
+                  'use strict';
+                  var res = JSON.parse(responseText);
+                  if (res['res_code'] === 0) {
+                    file.validToken = true;
+                    return res['data']['uptoken'];
                   } else {
-                    toast.show('服务器错误', uploadControllerScope.toastBound, 'error', true);
+                    toast.show(file.name + ' 上传失败：' + res['msg'], '', 'error', true);
+                    return '';
                   }
-                } catch (err) {
-                  toast.show('无法连接到服务器', uploadControllerScope.toastBound, 'error', true);
-                }
-                return '';
+                }, function () {
+                  'use strict';
+                  toast.show('服务器错误', '', 'error', true);
+                  return '';
+                }, function () {
+                  'use strict';
+                  toast.show('无法连接到服务器', '', 'error', true);
+                  return '';
+                });
               },
               get_new_uptoken: true,
               domain: '7xt1vj.com1.z0.glb.clouddn.com',
@@ -336,10 +313,7 @@ angular.module('onepiece')
         $mdDialog.show({
           controller: 'RankingController',
           templateUrl: 'ranking.html',
-          locals: {
-            showUserCenter: $scope.showUserCenter,
-            user: $scope.user
-          },
+          locals: {},
           targetEvent: e,
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: false
@@ -387,10 +361,7 @@ angular.module('onepiece')
       $scope.delay = $scope.isMobile ? 0 : 300;
       getIndex();
       // try log in with saved token
-      var token = cookie.loadTokenFromCookie();
-      if (token) {
-        user.token = token;
-        user.loginWithToken();
-      }
       $scope.user = user;
+      user.token = cookie.loadTokenFromCookie();
+      user.loginWithToken();
     });

@@ -19,7 +19,6 @@ angular.module('onepiece')
         //     .hideDelay(stayLong ? 4500 : 1500)
         // );
         position = position || 'top right';
-        boundId = "userCenterToastBounds";
         $mdToast.show({
           template: `
               <md-toast md-theme="${type}-toast" ng-class="{'md-capsule': toast.capsule}" class="ng-scope md-${type}-toast-theme">
@@ -32,7 +31,7 @@ angular.module('onepiece')
             `,
           autoWrap: true,
           position: position,
-          parent: document.querySelector(boundId ? '#' + boundId : ''),
+          // parent: document.querySelector(boundId ? '#' + boundId : ''),
           hideDelay: stayLong ? 4500 : 1500,
           theme: type + '-toast'
         });

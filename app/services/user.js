@@ -6,8 +6,8 @@ angular.module('onepiece')
   .factory('user',
     function ($http, cookie, toast) {
       'use strict';
-      const statuses = ['OFFLINE', 'CONNECTING', 'ONLINE'];
-      const user = {
+      var statuses = ['OFFLINE', 'CONNECTING', 'ONLINE'];
+      var user = {
         id: null,
         token: null,
         cademy: null,
@@ -40,8 +40,9 @@ angular.module('onepiece')
               toast.show(responseData['msg'], '', 'error', true);
             }
           }, function () {
+            user.status = user.statuses[0];
             toast.show('无法连接到服务器', '', 'error');
-          })
+          });
       };
       user.loginWithPassword = function () {
         if (!user.id || !user.password) return;
@@ -49,16 +50,17 @@ angular.module('onepiece')
           id: user.id,
           password: user.password
         };
-        user.login(user, data);
+        user.login(data);
       };
-      user.loginWithToken = function ($scope, user) {
-        if (!user || !user.token) return;
+      user.loginWithToken = function () {
+        if (!user.token) return;
         var data = {
           token: user.token
         };
-        user.login(user, data);
+        user.login(data);
       };
-      user.onFinish = function () {};
+      user.onFinish = function () {
+      };
 
       return user;
     });

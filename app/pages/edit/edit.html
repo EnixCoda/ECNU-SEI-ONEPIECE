@@ -18,11 +18,11 @@
         * 为了站内文件的有序性，请仔细阅读根目录的“管理规则.txt”后根据规则进行操作。<br>
         * 你提交的修改可能不会立即生效，为防止不当使用，当一定数量的用户提交了同样的修改意见后控制台才会执行对应修改操作。<br>
       </div>
-      <div ng-if="getEditsStatus != 'FAIL'">
-        <div ng-if="getEditsStatus=='CONNECTING'">
+      <div ng-if="getEditsStatus !== 'FAIL'">
+        <div ng-if="getEditsStatus==='CONNECTING'">
           <md-progress-circular md-mode="indeterminate" md-diameter="20"></md-progress-circular>
         </div>
-        <div ng-if="getEditsStatus=='SUCCESS'">
+        <div ng-if="getEditsStatus==='SUCCESS'">
           <md-list>
             <md-subheader>
               已提交的修改意见汇总：
@@ -53,7 +53,7 @@
             </md-list-item>
           </md-list>
         </div>
-        <div ng-if="getEditsStatus=='FAIL'">
+        <div ng-if="getEditsStatus==='FAIL'">
           获取其他修改意见失败
         </div>
       </div>

@@ -14,7 +14,7 @@ angular.module('onepiece')
       Utility.getFileColor = function (file) {
         var filename = file.name.toLowerCase();
         if (file.isDir) return {color: '#00bcd4'};
-        if (filename.indexOf('.') > -1 && filename[-1] != '.') {
+        if (filename.indexOf('.') > -1 && filename[-1] !== '.') {
           var color;
           var fileType = filename.substr(filename.lastIndexOf('.') + 1);
           switch (fileType) {
@@ -54,7 +54,7 @@ angular.module('onepiece')
       };
       Utility.getFileIcon = function (file) {
         var filename = file.name.toLowerCase();
-        if (filename.indexOf('.') > -1 && filename[-1] != '.') {
+        if (filename.indexOf('.') > -1 && filename[-1] !== '.') {
           var fileType = filename.substr(filename.lastIndexOf('.') + 1);
           switch (fileType) {
             case 'jpg':
@@ -88,7 +88,7 @@ angular.module('onepiece')
       };
       Utility.previewable = function (file) {
         var filename = file.name.toLowerCase();
-        if (filename.indexOf('.') > -1 && filename[-1] != '.') {
+        if (filename.indexOf('.') > -1 && filename[-1] !== '.') {
           var fileType = filename.substr(filename.lastIndexOf('.') + 1);
           switch (fileType) {
             case 'jpg':

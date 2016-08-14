@@ -4,7 +4,7 @@
 
 angular.module('onepiece')
   .controller('LessonPreviewController',
-    function ($scope, $mdDialog, $http, lesson, user, showUserCenter) {
+    function ($scope, $mdDialog, $http, comment, lesson, user, showUserCenter) {
       $scope.toastBound = 'lessonPreviewToastBounds';
 
       $scope.lesson = lesson;
@@ -12,13 +12,14 @@ angular.module('onepiece')
       $scope.showUserCenter = showUserCenter;
       $scope.anonymous = false;
 
-      var commentManager = CommentManager.new($scope, $http, 'lesson', lesson.name);
+      $scope.comment = comment;
 
-      commentManager.get();
+      comment.set('lesson', lesson);
+      comment.get();
 
       $scope.sendComment = function () {
         if ($scope.comment) {
-          commentManager.send();
+          comment.send();
         }
       };
 

@@ -9,7 +9,7 @@ angular.module('onepiece')
       $scope.user = user;
 
       $scope.keyLogIn = function (e) {
-        if (e.keyCode == 13) $scope.logIn();
+        if (e.keyCode === 13) $scope.logIn();
       };
 
       $scope.logIn = function () {
