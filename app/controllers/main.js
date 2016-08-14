@@ -6,19 +6,17 @@ angular.module('onepiece')
   .controller('MainController',
     function ($scope, $http, $mdDialog, $timeout, $mdMedia, SJAX, showUserCenter, explorer, user, toast, utility, downloader, cookie) {
       $scope.toastBound = 'bodyToastBounds';
+      // TODO: modularize main page
 
       $scope.getFileColor = utility.getFileColor;
       $scope.getFileIcon = utility.getFileIcon;
       $scope.formatFileSize = utility.formatFileSize;
       $scope.getContentNameStyle = utility.getContentNameStyle;
 
-      $scope.downloadFile = function (file) {
-        downloader.downloadFile(file, $scope.toastBound);
-      };
-      $scope.downloadLesson = function (lesson) {
-        downloader.downloadLesson(lesson, $scope.toastBound);
-      };
+      $scope.downloadFile = downloader.downloadFile;
+      $scope.downloadLesson = downloader.downloadLesson;
 
+      // TODO: service?
       function checkNanoScreen() {
         $scope.isNanoScreen = Math.min(utility.getWindowSize().width, utility.getWindowSize().height) < 340;
         if ($scope.isNanoScreen) {
@@ -26,6 +24,7 @@ angular.module('onepiece')
         }
       }
 
+      // TODO: service?
       function getIndex() {
         function processIndex(rawResponse) {
           var responseData = rawResponse.data;
@@ -116,6 +115,7 @@ angular.module('onepiece')
         $mdOpenMenu($e);
       };
 
+      // TODO: BUG: not working well in some browsers like Chrome
       // lesson lessonSearcher
       $scope.lessonSearcher = function () {
       };
@@ -221,6 +221,7 @@ angular.module('onepiece')
             path: $scope.directoryStack
           },
           onComplete: function (uploadControllerScope) {
+            // TODO: make it a service?
             uploadControllerScope.QUploader = Qiniu.uploader({
               runtimes: 'html5',
               browse_button: 'pickfiles',

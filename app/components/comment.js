@@ -9,7 +9,6 @@ angular.module('onepiece')
       <need-login></need-login>
       <comment-panel></comment-panel>
     `,
-    controller: function () {
-    },
+    controller: function () {},
     bindings: {}
   });
