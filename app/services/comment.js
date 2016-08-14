@@ -1,5 +1,5 @@
 angular.module('onepiece')
-.factory('comment', function ($http, toast) {
+.factory('comment', function ($http, toast, user) {
   'use strict';
   var commentManager = {};
   commentManager.set = function (type, key) {
@@ -27,8 +27,7 @@ angular.module('onepiece')
   };
   commentManager.send = function () {
     toast.show('正在提交评论', '', 'success');
-    commentManager
-      .$http
+    $http
       .post([commentManager.type, commentManager.key, 'comment'].join('/'), {
         username: user.anonymous ? '匿名' : user.username ? user.username : user.name,
         comment: commentManager.comment,

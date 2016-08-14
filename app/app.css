@@ -181,10 +181,9 @@ md-autocomplete {
     min-width: 216px;
 }
 
-.user-comment-area {
-    min-height: 160px;
-    padding-top: 24px;
-    border-radius: 8px;
+.user-comment-panel {
+    padding: 24px 6px 0;
+    border-radius: 4px;
 }
 
 .nano-padding ._md-subheader-inner {

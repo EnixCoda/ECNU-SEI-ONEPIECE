@@ -5,7 +5,7 @@
 angular.module('onepiece')
   .component('userAct', {
     template: `
-      <div ng-show="user.status === 'ONLINE'" class="user-comment-area md-whiteframe-5dp" layout="column">
+      <div ng-show="user.status === 'ONLINE'" class="user-comment-panel md-whiteframe-5dp" layout="column">
         <comment-panel></comment-panel>
         <div layout layout-align="space-between center" layout-wrap>
           <sign></sign>
