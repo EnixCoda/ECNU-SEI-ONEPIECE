@@ -1,7 +1,3 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .controller('UserCenterController',
     function ($scope, $mdDialog, $http, user) {
@@ -13,7 +9,7 @@ angular.module('onepiece')
       };
 
       $scope.logIn = function () {
-        user.loginWithPassword($scope, user);
+        user.loginWithPassword();
       };
 
       $scope.logOut = function () {

@@ -1,10 +1,5 @@
-/**
- * Created by exincoda on 16/8/14.
- */
-
 angular.module('onepiece')
   .factory('SJAX', function () {
-    'use strict';
     var sjax = {};
     sjax.run = function (method, url, data, success, fail, error) {
       var xmlHttp = {};

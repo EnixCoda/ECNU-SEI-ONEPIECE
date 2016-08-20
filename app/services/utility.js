@@ -1,11 +1,6 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .factory('utility',
     function () {
-      'use strict';
       var Utility = {};
       Utility.config = {
         GOOD_FILE_SCORE: 10,

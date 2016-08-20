@@ -17,8 +17,6 @@ angular.module('onepiece')
     `,
     controller: function ($scope, explorer, popper) {
       $scope.explorer = explorer;
-
-      // top-right menu
       $scope.topFuncs = [
         {
           func: popper.showUserCenter,

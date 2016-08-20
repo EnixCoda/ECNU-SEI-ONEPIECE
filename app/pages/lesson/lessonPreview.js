@@ -1,7 +1,3 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .controller('LessonPreviewController',
     function ($scope, $mdDialog, $http, comment, lesson) {

@@ -1,7 +1,6 @@
 angular.module('onepiece')
   .factory('comment',
     function ($http, toast, user) {
-      'use strict';
       var commentManager = {};
       commentManager.set = function (type, item) {
         commentManager.gettingComment = false;

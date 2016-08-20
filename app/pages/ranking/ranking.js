@@ -1,7 +1,3 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .controller('RankingController',
     function ($scope, $mdDialog, $mdBottomSheet, $document, $http, user, toast, popper) {
@@ -49,7 +45,5 @@ angular.module('onepiece')
         })
       };
 
-      $scope.close = function () {
-        $mdDialog.hide();
-      }
+      $scope.close = $mdDialog.hide;
     });

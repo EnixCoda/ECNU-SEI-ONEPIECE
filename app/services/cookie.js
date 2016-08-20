@@ -1,11 +1,6 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .factory('cookie',
     function () {
-      'use strict';
       var CookieManager = {
         saveTokenToCookie: function (token) {
           var OneMonthLater = new Date();

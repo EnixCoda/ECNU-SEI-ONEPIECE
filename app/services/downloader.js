@@ -1,11 +1,6 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .factory('downloader',
     function ($http, user, toast) {
-      'use strict';
       var Downloader = {};
       Downloader.downloadFile = function (file) {
         if (file.gettingDownloadLink) return;

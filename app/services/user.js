@@ -1,20 +1,14 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .factory('user',
-    function ($http, cookie, toast) {
-      'use strict';
-      var statuses = ['OFFLINE', 'CONNECTING', 'ONLINE'];
+    function ($http, $mdDialog, $timeout, cookie, toast) {
       var user = {
-        id: null,
-        token: cookie.loadTokenFromCookie(),
         cademy: null,
-        name: null
+        id: null,
+        name: null,
+        token: cookie.loadTokenFromCookie()
       };
-      user.statuses = statuses;
-      user.status = statuses[0];
+      user.statuses = ['OFFLINE', 'CONNECTING', 'ONLINE'];
+      user.status = user.statuses[0];
       user.logout = function () {
         user.status = user.statuses[0];
         cookie.clearTokenFromCookie();
@@ -26,13 +20,14 @@ angular.module('onepiece')
           .then(function (response) {
             var responseData = response.data;
             if (responseData['res_code'] === 0) {
-              user.token = responseData['data']['token'];
-              user.name = responseData['data']['username'];
-              user.cademy = responseData['data']['cademy'];
+              var userData = responseData['data'];
+              user.token = userData['token'];
+              user.name = userData['username'];
+              user.cademy = userData['cademy'];
               user.status = user.statuses[2];
               cookie.saveTokenToCookie(user.token);
               toast.show(responseData['msg'], '', 'success', true, 'top left');
-              setTimeout(user.complete, 2000);
+              $timeout($mdDialog.hide, 2000);
             } else {
               user.status = user.statuses[0];
               toast.show(responseData['msg'], '', 'error', true);

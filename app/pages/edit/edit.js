@@ -1,7 +1,3 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .controller('EditController',
     function ($scope, $mdDialog, $http, explorer, item, user, toast) {

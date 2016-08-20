@@ -1,11 +1,6 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .factory('rate',
     function ($http) {
-      'use strict';
       var rateManager = {};
       rateManager.file = file;
       rateManager.get = function () {

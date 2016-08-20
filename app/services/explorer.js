@@ -1,11 +1,6 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .factory('explorer',
     function ($timeout, popper) {
-      'use strict';
       function targetInDirectory(target, dir) {
         if (dir.isDir) {
           for (var i = 0; i < dir.content.length; i++) {
