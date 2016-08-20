@@ -1,8 +1,6 @@
 angular.module('onepiece')
   .controller('UploadController',
     function ($scope, $mdDialog, user, explorer, toast, popper, SJAX) {
-      $scope.toastBound = 'uploadControllerToastBounds';
-
       $scope.user = user;
       $scope.explorer = explorer;
 

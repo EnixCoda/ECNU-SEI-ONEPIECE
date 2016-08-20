@@ -27,7 +27,7 @@ angular.module('onepiece')
               user.status = user.statuses[2];
               cookie.saveTokenToCookie(user.token);
               toast.show(responseData['msg'], '', 'success', true, 'top left');
-              $timeout($mdDialog.hide, 2000);
+              $mdDialog.hide();
             } else {
               user.status = user.statuses[0];
               toast.show(responseData['msg'], '', 'error', true);
@@ -54,8 +54,6 @@ angular.module('onepiece')
       };
       user.onFinish = function () {
       };
-
-      user.loginWithToken();
 
       return user;
     });

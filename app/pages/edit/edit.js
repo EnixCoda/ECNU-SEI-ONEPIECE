@@ -1,10 +1,8 @@
 angular.module('onepiece')
   .controller('EditController',
-    function ($scope, $mdDialog, $http, explorer, item, user, toast) {
-      $scope.toastBound = 'editToastBounds';
-
-      $scope.item = item;
-      $scope.original = [].concat(explorer.path).concat([item]).map(function (cur) {
+    function ($scope, $mdDialog, $http, target, explorer, user, toast) {
+      $scope.explorer = explorer;
+      $scope.original = [].concat(explorer.path).concat([target]).map(function (cur) {
         return cur.name;
       }).slice(1).join('/');
 
@@ -17,7 +15,7 @@ angular.module('onepiece')
           params: {
             path: explorer.path.slice(1).map(function (cur) {
               return cur.name;
-            }).join('/') + '/' + item.name
+            }).join('/') + '/' + target.name
           }
         })
           .then(function (response) {
@@ -43,7 +41,6 @@ angular.module('onepiece')
         $scope.actionName = actionName;
       };
 
-      $scope.explorer = explorer;
 
       $scope.namingDirKeyPress = function (e) {
         if (e.keyCode === 13 && $scope.explorer.newDirName) {

@@ -11,22 +11,9 @@
   <md-dialog-content>
     <md-content layout="column" layout-padding>
       <div layout layout-align="start center">
-        <div>
-          <md-button class="md-icon-button" ng-click="rateFile(1)" ng-disabled="user.status !== 'ONLINE'">
-            <md-icon class="material-icons" ng-class="user.status === 'ONLINE'?'thumbUp-enabled':''">thumb_up</md-icon>
-          </md-button>
-          <md-button class="md-icon-button" ng-click="rateFile(-2)" ng-disabled="user.status !== 'ONLINE'">
-            <md-icon class="material-icons" ng-class="user.status === 'ONLINE'?'thumbUp-disabled':''">thumb_down
-            </md-icon>
-          </md-button>
-        </div>
-        <div layout layout-align="start center">
-          <p>当前总分：</p>
-          <h3 ng-show="!gettingRate" class="no-margin">{{totalScore}}</h3>
-          <md-progress-circular ng-show="gettingRate" md-diameter="20" md-mode="indeterminate"></md-progress-circular>
-        </div>
+        <rate file="file"></rate>
         <div flex></div>
-        <md-button class="md-fab md-mini background-blue" ng-click="previewFile(file, 'filePreviewToastBounds')"
+        <md-button class="md-fab md-mini background-blue" ng-click="previewFile(file)"
                    ng-show="previewable(file)" layout layout-align="center center">
           <md-tooltip md-direction="bottom">
             预览
@@ -42,7 +29,7 @@
             </md-progress-circular>
           </div>
         </md-button>
-        <md-button class="md-fab md-mini background-blue" ng-click="downloadFile(file, 'filePreviewToastBounds')"
+        <md-button class="md-fab md-mini background-blue" ng-click="downloadFile(file)"
                    layout layout-align="center center">
           <md-tooltip md-direction="bottom">
             {{file.gettingDownloadLink?"正在获取下载链接":formatFileSize(file)}}

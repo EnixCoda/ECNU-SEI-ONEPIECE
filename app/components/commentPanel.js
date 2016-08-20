@@ -1,8 +1,8 @@
 angular.module('onepiece')
   .component('commentPanel', {
     template: `
-      <div class="user-comment-panel md-whiteframe-4dp">
-        <comment-input ng-show="user.status === 'ONLINE'"></comment-input>
+      <div ng-show="user.status === 'ONLINE'" class="user-comment-panel md-whiteframe-4dp">
+        <comment-input></comment-input>
         <div ng-show="user.status === 'ONLINE'" layout layout-align="space-between center" layout-wrap>
           <sign></sign>
           <div>

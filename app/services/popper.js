@@ -14,15 +14,14 @@ angular.module('onepiece')
       };
       popper.showContribute = function (e) {
         $mdDialog.show({
-          // TODO: injections
           controller: 'UploadController',
           templateUrl: 'upload.html',
           targetEvent: e,
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: false,
           locals: {},
-          onComplete: function (uploadControllerScope) {
-            uploadControllerScope.QUploader = Qiniu.uploader(uploadControllerScope.QUploaderConfig);
+          onComplete: function ($scope) {
+            $scope.QUploader = Qiniu.uploader($scope.QUploaderConfig);
           }
         });
       };
@@ -75,7 +74,7 @@ angular.module('onepiece')
           templateUrl: 'edit.html',
           targetEvent: e,
           locals: {
-            item: item
+            target: item
           },
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true

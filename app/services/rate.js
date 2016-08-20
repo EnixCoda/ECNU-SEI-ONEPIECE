@@ -1,22 +1,28 @@
 angular.module('onepiece')
   .factory('rate',
-    function ($http) {
+    function ($http, toast, user) {
       var rateManager = {};
-      rateManager.file = file;
+      rateManager.file = {};
+      rateManager.set = function (file) {
+        rateManager.gettingRate = false;
+        rateManager.file = file;
+        rateManager.key = rateManager.file.id;
+      };
       rateManager.get = function () {
-        file.gettingRate = true;
+        rateManager.file.gettingRate = true;
         $http.get(['file', rateManager.file.id, 'score'].join('/'))
           .then(function (response) {
-            file.gettingRate = false;
+            rateManager.file.gettingRate = false;
             var responseData = response.data;
             if (responseData['res_code'] === 0) {
-              file.totalScore = responseData['data']['total_score'];
-              rateManager.file.score = file.totalScore;
+              rateManager.file.totalScore = responseData['data']['total_score'];
+              rateManager.file.score = rateManager.file.totalScore;
             } else {
+              rateManager.file.gettingRate = false;
               toast.show(responseData['msg'], '', 'error');
             }
           }, function () {
-            file.gettingRate = false;
+            rateManager.file.gettingRate = false;
             toast.show('无法获取评分', '', 'error');
           });
       };

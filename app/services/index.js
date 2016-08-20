@@ -1,27 +1,28 @@
 angular.module('onepiece')
   .factory('indexLoader',
     function ($http, lessonLoader, toast, explorer) {
-      function success () {
+      function success (data) {
+        indexLoader.index = data;
         indexLoader.loading = false;
         lessonLoader.parse(indexLoader.index);
-        explorer.setPath([indexLoader.index]);
+        explorer.setIndex(indexLoader.index);
       }
-      
+
       function fail () {
         indexLoader.failed = true;
         toast.show('加载文件列表失败，请刷新重试。', '', 'error');
       }
 
+      // TODO: cache with localStorage and timestamp
       var indexLoader = {}
       indexLoader.index = [];
-      indexLoader.loadingIndex = true;
+      indexLoader.loading = true;
       indexLoader.load = function () {
         $http.get('index')
           .then(function (response) {
             var responseData = response.data;
             if (responseData['res_code'] === 0) {
-              indexLoader.index = responseData['data']['index'];
-              success();
+              success(responseData['data']['index']);
             } else {
               fail();
             }
@@ -29,7 +30,6 @@ angular.module('onepiece')
             fail();
           });
       };
-      indexLoader.load();
 
       return indexLoader;
   });

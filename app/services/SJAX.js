@@ -2,12 +2,7 @@ angular.module('onepiece')
   .factory('SJAX', function () {
     var sjax = {};
     sjax.run = function (method, url, data, success, fail, error) {
-      var xmlHttp = {};
-      if (window.XMLHttpRequest) {
-        xmlHttp = new XMLHttpRequest();
-      } else {
-        xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
-      }
+      var xmlHttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
       var postfix = '';
       for (var key in data) {
         if (data.hasOwnProperty(key)) {

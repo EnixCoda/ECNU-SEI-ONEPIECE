@@ -72,7 +72,7 @@
                   * 则应在下方菜单中选择 "ONEPIECE", "专业选修课程"<br>
                   * 不需要再次建立“C语言程序设计”文件夹<br>
                 </div>
-                <md-divider></md-divider>
+                <md-divider layout-padding></md-divider>
                 <div>目标位置：</div>
                 <div layout layout-wrap>
                   <md-input-container class="locator-input-container" ng-repeat="dir in explorer.path track by $index">
@@ -112,7 +112,7 @@
               </div>
             </div>
             <div layout layout-align="end center">
-              <md-button ng-disabled="explorer.path.length<3" class="md-raised" ng-class="explorer.path.length<3?'':'md-primary'"
+              <md-button ng-disabled="explorer.path.length < 2" class="md-raised" ng-class="explorer.path.length < 2 ? '':'md-primary'"
                          ng-click="submit('MOVE')">提交
               </md-button>
             </div>

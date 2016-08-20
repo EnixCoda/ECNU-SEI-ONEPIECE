@@ -1,7 +1,6 @@
 angular.module('onepiece')
   .controller('UserCenterController',
     function ($scope, $mdDialog, $http, user) {
-      $scope.toastBound = 'userCenterToastBounds';
       $scope.user = user;
 
       $scope.keyLogIn = function (e) {

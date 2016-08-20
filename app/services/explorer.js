@@ -13,8 +13,8 @@ angular.module('onepiece')
       }
 
       var explorer = {};
-      explorer.setPath = function (path) {
-        explorer.path = path;
+      explorer.setIndex = function (index) {
+        explorer.path = [index];
         explorer.nextDir = undefined;
         explorer.newDirName = '';
         explorer.namingDir = false;

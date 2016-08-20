@@ -1,8 +1,6 @@
 angular.module('onepiece')
   .controller('RankingController',
     function ($scope, $mdDialog, $mdBottomSheet, $document, $http, user, toast, popper) {
-      $scope.toastBound = 'rankingToastBounds';
-
       $scope.user = user;
       $scope.showUserCenter = popper.showUserCenter;
 

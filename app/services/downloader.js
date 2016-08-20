@@ -15,8 +15,8 @@ angular.module('onepiece')
           .then(function (response) {
             file.gettingDownloadLink = false;
             var responseData = response.data;
-            if (responseData['res_code'] === 0) {
-              window.open(responseData['data']['downloadLink']);
+            if (responseData) {
+              window.location = responseData['data']['downloadLink'];
             } else {
               toast.show(responseData['msg'], '', 'error');
             }
@@ -39,7 +39,8 @@ angular.module('onepiece')
             file.gettingPreviewLink = false;
             var responseData = response.data;
             if (responseData['res_code'] === 0) {
-              window.open(responseData['data']['previewLink'], '_blank');
+              var promptedWindow = window.open(responseData['data']['previewLink'], '_blank');
+              if (!promptedWindow) alert('预览窗口加载失败');
             } else {
               toast.show(responseData['msg'], '', 'error');
             }
@@ -59,7 +60,7 @@ angular.module('onepiece')
           .then(function (response) {
               var responseData = response['data'];
               if (responseData['res_code'] === 0) {
-                window.open(responseData['data']['link']);
+                window.location = responseData['data']['link'];
               } else {
                 toast.show(responseData['msg'], '', 'error', false);
               }

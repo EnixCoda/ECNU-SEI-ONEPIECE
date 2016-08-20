@@ -1,8 +1,6 @@
 angular.module('onepiece')
   .controller('FilePreviewController',
-    function ($scope, $mdDialog, $http, file, user, comment, utility, downloader) {
-      $scope.toastBound = 'filePreviewToastBounds';
-
+    function ($scope, $mdDialog, $http, file, user, comment, rate, utility, downloader) {
       $scope.file = file;
       $scope.user = user;
       $scope.formatFileSize = utility.formatFileSize;
@@ -10,8 +8,8 @@ angular.module('onepiece')
       $scope.downloadFile = downloader.downloadFile;
       $scope.previewFile = downloader.previewFile;
 
-      // rate.set('file', file);
-      // rate.get();
+      rate.set(file);
+      rate.get();
       comment.set('file', file);
       comment.get();
 
