@@ -1,6 +1,7 @@
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
+
 md-checkbox.md-default-theme.md-checked ._md-icon:after,
 md-checkbox.md-checked ._md-icon:after {
   border-color: #fff;

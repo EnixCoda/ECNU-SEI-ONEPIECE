@@ -7,17 +7,8 @@ angular.module('onepiece')
         if (e.keyCode === 13) $scope.logIn();
       };
 
-      $scope.logIn = function () {
-        user.loginWithPassword();
-      };
+      $scope.logIn = user.loginWithPassword;
+      $scope.logOut = user.logOut;
 
-      $scope.logOut = function () {
-        user.logout();
-      };
-
-      $scope.close = function () {
-        $mdDialog.hide();
-      };
-
-      user.onFinish($scope.close);
+      $scope.close = $mdDialog.hide;
     });

@@ -9,7 +9,7 @@ angular.module('onepiece')
       };
       user.statuses = ['OFFLINE', 'CONNECTING', 'ONLINE'];
       user.status = user.statuses[0];
-      user.logout = function () {
+      user.logOut = function () {
         user.status = user.statuses[0];
         cookie.clearTokenFromCookie();
         toast.show('您已登出', '', 'success');
