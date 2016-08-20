@@ -2,7 +2,7 @@ angular.module('onepiece')
   .component('commentList', {
     template: `
       <div class="protect-overflow" flex>
-        <md-list ng-show="cm.comments.length > 0">
+        <md-list class="no-padding-top" ng-show="cm.comments.length > 0">
           <md-subheader class="md-no-sticky">评论</md-subheader>
           <md-list-item ng-repeat="cmt in cm.comments"
                         ng-class="cmt.comment.length>100?'md-2-line md-long-text':'md-2-line'">
@@ -22,7 +22,6 @@ angular.module('onepiece')
       </div>
     `,
     controller: function ($scope, comment) {
-      'use strict';
       $scope.cm = comment;
     }
   });

@@ -1,326 +1,334 @@
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-    display: none !important;
+  display: none !important;
+}
+md-checkbox.md-default-theme.md-checked ._md-icon:after,
+md-checkbox.md-checked ._md-icon:after {
+  border-color: #fff;
 }
 
 ._md-track-ticks canvas {
-    display: none;
+  display: none;
 }
 
 md-input-container .md-errors-spacer {
-    min-height: 0;
+  min-height: 0;
 }
 
 body, input, textarea, ._md-subheader-content {
-    font-family: Roboto, sans-serif, "黑体";
+  font-family: Roboto, sans-serif, "黑体";
 }
 
 .fill-height {
-    height: 100%;
+  height: 100%;
 }
 
 .left-offset-10 {
-    padding-left: 10px;
+  padding-left: 10px;
 }
 
 /* padding */
+.no-padding, comment {
+  padding: 0 !important;
+}
+
 .no-padding-top {
-    padding-top: 0;
+  padding-top: 0 !important;
 }
 
 .no-padding-bottom {
-    padding-bottom: 0;
+  padding-bottom: 0 !important;
 }
 
 /* margin */
 .no-margin {
-    margin: 0;
+  margin: 0;
 }
 
 .no-margin-left {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 .no-margin-right {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 /* icon position */
 .adjust-icon-top-margin-down {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 
 .adjust-icon-top-margin-up {
-    margin-top: -5px;
+  margin-top: -5px;
 }
 
 .adjust-icon-top-margin-up-3 {
-    margin-top: -3px;
+  margin-top: -3px;
 }
 
 /* color */
 .color-white {
-    color: white !important;
+  color: white !important;
 }
 
 .color-primary {
-    color: #02a8f3 !important;
+  color: #02a8f3 !important;
 }
 
 /* background */
 .background-white {
-    background-color: white !important;
+  background-color: white !important;
 }
 
 .background-blue {
-    background-color: #02a8f3 !important;
+  background-color: #02a8f3 !important;
 }
 
 .background-transparent {
-    background-color: rgba(0, 0, 0, 0) !important;
+  background-color: rgba(0, 0, 0, 0) !important;
 }
 
 .light-background-color {
-    background-color: rgba(0, 0, 0, 0.05) !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 .protect-overflow {
-    overflow: auto;
+  overflow: auto;
 }
 
 .hide-overflow {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .set-height-to-ac {
-    height: 40px;
-    min-height: 40px;
+  height: 40px;
+  min-height: 40px;
 }
 
 md-dialog {
-    min-width: 480px;
-    max-width: 600px;
+  min-width: 480px;
+  max-width: 600px;
 }
 
 .upload-dialog {
-    min-width: 600px;
+  min-width: 600px;
 }
 
 .top-banner {
-    min-height: 60px;
+  min-height: 60px;
 }
 
 md-progress-circular.color-white path {
-    stroke: white;
+  stroke: white;
 }
 
 .lesson-route {
-    padding-left: 5px;
-    cursor: pointer;
+  padding-left: 5px;
+  cursor: pointer;
 }
 
 .lesson-route:focus {
-    outline: none;
+  outline: none;
 }
 
 .lesson-route:hover {
-    color: #5D5D5D;
+  color: #5D5D5D;
 }
 
 .file-name-in-list {
-    line-height: 20px !important;
+  line-height: 20px !important;
 }
 
-.lesson-route-header ._md-subheader-inner {
-    background-color: rgba(0, 0, 0, 0.05);
+._md-subheader-inner {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .top-right-menu {
-    height: 40px;
-    width: 40px;
-    min-width: 40px;
-    margin-left: 4px;
+  height: 40px;
+  width: 40px;
+  min-width: 40px;
+  margin-left: 4px;
 }
 
 body md-content {
-    max-width: 1024px !important;
+  max-width: 1024px !important;
 }
 
 .color-grey {
-    color: rgba(0, 0, 0, 0.54) !important;
+  color: rgba(0, 0, 0, 0.54) !important;
 }
 
 md-progress-circular.spinner-primary path {
-    stroke: #02a8f3 !important;
+  stroke: #02a8f3 !important;
 }
 
 .no-box-shadow {
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 .warn-msg {
-    color: #f44336;
+  color: #f44336;
 }
 
 .short-user-name {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .min-height-65 {
-    min-height: 65px;
+  min-height: 65px;
 }
 
 .min-height-100 {
-    min-height: 100px;
+  min-height: 100px;
 }
 
 .thumbUp-enabled {
-    color: #009688;
+  color: #009688;
 }
 
 .thumbUp-disabled {
-    color: #ffc107;
+  color: #ffc107;
 }
 
 md-autocomplete {
-    min-width: 216px;
+  min-width: 216px;
 }
 
 .user-comment-panel {
-    padding: 24px 6px 0;
-    border-radius: 4px;
+  padding: 24px 6px 0;
+  border-radius: 4px;
 }
 
 .nano-padding ._md-subheader-inner {
-    padding: 4px;
+  padding: 4px;
 }
 
 md-input-container:not(.md-input-invalid) > md-icon {
-    color: dodgerblue;
+  color: dodgerblue;
 }
 
 md-input-container.md-input-invalid > md-icon {
-    color: #f44336;
+  color: #f44336;
 }
 
 md-toast.md-success-toast-theme .md-toast-content {
-    background-color: #4caf50;
+  background-color: #4caf50;
 }
 
 md-toast.md-error-toast-theme .md-toast-content {
-    background-color: #f44336;
+  background-color: #f44336;
 }
 
 md-toast.md-warning-toast-theme .md-toast-content {
-    background-color: #e91e63;
+  background-color: #e91e63;
 }
 
 .locator-input-container {
-    margin: 6px 0;
+  margin: 6px 0;
 }
 
 .upload-footer {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .bad-file {
-    color: #9e9e9e;
+  color: #9e9e9e;
 }
 
 .good-file {
-    color: #ff5722;
+  color: #ff5722;
 }
 
 .rankingTable {
-    width: 100%;
+  width: 100%;
 }
 
 .centeredText {
-    text-align: center;
+  text-align: center;
 }
 
 .ranking-supporter {
-    min-height: 288px;
+  min-height: 288px;
 }
 
 .md-toolbar-tools h4 {
-    line-height: 1em;
-    height: 1em;
-    overflow: hidden;
+  line-height: 1em;
+  height: 1em;
+  overflow: hidden;
 }
 
 /* top left back button */
 .back-btn {
-    transition-duration: 0.3s !important;
-    transition-property: all !important;
+  transition-duration: 0.3s !important;
+  transition-property: all !important;
 }
 
 .back-btn.active {
-    margin-left: 8px;
-    opacity: 1;
+  margin-left: 8px;
+  opacity: 1;
 }
 
 .back-btn.hidden {
-    margin-left: 0;
-    opacity: 0;
+  margin-left: 0;
+  opacity: 0;
 }
 
 /* lesson search */
 .lesson-search {
-    position: relative;
+  position: relative;
 }
 
 .lesson-search input {
-    border: 1px solid #fff;
-    border-radius: 2px;
-    padding: 10px 16px;
-    box-shadow: 0 2px 3px #aaa;
-    outline: none;
+  border: 1px solid #fff;
+  border-radius: 2px;
+  padding: 10px 16px;
+  box-shadow: 0 2px 3px #aaa;
+  outline: none;
 }
 
 .lesson-search md-icon {
-    display: none;
-    cursor: pointer;
-    position: absolute;
-    outline: none;
-    right: 8px;
-    top: 8px;
-    transition: all .5s;
+  display: none;
+  cursor: pointer;
+  position: absolute;
+  outline: none;
+  right: 8px;
+  top: 8px;
+  transition: all .5s;
 }
 
 .lesson-search input:focus ~ md-icon {
-    display: block;
+  display: block;
 }
 
 .lesson-search input:focus ~ .search-results {
-    visibility: visible;
-    overflow: auto;
+  visibility: visible;
+  overflow: auto;
 }
 
 .lesson-search .search-results {
-    visibility: hidden;
-    position: absolute;
-    background: #fff;
-    font-size: 16px;
-    z-index: 4;
-    border: 1px solid #ddd;
-    border-radius: 2px;
-    max-height: 200px;
-    overflow: hidden;
-    width: 100%;
-    margin: -1px;
-    transition: visibility .1s;
+  visibility: hidden;
+  position: absolute;
+  background: #fff;
+  font-size: 16px;
+  z-index: 4;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  max-height: 200px;
+  overflow: hidden;
+  width: 100%;
+  margin: -1px;
+  transition: visibility .1s;
 }
 
 .lesson-search .search-result {
-    height: 40px;
-    line-height: 40px;
-    padding-left: 10px;
-    cursor: pointer;
-    outline: none;
-    transition: background .5s;
-    overflow: hidden;
+  height: 40px;
+  line-height: 40px;
+  padding-left: 10px;
+  cursor: pointer;
+  outline: none;
+  transition: background .5s;
+  overflow: hidden;
 }
 
 .lesson-search .search-result:hover {
-    background: #ddd;
+  background: #ddd;
 }
