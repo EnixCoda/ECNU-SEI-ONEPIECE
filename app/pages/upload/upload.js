@@ -35,7 +35,7 @@ angular.module('onepiece')
         $scope.doneFiles.push(file);
       };
 
-      $scope.close = $mdDialog.hide();
+      $scope.close = $mdDialog.hide;
 
 
       $scope.QUploaderConfig = {
