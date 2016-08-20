@@ -8,10 +8,11 @@ angular.module('onepiece')
         commentManager.type = type;
         commentManager.item = item;
         if (commentManager.type === 'file') commentManager.key = commentManager.item.id;
-        else if (commentManager.type === 'lesson') commentManager.key = commentManager.lesson.name;
+        else if (commentManager.type === 'lesson') commentManager.key = commentManager.item.name;
         else commentManager.disabled = true;
       };
       commentManager.get = function () {
+        commentManager.comment = '';
         commentManager.gettingComment = true;
         $http.get([commentManager.type, commentManager.key, 'comment'].join('/'))
           .then(function (response) {

@@ -4,26 +4,14 @@
 
 angular.module('onepiece')
   .controller('LessonPreviewController',
-    function ($scope, $mdDialog, $http, comment, lesson, user, showUserCenter) {
+    function ($scope, $mdDialog, $http, comment, lesson) {
       $scope.toastBound = 'lessonPreviewToastBounds';
 
-      $scope.lesson = lesson;
-      $scope.user = user;
-      $scope.showUserCenter = showUserCenter;
-      $scope.anonymous = false;
-
       $scope.comment = comment;
+      $scope.lesson = lesson;
 
       comment.set('lesson', lesson);
       comment.get();
 
-      $scope.sendComment = function () {
-        if ($scope.comment) {
-          comment.send();
-        }
-      };
-
-      $scope.cancel = function () {
-        $mdDialog.cancel();
-      };
+      $scope.cancel = $mdDialog.cancel;
     });

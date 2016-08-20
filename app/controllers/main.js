@@ -2,15 +2,6 @@ angular.module('onepiece')
   .controller('MainController',
     function ($scope, $http, $mdDialog, $timeout, $mdMedia, SJAX, indexLoader, showUserCenter, explorer, user, toast, utility, downloader, cookie) {
       $scope.toastBound = 'bodyToastBounds';
-      // TODO: modularize main page
-
-      $scope.getFileColor = utility.getFileColor;
-      $scope.getFileIcon = utility.getFileIcon;
-      $scope.formatFileSize = utility.formatFileSize;
-      $scope.getContentNameStyle = utility.getContentNameStyle;
-
-      $scope.downloadFile = downloader.downloadFile;
-      $scope.downloadLesson = downloader.downloadLesson;
 
       $scope.user = user;
       $scope.explorer = explorer;
@@ -19,7 +10,7 @@ angular.module('onepiece')
       function checkNanoScreen() {
         $scope.isNanoScreen = Math.min(utility.getWindowSize().width, utility.getWindowSize().height) < 340;
         if ($scope.isNanoScreen) {
-          alert('检测到当前设备屏幕较小，已为您隐藏返回按钮。想要返回上级目录请点击当前路径中的文件夹名。点击“ONEPIECE”即可回到根目录。');
+          alert('检测到当前窗口尺寸较小，已为您隐藏返回按钮。想要返回上级目录请点击上方路径中的文件夹名。');
         }
       }
 
@@ -31,47 +22,6 @@ angular.module('onepiece')
       // TODO: BUG: not working well in some browsers like Chrome
       // lesson lessonSearcher
       $scope.lessonSearcher = {};
-      $scope.lessonSearcher.search = function () {
-        function listenerGenerator(lesson) {
-          return function () {
-            $scope.lessonSearcher.goDirectTo(lesson);
-            document.querySelector('.lesson-search input').blur();
-            $scope.$apply();
-          };
-        }
-
-        var key = document.getElementById('lessonSearcherKey').value.toLowerCase();
-        var results = lessons.filter(function (lesson) {
-          return lesson.name.toLowerCase().indexOf(key) > -1;
-        });
-        var searchResultsElement = document.querySelector('.search-results');
-        searchResultsElement.innerHTML = '';
-        results = results.length > 0 ? results : [{name: '找不到课程\'' + key + '\''}];
-        for (var i = 0; i < results.length; i++) {
-          var searchResultElement = document.createElement('div');
-          searchResultElement.classList.add('search-result');
-          searchResultElement.innerHTML = results[i].name;
-          var lesson = results[i];
-          searchResultElement.addEventListener('click', listenerGenerator(lesson));
-          searchResultsElement.appendChild(searchResultElement);
-        }
-      };
-      $scope.lessonSearcher.active = function () {
-        this.search();
-      };
-      $scope.lessonSearcher.clearKey = function () {
-        document.getElementById('lessonSearcherKey').value = '';
-        this.search();
-      };
-      $scope.lessonSearcher.goDirectTo = function (lesson) {
-        if (lesson && lesson.path) {
-          while ($scope.explorer.goBack(1)) {}
-          var dummyPath = [].concat(lesson.path);
-          while (dummyPath.length > 0) {
-            $scope.explorer.goTo(dummyPath.shift());
-          }
-        }
-      };
 
       // show dialogs start
       $scope.showUserCenter = showUserCenter;

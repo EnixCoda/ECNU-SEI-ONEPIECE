@@ -320,3 +320,7 @@ md-toast.md-warning-toast-theme .md-toast-content {
 .lesson-search .search-result:hover {
     background: #ddd;
 }
+
+item {
+    width: 100%;
+}

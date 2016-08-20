@@ -75,10 +75,15 @@ angular.module('onepiece')
           if (pos !== false) {
             if (target.isDir) {
               explorer.disableGoTo = true;
-              $timeout(function () {
+              if (e !== undefined) {
+                $timeout(function () {
+                  explorer.path.push(target);
+                  explorer.disableGoTo = false;
+                }, 200); // TODO
+              } else {
                 explorer.path.push(target);
                 explorer.disableGoTo = false;
-              }, 200); // TODO
+              }
             } else {
               showFileDetail(target, e);
             }
