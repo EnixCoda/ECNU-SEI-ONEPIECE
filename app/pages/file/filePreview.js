@@ -13,7 +13,7 @@ angular.module('onepiece')
       $scope.formatFileSize = utility.formatFileSize;
 
       // rate.get();
-      comment.set('lesson', file);
+      comment.set('file', file);
       comment.get();
 
       $scope.downloadFile = function (file) {

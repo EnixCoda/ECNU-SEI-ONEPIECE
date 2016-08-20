@@ -4,8 +4,19 @@
 
 angular.module('onepiece')
   .factory('explorer',
-    function () {
+    function ($timeout, showFileDetail) {
       'use strict';
+      function targetInDirectory(target, dir) {
+        if (dir.isDir) {
+          for (var i = 0; i < dir.content.length; i++) {
+            if (dir.content[i].name === target.name) {
+              return i;
+            }
+          }
+        }
+        return false;
+      }
+
       var explorer = {};
       explorer.setPath = function (path) {
         explorer.path = path;
@@ -55,6 +66,31 @@ angular.module('onepiece')
             explorer.namingDir = false;
             explorer.nextDir = undefined;
           }
+        };
+
+        explorer.disableGoTo = false; // prevent error which occurs when folder double clicked
+        explorer.goTo = function (target, e) {
+          if (explorer.disableGoTo) return;
+          var pos = targetInDirectory(target, explorer.path.slice(-1)[0]);
+          if (pos !== false) {
+            if (target.isDir) {
+              explorer.disableGoTo = true;
+              $timeout(function () {
+                explorer.path.push(target);
+                explorer.disableGoTo = false;
+              }, 200); // TODO
+            } else {
+              showFileDetail(target, e);
+            }
+          }
+        };
+        explorer.goBack = function (step) {
+          if (explorer.path.length === 1) return false;
+          if (step >= explorer.path.length) step = explorer.path.length - 1;
+          for (var i = 0; i < step; i++) {
+            explorer.path.pop();
+          }
+          return true;
         };
       };
 

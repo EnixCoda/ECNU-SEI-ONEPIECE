@@ -1,10 +1,6 @@
-/**
- * Created by exincoda on 16/8/13.
- */
-
 angular.module('onepiece')
   .controller('MainController',
-    function ($scope, $http, $mdDialog, $timeout, $mdMedia, SJAX, showUserCenter, explorer, user, toast, utility, downloader, cookie) {
+    function ($scope, $http, $mdDialog, $timeout, $mdMedia, SJAX, indexLoader, showUserCenter, explorer, user, toast, utility, downloader, cookie) {
       $scope.toastBound = 'bodyToastBounds';
       // TODO: modularize main page
 
@@ -16,6 +12,9 @@ angular.module('onepiece')
       $scope.downloadFile = downloader.downloadFile;
       $scope.downloadLesson = downloader.downloadLesson;
 
+      $scope.user = user;
+      $scope.explorer = explorer;
+
       // TODO: service?
       function checkNanoScreen() {
         $scope.isNanoScreen = Math.min(utility.getWindowSize().width, utility.getWindowSize().height) < 340;
@@ -24,92 +23,6 @@ angular.module('onepiece')
         }
       }
 
-      // TODO: service?
-      function getIndex() {
-        function processIndex(rawResponse) {
-          var responseData = rawResponse.data;
-          if (responseData['res_code'] === 0) {
-            $scope.loadingIndex = false;
-            index = responseData['data']['index'];
-            $scope.directoryStack = [index];
-            lessons = getLessonsFromIndex(index);
-          } else {
-            $scope.loadIndexFailed = true;
-          }
-        }
-
-        $scope.loadingIndex = true;
-        $http.get('index')
-          .then(function (response) {
-            processIndex(response);
-          }, function () {
-            $http.get('index.json')
-              .then(function (response) {
-                processIndex(response);
-              }, function () {
-                $scope.loadIndexFailed = true;
-              });
-          });
-      }
-
-      function getLessonsFromIndex(index) {
-        var lessons = [];
-        for (var i = 0; i < index.content.length; i++) {
-          var contentI = index.content[i];
-          if (!contentI.isDir) continue;
-          for (var j = 0; j < contentI.content.length; j++) {
-            var contentJ = contentI.content[j];
-            if (contentJ.isDir) {
-              lessons.push({
-                name: contentJ.name,
-                path: [contentI, contentJ]
-              });
-              contentJ.isLesson = true;
-            }
-          }
-        }
-        return lessons;
-      }
-
-      // explorer start
-      function targetInDirectory(target, dir) {
-        if (dir.isDir) {
-          for (var i = 0; i < dir.content.length; i++) {
-            if (dir.content[i].name === target.name) {
-              return i;
-            }
-          }
-        }
-        return false;
-      }
-
-      var disableGoTo = false; // prevent error which occurs when folder double clicked
-      $scope.goTo = function (target, e) {
-        if (disableGoTo) return;
-        var pos = targetInDirectory(target, $scope.directoryStack.slice(-1)[0]);
-        if (pos !== false) {
-          if (target.isDir) {
-            disableGoTo = true;
-            $timeout(function () {
-              $scope.directoryStack.push(target);
-              disableGoTo = false;
-            }, $scope.delay);
-          } else {
-            $scope.showFileDetail(target, e);
-          }
-        }
-      };
-      $scope.goBack = function (step) {
-        if ($scope.directoryStack.length === 1) return false;
-        if (step >= $scope.directoryStack.length) step = $scope.directoryStack.length - 1;
-        for (var i = 0; i < step; i++) {
-          $scope.directoryStack.pop();
-        }
-        return true;
-      };
-
-      // explorer end
-
       $scope.openNestedMenu = function ($mdOpenMenu, $e) {
         $e.stopPropagation();
         $mdOpenMenu($e);
@@ -117,8 +30,7 @@ angular.module('onepiece')
 
       // TODO: BUG: not working well in some browsers like Chrome
       // lesson lessonSearcher
-      $scope.lessonSearcher = function () {
-      };
+      $scope.lessonSearcher = {};
       $scope.lessonSearcher.search = function () {
         function listenerGenerator(lesson) {
           return function () {
@@ -153,18 +65,10 @@ angular.module('onepiece')
       };
       $scope.lessonSearcher.goDirectTo = function (lesson) {
         if (lesson && lesson.path) {
-          while ($scope.goBack(1)) {
-          }
+          while ($scope.explorer.goBack(1)) {}
           var dummyPath = [].concat(lesson.path);
           while (dummyPath.length > 0) {
-            var nextTarget = dummyPath.shift();
-            var pos = targetInDirectory(nextTarget, $scope.directoryStack.slice(-1)[0]);
-            if (pos !== false) {
-              $scope.directoryStack.push(nextTarget);
-            } else {
-              while ($scope.goBack(1)) {
-              }
-            }
+            $scope.explorer.goTo(dummyPath.shift());
           }
         }
       };
@@ -190,8 +94,7 @@ angular.module('onepiece')
           templateUrl: 'edit.html',
           targetEvent: e,
           locals: {
-            item: item,
-            path: $scope.directoryStack
+            item: item
           },
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true
@@ -217,9 +120,7 @@ angular.module('onepiece')
           targetEvent: e,
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: false,
-          locals: {
-            path: $scope.directoryStack
-          },
+          locals: {},
           onComplete: function (uploadControllerScope) {
             // TODO: make it a service?
             uploadControllerScope.QUploader = Qiniu.uploader({
@@ -229,11 +130,10 @@ angular.module('onepiece')
               uptoken_func: function (file) {
                 return SJAX.run('GET', 'uploadToken', {
                   token: user.token,
-                  key: uploadControllerScope.path.slice(1).map(function (cur) {
+                  key: uploadControllerScope.explorer.path.slice(1).map(function (cur) {
                     return cur.name;
                   }).concat([file.name]).join('/')
                 }, function (responseText) {
-                  'use strict';
                   var res = JSON.parse(responseText);
                   if (res['res_code'] === 0) {
                     file.validToken = true;
@@ -243,11 +143,9 @@ angular.module('onepiece')
                     return '';
                   }
                 }, function () {
-                  'use strict';
                   toast.show('服务器错误', '', 'error', true);
                   return '';
                 }, function () {
-                  'use strict';
                   toast.show('无法连接到服务器', '', 'error', true);
                   return '';
                 });
@@ -260,20 +158,20 @@ angular.module('onepiece')
               dragdrop: true,
               // auto_start: true,
               init: {
-                'FilesAdded': function (up, files) {
+                FilesAdded: function (up, files) {
                   plupload.each(files, function (file) {
 
                   });
                   uploadControllerScope.$apply();
                 },
-                'BeforeUpload': function (/*up, file*/) {
+                BeforeUpload: function (/*up, file*/) {
                   uploadControllerScope.uploadingCount++;
                 },
-                'UploadProgress': function (/*up, file*/) {
+                UploadProgress: function (/*up, file*/) {
                   if (!uploadControllerScope.canceling) uploadControllerScope.$apply();
                   else uploadControllerScope.canceling = false;
                 },
-                'FileUploaded': function (up, file, info) {
+                FileUploaded: function (up, file, info) {
                   info = JSON.parse(info);
                   var data = {
                     token: uploadControllerScope.user.token,
@@ -287,7 +185,7 @@ angular.module('onepiece')
                   uploadControllerScope.uploadingCount--;
                   uploadControllerScope.$apply();
                 },
-                'Error': function (up, err, errTip) {
+                Error: function (up, err, errTip) {
                   if (err.file.validToken) {
                     toast.show('上传失败! ' + err.file.name + ': ' + errTip, uploadControllerScope.toastBound, 'error', true);
                   }
@@ -296,10 +194,10 @@ angular.module('onepiece')
                   uploadControllerScope.uploadingCount--;
                   uploadControllerScope.$apply();
                 },
-                'UploadComplete': function () {
+                UploadComplete: function () {
                 },
-                'Key': function (up, file) {
-                  return uploadControllerScope.path.slice(1).map(
+                Key: function (up, file) {
+                  return uploadControllerScope.explorer.path.slice(1).map(
                     function (cur) {
                       return cur.name;
                     }
@@ -356,13 +254,7 @@ angular.module('onepiece')
       ];
 
       // init
-      var index, lessons;
       checkNanoScreen();
       $scope.isMobile = utility.isMobile();
       $scope.delay = $scope.isMobile ? 0 : 300;
-      getIndex();
-      // try log in with saved token
-      $scope.user = user;
-      user.token = cookie.loadTokenFromCookie();
-      user.loginWithToken();
     });

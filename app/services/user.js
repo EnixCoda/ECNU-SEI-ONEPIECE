@@ -9,19 +9,17 @@ angular.module('onepiece')
       var statuses = ['OFFLINE', 'CONNECTING', 'ONLINE'];
       var user = {
         id: null,
-        token: null,
+        token: cookie.loadTokenFromCookie(),
         cademy: null,
         name: null
       };
       user.statuses = statuses;
       user.status = statuses[0];
-
       user.logout = function () {
         user.status = user.statuses[0];
         cookie.clearTokenFromCookie();
         toast.show('您已登出', '', 'success');
       };
-
       user.login = function (data) {
         user.status = user.statuses[1];
         $http.post('login', data)
@@ -61,6 +59,8 @@ angular.module('onepiece')
       };
       user.onFinish = function () {
       };
+
+      user.loginWithToken();
 
       return user;
     });

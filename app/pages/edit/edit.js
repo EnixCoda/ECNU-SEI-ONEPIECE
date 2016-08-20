@@ -4,11 +4,11 @@
 
 angular.module('onepiece')
   .controller('EditController',
-    function ($scope, $mdDialog, $http, explorer, path, item, user, toast) {
+    function ($scope, $mdDialog, $http, explorer, item, user, toast) {
       $scope.toastBound = 'editToastBounds';
 
       $scope.item = item;
-      $scope.original = [].concat(path).concat([item]).map(function (cur) {
+      $scope.original = [].concat(explorer.path).concat([item]).map(function (cur) {
         return cur.name;
       }).slice(1).join('/');
 
@@ -19,7 +19,7 @@ angular.module('onepiece')
         $scope.getEditsStatus = $scope.statuses[1];
         $http.get('edit', {
           params: {
-            path: path.slice(1).map(function (cur) {
+            path: explorer.path.slice(1).map(function (cur) {
               return cur.name;
             }).join('/') + '/' + item.name
           }
@@ -48,7 +48,6 @@ angular.module('onepiece')
       };
 
       $scope.explorer = explorer;
-      explorer.setPath(path);
 
       $scope.namingDirKeyPress = function (e) {
         if (e.keyCode === 13 && $scope.explorer.newDirName) {
