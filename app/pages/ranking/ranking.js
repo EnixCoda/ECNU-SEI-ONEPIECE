@@ -4,11 +4,11 @@
 
 angular.module('onepiece')
   .controller('RankingController',
-    function ($scope, $mdDialog, $mdBottomSheet, $document, $http, user, toast, showUserCenter) {
+    function ($scope, $mdDialog, $mdBottomSheet, $document, $http, user, toast, popper) {
       $scope.toastBound = 'rankingToastBounds';
 
       $scope.user = user;
-      $scope.showUserCenter = showUserCenter;
+      $scope.showUserCenter = popper.showUserCenter;
 
       $scope.statuses = ['STANDBY', 'CONNECTING', 'SUCCESS', 'FAIL'];
 

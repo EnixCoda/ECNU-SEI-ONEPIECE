@@ -10,8 +10,8 @@ angular.module('onepiece')
         <md-button class="md-raised md-primary" ng-click="showUserCenter()">登陆</md-button>
       </div>
     `,
-    controller: function ($scope, user, showUserCenter) {
-      $scope.showUserCenter = showUserCenter;
+    controller: function ($scope, user, popper) {
+      $scope.showUserCenter = popper.showUserCenter;
       $scope.user = user;
     }
   });

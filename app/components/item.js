@@ -11,35 +11,27 @@ angular.module('onepiece')
           </div>
         </div>
         <div flex></div>
-        <div>{{!isNanoScreen&&!content.isDir&&content.score!==0?content.score:""}}</div>
-        <md-button ng-if="!content.isDir" class="md-icon-button"
-                    ng-click="downloadFile(content)"
-                    layout
-                    layout-align="center center">
+        <span>{{!isNanoScreen&&!content.isDir&&content.score!==0?content.score:""}}</span>
+        <md-button ng-if="!content.isDir" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
           <md-tooltip md-direction="left">
-            {{content.gettingDownloadLink?"正在获取下载链接":formatFileSize(content)}}
+            {{content.gettingDownloadLink?'正在获取下载链接':formatFileSize(content)}}
           </md-tooltip>
           <div>
-            <md-icon ng-show="!content.gettingDownloadLink"
-                      class="material-icons adjust-icon-top-margin-up-3 color-primary">file_download
+            <md-icon ng-show="!content.gettingDownloadLink" class="material-icons adjust-icon-top-margin-up-3 color-primary">file_download
             </md-icon>
           </div>
           <div layout layout-align="center center">
-            <md-progress-circular ng-show="content.gettingDownloadLink" class="spinner-primary"
-                                  md-mode="indeterminate" md-diameter="20">
+            <md-progress-circular ng-show="content.gettingDownloadLink" class="spinner-primary" md-mode="indeterminate" md-diameter="20">
             </md-progress-circular>
           </div>
         </md-button>
-        <md-menu class="no-padding-top no-padding-bottom" ng-if="!content.isDir && explorer.path.length > 2"
-                  md-position-mode="target-right target">
-          <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)"
-                      layout-align="center center">
+        <md-menu class="no-padding-top no-padding-bottom" ng-if="!content.isDir && explorer.path.length > 2" md-position-mode="target-right target">
+          <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)" layout-align="center center">
             <md-icon class="material-icons adjust-icon-top-margin-up-3 color-primary">more_vert</md-icon>
           </md-button>
           <md-menu-content width="3">
             <md-menu-item>
-              <md-button ng-disabled="user.status !== 'ONLINE'" ng-click="showEdit(content, $event)">
-                <!--<md-button ng-click="showEdit(content, $event)" ng-disabled="user.status !== 'ONLINE'">-->
+              <md-button ng-click="showEdit(content, $event)" ng-disabled="user.status !== 'ONLINE'">
                 <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>修改文件</p>
@@ -54,10 +46,8 @@ angular.module('onepiece')
             </md-menu-item>
           </md-menu-content>
         </md-menu>
-        <md-menu class="no-padding-top no-padding-bottom" ng-if="content.isDir && explorer.path.length > 1"
-                  md-position-mode="target-right target">
-          <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)"
-                      layout-align="center center">
+        <md-menu class="no-padding-top no-padding-bottom" ng-if="content.isDir && explorer.path.length > 1" md-position-mode="target-right target">
+          <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)" layout-align="center center">
             <md-icon class="material-icons adjust-icon-top-margin-up-3 color-primary">more_vert</md-icon>
           </md-button>
           <md-menu-content width="3">
@@ -76,8 +66,7 @@ angular.module('onepiece')
               </md-button>
             </md-menu-item>
             <md-menu-item>
-              <md-button ng-disabled="user.status !== 'ONLINE'" ng-click="showEdit(content, $event)">
-                <!--<md-button ng-click="showEdit(content, $event)" ng-disabled="user.status !== 'ONLINE'">-->
+              <md-button ng-click="showEdit(content, $event)" ng-disabled="user.status !== 'ONLINE'">
                 <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>修改文件夹</p>
@@ -95,8 +84,9 @@ angular.module('onepiece')
         <md-divider></md-divider>
       </md-list-item>
       `,
-    controller: function ($scope, explorer, downloader, utility) {
+    controller: function ($scope, user, explorer, downloader, utility, popper) {
       $scope.content = this.content;
+      $scope.user = user;
       $scope.explorer = explorer;
       $scope.downloadFile = downloader.downloadFile;
       $scope.downloadLesson = downloader.downloadLesson;
@@ -104,6 +94,12 @@ angular.module('onepiece')
       $scope.getFileIcon = utility.getFileIcon;
       $scope.formatFileSize = utility.formatFileSize;
       $scope.getContentNameStyle = utility.getContentNameStyle;
+      $scope.showLessonPreview = popper.showLessonPreview;
+      $scope.showEdit = popper.showEdit;
+      $scope.openNestedMenu = function ($mdOpenMenu, $e) {
+        $e.stopPropagation();
+        $mdOpenMenu($e);
+      };
     },
     bindings: {
       content: '='

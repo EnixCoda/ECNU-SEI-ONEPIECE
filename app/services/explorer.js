@@ -4,7 +4,7 @@
 
 angular.module('onepiece')
   .factory('explorer',
-    function ($timeout, showFileDetail) {
+    function ($timeout, popper) {
       'use strict';
       function targetInDirectory(target, dir) {
         if (dir.isDir) {
@@ -85,7 +85,7 @@ angular.module('onepiece')
                 explorer.disableGoTo = false;
               }
             } else {
-              showFileDetail(target, e);
+              popper.showFileDetail(target, e);
             }
           }
         };
