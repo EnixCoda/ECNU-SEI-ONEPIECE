@@ -15,78 +15,9 @@
 </head>
 <body ng-cloak ng-app="onepiece" ng-controller="MainController" layout="row" layout-align="center">
 <md-content class="md-whiteframe-4dp" flex-gt-xs="60" layout="column" id="bodyToastBounds">
-  <div ng-if="explorer.loading" flex layout="row" layout-align="center center" layout-padding>
-    <md-progress-circular ng-if="!explorer.failed" md-mode="indeterminate" md-diameter="40"></md-progress-circular>
-    <div>
-      <md-icon ng-if="explorer.failed" class="material-icons md-warn">report_problem</md-icon>
-    </div>
-    <p>{{explorer.failed?"读取文件列表失败":"正在读取文件列表"}}</p>
-  </div>
-  <div ng-if="!explorer.loading" flex layout="column">
-    <div class="top-banner md-whiteframe-3dp light-background-color left-offset-10" layout
-         layout-align="space-between center" layout-wrap>
-      <md-button class="back-btn md-fab md-mini background-blue" ng-click="explorer.goBack(1)"
-                 ng-class="explorer.path.length>1 ? 'active':'hidden'">
-        <md-icon class="material-icons color-white adjust-icon-top-margin-up-3">chevron_left</md-icon>
-      </md-button>
-      <div layout layout-align="end center">
-        <search></search>
-        <div ng-if="isMobile">
-          <md-menu md-position-mode="target-right target">
-            <md-button class="md-raised top-right-menu background-white" ng-click="$mdOpenMenu($event)">
-              <md-icon class="material-icons adjust-icon-top-margin-up-3 color-grey">more_vert</md-icon>
-            </md-button>
-            <md-menu-content width="3">
-              <md-menu-item ng-repeat="func in topFuncs">
-                <md-button ng-click="func.func($event)" layout layout-align="center center">
-                  <md-icon class="material-icons color-primary adjust-icon-top-margin-down">{{func.icon}}</md-icon>
-                  <div flex></div>
-                  <p md-menu-align-target>{{func.tip}}</p>
-                </md-button>
-              </md-menu-item>
-            </md-menu-content>
-          </md-menu>
-        </div>
-        <div layout ng-if="!isMobile">
-          <md-button class="md-fab md-mini background-white" ng-class="!$first?'no-margin-left':''"
-                     ng-repeat="func in topFuncs" ng-click="func.func($event)">
-            <md-icon ng-if="(!user.name && $index === 0) || $index > 0"
-                     class="material-icons adjust-icon-top-margin-up-3 color-primary">
-              {{func.icon}}
-            </md-icon>
-            <span ng-if="user.name && $index === 0"
-                  class="short-user-name color-primary">{{user.name ? user.name[0] : ""}}</span>
-            <md-tooltip md-direction="bottom">
-              {{func.tip}}
-            </md-tooltip>
-          </md-button>
-        </div>
-      </div>
-    </div>
-    <div class="protect-overflow">
-      <md-list class="no-padding-top">
-        <md-subheader class="md-no-sticky lesson-route-header">
-          <span class="lesson-route" ng-click="explorer.goBack(explorer.path.length - 1)">
-            <b>ONEPIECE</b>
-          </span>
-          <span class="lesson-route" ng-repeat="dir in explorer.path" ng-if="!$first"
-                ng-click="explorer.goBack(explorer.path.length - $index - 1)">
-            > <b>{{dir.name}}</b>
-          </span>
-        </md-subheader>
-        <md-divider></md-divider>
-        <item ng-repeat="content in explorer.path[explorer.path.length - 1].content" content="content"></item>
-      </md-list>
-    </div>
-  </div>
-  <div>
-    <md-subheader class="light-background-color" ng-class="isNanoScreen?'nano-padding':''">
-      <span>想得到我的财宝吗？想要的话可以全部给你，去找吧，伟大航路！我把世界上的一切都放在那里！——
-        <del>站长</del>
-        Gol·D·Roger
-      </span>
-    </md-subheader>
-  </div>
+  <onepiece-cover ng-if="explorer.loading"></onepiece-cover>
+  <onepiece-panel class="flex" ng-if="!explorer.loading"></onepiece-panel>
+  <onepiece-footer></onepiece-footer>
 </md-content>
 </body>
 <!--foot scripts-->

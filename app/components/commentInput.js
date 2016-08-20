@@ -16,6 +16,5 @@ angular.module('onepiece')
       'use strict';
       $scope.cm = comment;
       $scope.user = user;
-    },
-    bindings: {}
+    }
   });

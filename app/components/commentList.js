@@ -28,6 +28,5 @@ angular.module('onepiece')
     controller: function ($scope, comment) {
       'use strict';
       $scope.cm = comment;
-    },
-    bindings: {}
+    }
   });

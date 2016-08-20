@@ -14,6 +14,10 @@ body, input, textarea, ._md-subheader-content {
     font-family: Roboto, sans-serif, "黑体";
 }
 
+.fill-height {
+    height: 100%;
+}
+
 .left-offset-10 {
     padding-left: 10px;
 }
@@ -319,8 +323,4 @@ md-toast.md-warning-toast-theme .md-toast-content {
 
 .lesson-search .search-result:hover {
     background: #ddd;
-}
-
-item {
-    width: 100%;
 }

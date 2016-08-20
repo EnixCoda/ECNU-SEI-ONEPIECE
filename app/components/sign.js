@@ -16,7 +16,6 @@ angular.module('onepiece')
       </div>
     `,
     controller: function ($scope, user) {
-      'use strict';
       $scope.user = user;
     }
   });
