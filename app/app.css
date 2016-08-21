@@ -92,6 +92,7 @@ body, input, textarea, ._md-subheader-content {
   background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
+onepiece-panel, /* for Safari */ 
 .protect-overflow {
   overflow: auto;
 }
@@ -287,10 +288,14 @@ md-toast.md-warning-toast-theme .md-toast-content {
 }
 
 .lesson-search input {
+  -webkit-appearance: none;
   border: 1px solid #fff;
   border-radius: 2px;
   padding: 10px 16px;
+  height: 40px;
+  width: 200px;
   box-shadow: 0 2px 3px #aaa;
+  box-sizing: border-box;
   outline: none;
 }
 

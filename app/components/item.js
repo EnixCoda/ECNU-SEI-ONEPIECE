@@ -4,14 +4,14 @@ angular.module('onepiece')
       <md-list-item ng-click="explorer.goTo(content, $event)">
         <div layout layout-align="start center">
           <md-icon class="material-icons" ng-style="getFileColor(content)">
-            {{content.isDir?"folder":getFileIcon(content)}}
+            {{content.isDir ? "folder" : getFileIcon(content)}}
           </md-icon>
           <div class="left-offset-10 file-name-in-list" ng-class="getContentNameStyle(content)">
             <p>{{content.name}}</p>
           </div>
         </div>
         <div flex></div>
-        <span>{{!isNanoScreen&&!content.isDir&&content.score!==0?content.score:""}}</span>
+        <span>{{!content.isDir&&content.score!==0?content.score:""}}</span>
         <md-button ng-if="!content.isDir" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
           <md-tooltip md-direction="left">
             {{content.gettingDownloadLink?'正在获取下载链接':formatFileSize(content)}}
@@ -35,13 +35,6 @@ angular.module('onepiece')
                 <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>修改文件</p>
-              </md-button>
-            </md-menu-item>
-            <md-menu-item>
-              <md-button ng-click="" ng-disabled="true">
-                <md-icon class="material-icons adjust-icon-top-margin-down">add</md-icon>
-                <div flex></div>
-                <p md-menu-align-target>其他功能</p>
               </md-button>
             </md-menu-item>
           </md-menu-content>
@@ -70,13 +63,6 @@ angular.module('onepiece')
                 <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>修改文件夹</p>
-              </md-button>
-            </md-menu-item>
-            <md-menu-item>
-              <md-button ng-disabled="true">
-                <md-icon class="material-icons adjust-icon-top-margin-down">add</md-icon>
-                <div flex></div>
-                <p md-menu-align-target>其他功能</p>
               </md-button>
             </md-menu-item>
           </md-menu-content>

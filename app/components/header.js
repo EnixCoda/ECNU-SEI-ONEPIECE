@@ -8,15 +8,16 @@ angular.module('onepiece')
         </md-button>
         <div layout layout-align="end center">
           <search></search>
-          <mobile-menu ng-if="isMobile" funcs="topFuncs">
+          <mobile-menu ng-if="!$mdMedia('gt-xs')" funcs="topFuncs">
           </mobile-menu>
-          <normal-menu ng-if="!isMobile" funcs="topFuncs">
+          <normal-menu ng-if="$mdMedia('gt-xs')" funcs="topFuncs">
           </normal-menu>
         </div>
       </div>
     `,
-    controller: function ($scope, explorer, popper) {
+    controller: function ($scope, $mdMedia, explorer, popper) {
       $scope.explorer = explorer;
+      $scope.$mdMedia = $mdMedia;
       $scope.topFuncs = [
         {
           func: popper.showUserCenter,

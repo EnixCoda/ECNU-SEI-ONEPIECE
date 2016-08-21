@@ -113,24 +113,6 @@ angular.module('onepiece')
         var sizeBody = sizeToString.substring(0, sizeToString.indexOf('.') > -1 ? sizeToString.indexOf('.') + 2 : 3);
         return sizeBody + tail;
       };
-      Utility.isMobile = function () {
-        var userAgent = navigator.userAgent;
-        var isAndroid = userAgent.indexOf('Android') > -1 || userAgent.indexOf('Linux') > -1;
-        var isiPhone = userAgent.indexOf('iPhone') > -1;
-        return isiPhone || isAndroid;
-      };
-      Utility.getWindowSize = function () {
-        var w = window,
-          d = document,
-          e = d.documentElement,
-          g = d.getElementsByTagName('body')[0],
-          x = w.innerWidth || e.clientWidth || g.clientWidth,
-          y = w.innerHeight || e.clientHeight || g.clientHeight;
-        return {
-          width: x,
-          height: y
-        };
-      };
       Utility.getContentNameStyle = function (content) {
         if (content.isDir) {
           return '';

@@ -15,7 +15,7 @@ angular.module('onepiece')
           </md-menu-item>
         </md-menu-content>
       </md-menu>
-      `,
+    `,
     controller: function ($scope) {
       $scope.funcs = this.funcs;
     },
