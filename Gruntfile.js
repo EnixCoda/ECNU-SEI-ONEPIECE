@@ -249,7 +249,7 @@ module.exports = function (grunt) {
     var data = fs.readFileSync('dist/onepiece.js', {encoding: 'utf-8'});
     grunt.log.writeln('onepiece.js loaded!');
     let matches = data.match(/templateUrl: '(.*)'/g);
-    grunt.log.writeln('found', matches.length, 'templates');
+    grunt.log.writeln('found ' + matches.length + ' templates');
     if (matches) {
       matches.forEach(function (match) {
         let filepath = 'dist/pages/' + /templateUrl: '(.*)'/.exec(match)[1];
@@ -270,7 +270,7 @@ module.exports = function (grunt) {
     fs.writeFileSync('dist/onepiece.js', data, {encoding: 'utf-8'});
   });
   grunt.registerTask('prepare', ['clean:dist', 'htmlmin', 'cssmin', 'ngAnnotate']);
-  grunt.registerTask('curtain', ['injectHTML', 'clean:afterDist'])
+  grunt.registerTask('curtain', ['injectHTML', 'clean:afterDist']);
   grunt.registerTask('dev', ['prepare', 'concat:dev', 'replace:scriptsDev', 'replace:cssDev', 'replace:comments', 'curtain', 'copy']);
   grunt.registerTask('deploy', ['prepare', 'concat:deploy', 'replace:scriptsDeploy', 'replace:cssDeploy', 'replace:comments', 'curtain', 'babel', 'uglify', 'copy']);
 
