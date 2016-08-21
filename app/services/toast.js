@@ -1,7 +1,6 @@
 angular.module('onepiece')
   .factory('toast',
     function ($mdToast) {
-      'use strict';
       var toast = {};
       toast.show = function (text, boundId, type, stayLong, position) {
         $mdToast.show(
@@ -9,7 +8,7 @@ angular.module('onepiece')
             .simple()
             .textContent(text)
             .position(position || 'top right')
-            .theme(`$(type)-toast`)
+            .theme(type + '-toast')
             .hideDelay(stayLong ? 4500 : 1500)
         );
       };

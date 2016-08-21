@@ -3,9 +3,9 @@ angular.module('onepiece')
     function ($http, lessonLoader, toast, explorer) {
       function success (data) {
         indexLoader.index = data;
-        indexLoader.loading = false;
         lessonLoader.parse(indexLoader.index);
         explorer.setIndex(indexLoader.index);
+        indexLoader.loading = false;
       }
 
       function fail () {
@@ -14,7 +14,7 @@ angular.module('onepiece')
       }
 
       // TODO: cache with localStorage and timestamp
-      var indexLoader = {}
+      var indexLoader = {};
       indexLoader.index = [];
       indexLoader.loading = true;
       indexLoader.load = function () {

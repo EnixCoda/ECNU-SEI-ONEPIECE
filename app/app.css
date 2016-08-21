@@ -118,6 +118,8 @@ md-dialog {
   min-height: 60px;
 }
 
+
+
 md-progress-circular.color-white path {
   stroke: white;
 }
@@ -261,15 +263,21 @@ md-toast.md-warning-toast-theme .md-toast-content {
 .back-btn {
   transition-duration: 0.3s !important;
   transition-property: all !important;
+  min-width: 36px;
+  border-radius: 100%;
 }
 
 .back-btn.active {
-  margin-left: 8px;
+  margin-left: 0;
   opacity: 1;
 }
 
+.back-btn .md-ripple-container {
+  border-radius: 100%;
+}
+
 .back-btn.hidden {
-  margin-left: 0;
+  margin-left: 8px;
   opacity: 0;
 }
 
