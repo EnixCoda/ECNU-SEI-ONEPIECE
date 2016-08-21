@@ -3,10 +3,7 @@ angular.module('onepiece')
     template: `
       <div ng-if="!indexLoader.loading" class="fill-height" layout="column">
         <onepiece-header></onepiece-header>
-        <div class="protect-overflow">
-          <file-list></file-list>
-          <onepiece-footer></onepiece-footer>
-        </div>
+        <file-list></file-list>
       </div>
     `,
     controller: function ($scope, indexLoader) {

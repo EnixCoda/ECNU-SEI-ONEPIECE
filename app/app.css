@@ -92,7 +92,8 @@ body, input, textarea, ._md-subheader-content {
   background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
-onepiece-panel, /* for Safari */ 
+onepiece-panel,
+file-list,
 .protect-overflow {
   overflow: auto;
 }
@@ -269,7 +270,6 @@ md-toast.md-warning-toast-theme .md-toast-content {
 }
 
 .back-btn.active {
-  margin-left: 0;
   opacity: 1;
 }
 
