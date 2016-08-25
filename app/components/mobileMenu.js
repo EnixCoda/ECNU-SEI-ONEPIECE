@@ -7,9 +7,8 @@ angular.module('onepiece')
         </md-button>
         <md-menu-content width="3">
           <md-menu-item ng-repeat="func in funcs">
-            <md-button ng-click="func.func($event)" layout layout-align="center center">
+            <md-button ng-click="func.func($event)" layout layout-align="space-between center">
               <md-icon class="material-icons color-primary adjust-icon-top-margin-down">{{func.icon}}</md-icon>
-              <div flex></div>
               <p md-menu-align-target>{{func.tip}}</p>
             </md-button>
           </md-menu-item>

@@ -75,7 +75,8 @@ module.exports = function (grunt) {
             'bower_components/angular-material/angular-material.js',
             'dist/scripts/app.js',
             'dist/scripts/*.js'],
-          'dist/qiniuUpload.js': ['app/deps/*.js', '!app/deps/*.min.js']
+          'dist/qiniuUpload.js': ['app/deps/*.js', '!app/deps/*.min.js'],
+          'dist/onepiece.css': ['bower_components/angular-material/angular-material.css', 'app/app.css']
         }
       },
       deploy: {
@@ -191,7 +192,7 @@ module.exports = function (grunt) {
             {
               match: /<!--head stylesheets-->(.|[\n])*<!--end head stylesheets-->/m,
               replacement: [
-                '<link rel="stylesheet" href="onepiece.min.css"/>'
+                '<link rel="stylesheet" href="onepiece.css"/>'
               ].join('')
             }
           ]
@@ -269,9 +270,9 @@ module.exports = function (grunt) {
     }
     fs.writeFileSync('dist/onepiece.js', data, {encoding: 'utf-8'});
   });
-  grunt.registerTask('prepare', ['clean:dist', 'htmlmin', 'cssmin', 'ngAnnotate']);
+  grunt.registerTask('prepare', ['clean:dist', 'htmlmin', 'ngAnnotate']);
   grunt.registerTask('curtain', ['injectHTML', 'clean:afterDist']);
   grunt.registerTask('dev', ['prepare', 'concat:dev', 'replace:scriptsDev', 'replace:cssDev', 'replace:comments', 'curtain', 'copy']);
-  grunt.registerTask('deploy', ['prepare', 'concat:deploy', 'replace:scriptsDeploy', 'replace:cssDeploy', 'replace:comments', 'curtain', 'babel', 'uglify', 'copy']);
+  grunt.registerTask('deploy', ['prepare', 'cssmin', 'concat:deploy', 'replace:scriptsDeploy', 'replace:cssDeploy', 'replace:comments', 'curtain', 'babel', 'uglify', 'copy']);
 
 };
