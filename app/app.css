@@ -15,8 +15,53 @@ md-input-container .md-errors-spacer {
   min-height: 0;
 }
 
+md-dialog {
+  min-width: 480px;
+  max-width: 600px;
+}
+
+md-progress-circular.color-white path {
+  stroke: white;
+}
+
+md-progress-circular.spinner-primary path {
+  stroke: #02a8f3 !important;
+}
+
+md-autocomplete {
+  min-width: 216px;
+}
+
+md-input-container:not(.md-input-invalid) > md-icon {
+  color: dodgerblue;
+}
+
+md-input-container.md-input-invalid > md-icon {
+  color: #f44336;
+}
+
+md-toast.md-success-toast-theme .md-toast-content {
+  background-color: #4caf50;
+}
+
+md-toast.md-error-toast-theme .md-toast-content {
+  background-color: #f44336;
+}
+
+md-toast.md-warning-toast-theme .md-toast-content {
+  background-color: #e91e63;
+}
+
 body, input, textarea, ._md-subheader-content {
   font-family: Roboto, "黑体", sans-serif;
+}
+
+body md-content {
+  max-width: 1024px !important;
+}
+
+._md-subheader-inner {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .fill-height {
@@ -107,23 +152,12 @@ file-list,
   min-height: 40px;
 }
 
-md-dialog {
-  min-width: 480px;
-  max-width: 600px;
-}
-
 .upload-dialog {
   min-width: 600px;
 }
 
 .top-banner {
   min-height: 60px;
-}
-
-
-
-md-progress-circular.color-white path {
-  stroke: white;
 }
 
 .lesson-route {
@@ -143,10 +177,6 @@ md-progress-circular.color-white path {
   line-height: 20px !important;
 }
 
-.md-subheader-inner {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
 .top-right-menu {
   height: 40px;
   width: 40px;
@@ -154,16 +184,8 @@ md-progress-circular.color-white path {
   margin-left: 4px;
 }
 
-body md-content {
-  max-width: 1024px !important;
-}
-
 .color-grey {
   color: rgba(0, 0, 0, 0.54) !important;
-}
-
-md-progress-circular.spinner-primary path {
-  stroke: #02a8f3 !important;
 }
 
 .no-box-shadow {
@@ -194,10 +216,6 @@ md-progress-circular.spinner-primary path {
   color: #ffc107;
 }
 
-md-autocomplete {
-  min-width: 216px;
-}
-
 .user-comment-panel {
   padding: 24px 6px 0;
   border-radius: 4px;
@@ -205,26 +223,6 @@ md-autocomplete {
 
 .nano-padding ._md-subheader-inner {
   padding: 4px;
-}
-
-md-input-container:not(.md-input-invalid) > md-icon {
-  color: dodgerblue;
-}
-
-md-input-container.md-input-invalid > md-icon {
-  color: #f44336;
-}
-
-md-toast.md-success-toast-theme .md-toast-content {
-  background-color: #4caf50;
-}
-
-md-toast.md-error-toast-theme .md-toast-content {
-  background-color: #f44336;
-}
-
-md-toast.md-warning-toast-theme .md-toast-content {
-  background-color: #e91e63;
 }
 
 .locator-input-container {
