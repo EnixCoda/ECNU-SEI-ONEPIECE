@@ -1,24 +1,24 @@
 angular.module('onepiece')
   .factory('indexLoader',
-    function ($http, lessonLoader, explorer) {
+    function ($http, $timeout, lessonLoader, explorer) {
       function success (data) {
         indexLoader.index = data;
         lessonLoader.parse(indexLoader.index);
         explorer.setIndex(indexLoader.index);
-        indexLoader.loading = false;
+        $timeout(function () {
+          indexLoader.status = indexLoader.statuses[1];
+        }, 400);
       }
 
       function fail () {
-        indexLoader.loading = false;
-        indexLoader.failed = true;
+        indexLoader.status = indexLoader.statuses[2];
       }
-
-      // TODO: status controller
 
       // TODO: cache with localStorage and timestamp
       var indexLoader = {};
+      indexLoader.statuses = ['LOADING', 'SUCCESS', 'FAILED'];
       indexLoader.index = [];
-      indexLoader.loading = true;
+      indexLoader.status = indexLoader.statuses[0];
       indexLoader.load = function () {
         $http.get('index')
           .then(function (response) {
