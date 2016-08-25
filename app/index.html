@@ -14,7 +14,7 @@
   <link href='//fonts.lug.ustc.edu.cn/css?family=Roboto' rel='stylesheet'>
 </head>
 <body ng-cloak ng-app="onepiece" ng-controller="MainController" layout="row" layout-align="center">
-<md-content ng-class="{'md-whiteframe-4dp': !indexLoader.loading && !indexLoader.failed}" flex-gt-xs="60" layout="column">
+<md-content flex class="md-whiteframe-4dp" layout="column">
   <onepiece-cover flex ng-if="indexLoader.loading || indexLoader.failed"></onepiece-cover>
   <onepiece-panel flex ng-if="!indexLoader.loading && !indexLoader.failed"></onepiece-panel>
 </md-content>
