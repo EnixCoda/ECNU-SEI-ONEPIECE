@@ -1,12 +1,12 @@
 angular.module('onepiece')
   .component('onepieceCover', {
     template: `
-      <div flex layout="row" layout-align="center center" layout-padding>
-        <md-progress-circular ng-if="!indexLoader.failed" md-mode="indeterminate" md-diameter="40"></md-progress-circular>
-        <div>
-          <md-icon ng-if="indexLoader.failed" class="material-icons md-warn">report_problem</md-icon>
+      <div class="fill-height" flex layout="row" layout-align="center center" layout-padding>
+        <md-progress-circular ng-if="indexLoader.loading" md-mode="indeterminate" md-diameter="40"></md-progress-circular>
+        <div ng-if="indexLoader.failed">
+          <md-icon class="material-icons md-warn">report_problem</md-icon>
+          <span>读取文件列表失败</span>
         </div>
-        <p>{{indexLoader.failed ? '读取文件列表失败':'正在读取文件列表'}}</p>
       </div>
     `,
     controller: function ($scope, indexLoader) {

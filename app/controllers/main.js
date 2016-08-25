@@ -1,8 +1,7 @@
 angular.module('onepiece')
   .controller('MainController',
-    function ($scope, explorer, user, utility, indexLoader) {
-      $scope.explorer = explorer;
-      
+    function ($scope, explorer, user, indexLoader) {
+      $scope.indexLoader = indexLoader;
       indexLoader.load();
       user.loginWithToken();
     });

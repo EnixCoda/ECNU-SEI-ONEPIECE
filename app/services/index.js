@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('indexLoader',
-    function ($http, lessonLoader, toast, explorer) {
+    function ($http, lessonLoader, explorer) {
       function success (data) {
         indexLoader.index = data;
         lessonLoader.parse(indexLoader.index);
@@ -9,9 +9,11 @@ angular.module('onepiece')
       }
 
       function fail () {
+        indexLoader.loading = false;
         indexLoader.failed = true;
-        toast.show('加载文件列表失败，请刷新重试。', '', 'error');
       }
+
+      // TODO: status controller
 
       // TODO: cache with localStorage and timestamp
       var indexLoader = {};

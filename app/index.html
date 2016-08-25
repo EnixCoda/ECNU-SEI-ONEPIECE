@@ -15,8 +15,8 @@
 </head>
 <body ng-cloak ng-app="onepiece" ng-controller="MainController" layout="row" layout-align="center">
 <md-content class="md-whiteframe-4dp" flex-gt-xs="60" layout="column">
-  <onepiece-cover ng-if="explorer.loading"></onepiece-cover>
-  <onepiece-panel class="flex" ng-if="!explorer.loading"></onepiece-panel>
+  <onepiece-cover flex ng-if="indexLoader.loading || indexLoader.failed"></onepiece-cover>
+  <onepiece-panel flex ng-if="!indexLoader.loading && !indexLoader.failed"></onepiece-panel>
   <onepiece-footer></onepiece-footer>
 </md-content>
 </body>
