@@ -6,10 +6,11 @@ angular.module('onepiece')
       var postfix = '';
       for (var key in data) {
         if (data.hasOwnProperty(key)) {
+          if (postfix) postfix += '&';
+          else postfix += '?';
           postfix += key + '=' + encodeURI(data[key]);
         }
       }
-      postfix = postfix ? '?' + postfix : postfix;
       xmlHttp.open(method, url + postfix, false);
       xmlHttp.setRequestHeader('If-Modified-Since', '0');
       try {
