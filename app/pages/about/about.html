@@ -1,7 +1,7 @@
 <md-dialog class="about-dialog">
   <md-toolbar>
     <div class="md-toolbar-tools">
-      <h4>关于本站</h4>
+      <h4>希望你能耐心读完</h4>
       <span flex></span>
       <md-button class="md-icon-button" ng-click="close()">
         <i class="material-icons color-white">close</i>
@@ -9,18 +9,15 @@
     </div>
   </md-toolbar>
   <md-dialog-content>
-    <md-list class="no-padding-top no-padding-top">
-      <md-subheader class="md-no-sticky">
-        <span>Q & A</span>
-      </md-subheader>
-      <md-list-item class="md-3-line md-long-text" ng-repeat="qa in qas">
-        <div class="md-list-item-text" layout="column">
-          <h3>{{ qa.q }}</h3>
-          <div ng-repeat="A in qa.a">
-            <p>{{ A }}</p><br>
+    <md-tabs md-dynamic-height md-border-bottom>
+      <md-tab ng-repeat="tab in tabs" label="{{tab.label}}">
+        <md-content layout-padding>
+          <div ng-repeat="note in tab.notes">
+            <h3>{{note.title}}</h3>
+            <p ng-repeat="content in note.content">{{content}}<br></p>
           </div>
-        </div>
-      </md-list-item>
-    </md-list>
+        </md-content>
+      </md-tab>
+    </md-tabs>
   </md-dialog-content>
 </md-dialog>

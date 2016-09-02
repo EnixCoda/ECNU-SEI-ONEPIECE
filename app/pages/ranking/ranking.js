@@ -34,14 +34,5 @@ angular.module('onepiece')
 
       getRanking();
 
-      $scope.showRule = function () {
-        $mdBottomSheet.show({
-          templateUrl: 'rule.html',
-          controller: 'RuleController',
-          clickOutsideToClose: false,
-          parent: $document[0].querySelector('#ruleBottomSheetBounds')
-        })
-      };
-
       $scope.close = $mdDialog.hide;
     });
