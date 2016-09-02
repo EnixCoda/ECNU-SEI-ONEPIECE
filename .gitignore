@@ -1,6 +1,5 @@
+.idea/
 node_modules/
 bower_components/
-.idea/
 dist/
-npm-debug.log
-app/storage/index.json
+app/index.json
