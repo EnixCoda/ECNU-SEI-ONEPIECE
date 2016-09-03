@@ -84,7 +84,7 @@ angular.module('onepiece')
         };
         explorer.goBack = function (step) {
           if (explorer.path.length === 1) return false;
-          explorer.path.splice(explorer.path.length - step);
+          explorer.path.splice(Math.max(explorer.path.length - step, 1));
           return true;
         };
       };
