@@ -30,7 +30,7 @@ angular.module('onepiece')
           var searchResultElement = document.createElement('div');
           searchResultElement.classList.add('search-result');
           searchResultElement.innerHTML = results[i].name;
-          searchResultElement.addEventListener('click', listenerGenerator(results[i]));
+          searchResultElement.addEventListener('mousedown', listenerGenerator(results[i]));
           searchResultsElement.appendChild(searchResultElement);
         }
       };
@@ -43,7 +43,7 @@ angular.module('onepiece')
       };
       $scope.lessonSearcher.goDirectTo = function (lesson) {
         if (lesson && lesson.path) {
-          while (explorer.goBack(1)) {}
+          explorer.goBack(Infinity);
           var dummyPath = [].concat(lesson.path);
           while (dummyPath.length > 0) {
             explorer.goTo(dummyPath.shift());

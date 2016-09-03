@@ -22,9 +22,7 @@ angular.module('onepiece')
 
         // set the max depth of path
         explorer.cutTail = function (depth) {
-          while (explorer.path.length > depth + 1) {
-            explorer.path.pop();
-          }
+          explorer.path.splice(depth + 1, Infinity);
         };
 
         explorer.createDir = function (depth) {
@@ -86,10 +84,7 @@ angular.module('onepiece')
         };
         explorer.goBack = function (step) {
           if (explorer.path.length === 1) return false;
-          if (step >= explorer.path.length) step = explorer.path.length - 1;
-          for (var i = 0; i < step; i++) {
-            explorer.path.pop();
-          }
+          explorer.path.splice(1, step);
           return true;
         };
       };
