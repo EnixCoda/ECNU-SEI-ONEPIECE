@@ -1,47 +1,40 @@
 angular.module('onepiece')
   .component('search', {
     template: `
-      <div class="lesson-search">
-        <input type="text" placeholder="搜索课程名" id="lessonSearcherKey" ng-model="lessonSearcherKey" ng-change="lessonSearcher.search()" ng-focus="lessonSearcher.active()">
-        <div class="search-results">
-        </div>
-        <md-icon class="material-icons color-gray" ng-click="lessonSearcher.clearKey()">close</md-icon>
-      </div>
+      <form ng-submit="$event.preventDefault()">
+        <md-autocomplete
+          md-selected-item="selectedItem"
+          md-search-text-change="searchTextChange(searchText)"
+          md-search-text="searchText"
+          md-selected-item-change="selectedLessonChange(lesson)"
+          md-items="lesson in querySearch(searchText)"
+          md-item-text="lesson.name"
+          md-min-length="0"
+          placeholder="搜索课程">
+          <md-item-template>
+            <span md-highlight-text="searchText" md-highlight-flags="^i">{{lesson.name}}</span>
+          </md-item-template>
+          <md-not-found>
+            未找到"{{searchText}}"有关的课程
+          </md-not-found>
+        </md-autocomplete>
+      </form>
     `,
-    controller: function ($scope, explorer, lessonLoader) {
-      $scope.lessonSearcher = {};
-      $scope.lessonSearcher.search = function () {
-        function listenerGenerator(lesson) {
-          return function () {
-            $scope.lessonSearcher.goDirectTo(lesson);
-            document.querySelector('.lesson-search input').blur();
-            $scope.$apply();
+    controller: function ($scope, $log, explorer, lessonLoader) {
+
+      $scope.querySearch = function (query) {
+        function createFilterFor (query) {
+          var lowercaseQuery = angular.lowercase(query);
+          return function filterFn(lesson) {
+            return angular.lowercase(lesson.name).indexOf(lowercaseQuery) > -1;
           };
         }
-
-        var key = document.querySelector('#lessonSearcherKey').value.toLowerCase();
-        var results = lessonLoader.lessons.filter(function (lesson) {
-          return lesson.name.toLowerCase().indexOf(key) > -1;
-        });
-        var searchResultsElement = document.querySelector('.search-results');
-        searchResultsElement.innerHTML = '';
-        results = results.length > 0 ? results : [{name: '找不到课程"' + key + '"'}];
-        for (var i = 0; i < results.length; i++) {
-          var searchResultElement = document.createElement('div');
-          searchResultElement.classList.add('search-result');
-          searchResultElement.innerHTML = results[i].name;
-          searchResultElement.addEventListener('mousedown', listenerGenerator(results[i]));
-          searchResultsElement.appendChild(searchResultElement);
-        }
+        return query ? lessonLoader.lessons.filter( createFilterFor(query) ) : lessonLoader.lessons;
       };
-      $scope.lessonSearcher.active = function () {
-        $scope.lessonSearcher.search();
+      $scope.selectedLessonChange = function (lesson) {
+        $scope.goDirectTo(lesson);
       };
-      $scope.lessonSearcher.clearKey = function () {
-        document.querySelector('#lessonSearcherKey').value = '';
-        $scope.lessonSearcher.search();
-      };
-      $scope.lessonSearcher.goDirectTo = function (lesson) {
+      $scope.goDirectTo = function (lesson) {
         if (lesson && lesson.path) {
           explorer.goBack(Infinity);
           var dummyPath = [].concat(lesson.path);
@@ -50,5 +43,10 @@ angular.module('onepiece')
           }
         }
       };
-    }
+
+      /*
+       $scope.searchTextChange = function (text) {
+       }
+       */
+    },
   });
