@@ -3,13 +3,14 @@ angular.module('onepiece')
     template: `
       <form ng-submit="$event.preventDefault()">
         <md-autocomplete
-          md-selected-item="selectedItem"
           md-search-text-change="searchTextChange(searchText)"
           md-search-text="searchText"
           md-selected-item-change="selectedLessonChange(lesson)"
           md-items="lesson in querySearch(searchText)"
           md-item-text="lesson.name"
-          md-min-length="0"
+          md-min-length="1"
+          md-no-cache="true"
+          md-select-on-focus="true"
           placeholder="搜索课程">
           <md-item-template>
             <span md-highlight-text="searchText" md-highlight-flags="^i">{{lesson.name}}</span>
@@ -24,9 +25,8 @@ angular.module('onepiece')
 
       $scope.querySearch = function (query) {
         function createFilterFor (query) {
-          var lowercaseQuery = angular.lowercase(query);
           return function filterFn(lesson) {
-            return angular.lowercase(lesson.name).indexOf(lowercaseQuery) > -1;
+            return angular.lowercase(lesson.name).indexOf(angular.lowercase(query)) > -1;
           };
         }
         return query ? lessonLoader.lessons.filter( createFilterFor(query) ) : lessonLoader.lessons;
