@@ -11,8 +11,8 @@ angular.module('onepiece')
           </div>
         </div>
         <div flex></div>
-        <span>{{!content.isDir&&content.score!==0?content.score:""}}</span>
-        <md-button ng-if="!content.isDir" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
+        <span>{{!content.isDir && explorer.path.length > 1 && content.score !== 0 ? content.score : ""}}</span>
+        <md-button ng-if="!content.isDir && explorer.path.length > 1" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
           <md-tooltip md-direction="left">
             {{content.gettingDownloadLink?'正在获取下载链接':formatFileSize(content)}}
           </md-tooltip>

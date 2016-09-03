@@ -1,8 +1,9 @@
 angular.module('onepiece')
   .controller('FilePreviewController',
-    function ($scope, $mdDialog, $http, file, user, comment, rate, utility, downloader) {
+    function ($scope, $mdDialog, $http, file, user, comment, explorer, rate, utility, downloader) {
       $scope.file = file;
       $scope.user = user;
+      $scope.explorer = explorer;
       $scope.formatFileSize = utility.formatFileSize;
       $scope.previewable = utility.previewable;
       $scope.downloadFile = downloader.downloadFile;

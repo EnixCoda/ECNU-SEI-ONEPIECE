@@ -14,7 +14,7 @@
         <rate file="file"></rate>
         <div flex></div>
         <md-button class="md-fab md-mini background-blue" ng-click="previewFile(file)"
-                   ng-show="previewable(file)" layout layout-align="center center">
+                   ng-if="previewable(file)" layout layout-align="center center">
           <md-tooltip md-direction="bottom">
             预览
           </md-tooltip>
@@ -30,7 +30,7 @@
           </div>
         </md-button>
         <md-button class="md-fab md-mini background-blue" ng-click="downloadFile(file)"
-                   layout layout-align="center center">
+                   ng-if="explorer.path.length > 1" layout layout-align="center center">
           <md-tooltip md-direction="bottom">
             {{file.gettingDownloadLink?"正在获取下载链接":formatFileSize(file)}}
           </md-tooltip>
