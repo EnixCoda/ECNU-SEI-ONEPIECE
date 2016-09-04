@@ -23,16 +23,16 @@ angular.module('onepiece')
               rateManager.file.score = rateManager.file.totalScore;
             } else {
               rateManager.file.gettingRate = false;
-              toast.show(response['msg'], '', 'error');
+              toast.show(response['msg'], 'error');
             }
           },
           function () {
             rateManager.file.gettingRate = false;
-            toast.show('无法获取评分', '', 'error');
+            toast.show('无法获取评分', 'error');
           });
       };
       rateManager.send = function (score) {
-        toast.show('正在提交评分', '', 'success');
+        toast.show('正在提交评分', 'success');
         Rate.save({
             type: 'file',
             key: rateManager.file.id
@@ -43,12 +43,12 @@ angular.module('onepiece')
           function (response) {
             if (response['res_code'] === 0) {
             } else {
-              toast.show(response['msg'], '', 'error');
+              toast.show(response['msg'], 'error');
             }
             rateManager.get();
           },
           function () {
-            toast.show('无法连接到服务器', '', 'error');
+            toast.show('无法连接到服务器', 'error');
           });
       };
 

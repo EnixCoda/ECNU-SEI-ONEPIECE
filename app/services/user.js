@@ -13,7 +13,7 @@ angular.module('onepiece')
       user.logOut = function () {
         user.status = user.statuses[0];
         cookie.clearTokenFromCookie();
-        toast.show('您已登出', '', 'success');
+        toast.show('您已登出', 'success');
       };
       user.login = function (data) {
         user.status = user.statuses[1];
@@ -27,15 +27,15 @@ angular.module('onepiece')
               user.cademy = userData['cademy'];
               user.status = user.statuses[2];
               cookie.saveTokenToCookie(user.token);
-              toast.show(responseData['msg'], '', 'success', true, 'top left');
+              toast.show(responseData['msg'], 'success', true, 'top left');
               $mdDialog.hide();
             } else {
               user.status = user.statuses[0];
-              toast.show(responseData['msg'], '', 'error', true);
+              toast.show(responseData['msg'], 'error', true);
             }
           }, function () {
             user.status = user.statuses[0];
-            toast.show('无法连接到服务器', '', 'error');
+            toast.show('无法连接到服务器', 'error');
           });
       };
       user.loginWithPassword = function () {

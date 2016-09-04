@@ -25,17 +25,17 @@ angular.module('onepiece')
               commentManager.comments = response['data']['comments'];
             } else {
               commentManager.comments = [];
-              toast.show(response['msg'], '', 'error');
+              toast.show(response['msg'], 'error');
             }
           },
           function () {
             commentManager.gettingComment = false;
             commentManager.comments = [];
-            toast.show('无法获取评论', '', 'error');
+            toast.show('无法获取评论', 'error');
           });
       };
       commentManager.send = function () {
-        toast.show('正在提交评论', '', 'success');
+        toast.show('正在提交评论', 'success');
         Comment.save({
             type: commentManager.type,
             key: commentManager.key,
@@ -48,15 +48,15 @@ angular.module('onepiece')
             if (response['res_code'] === 0) {
               commentManager.get();
             } else {
-              toast.show(response['msg'], '', 'error');
+              toast.show(response['msg'], 'error');
             }
           },
           function () {
-            toast.show('无法连接到服务器', '', 'error');
+            toast.show('无法连接到服务器', 'error');
           });
       };
       commentManager.remove = function (commentId) {
-        toast.show('正在删除', '', 'success');
+        toast.show('正在删除', 'success');
         Comment.delete({
             type: commentManager.type,
             key: commentManager.key,
@@ -66,13 +66,13 @@ angular.module('onepiece')
           function (response) {
             if (response['res_code'] === 0) {
               commentManager.get();
-              toast.show(response['msg'], '', 'success');
+              toast.show(response['msg'], 'success');
             } else {
-              toast.show(response['msg'], '', 'error');
+              toast.show(response['msg'], 'error');
             }
           },
           function () {
-            toast.show('无法连接到服务器', '', 'error');
+            toast.show('无法连接到服务器', 'error');
           });
       };
 

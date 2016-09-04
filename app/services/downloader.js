@@ -27,12 +27,12 @@ angular.module('onepiece')
             if (response) {
               window.location = response['data']['downloadLink'];
             } else {
-              toast.show(response['msg'], '', 'error');
+              toast.show(response['msg'], 'error');
             }
           },
           function () {
             file.gettingDownloadLink = false;
-            toast.show('无法连接到服务器', '', 'error')
+            toast.show('无法连接到服务器', 'error')
           });
       };
       Downloader.previewFile = function (file) {
@@ -53,12 +53,12 @@ angular.module('onepiece')
               var promptedWindow = window.open(response['data']['previewLink'], '_blank');
               if (!promptedWindow) alert('预览窗口加载失败');
             } else {
-              toast.show(response['msg'], '', 'error');
+              toast.show(response['msg'], 'error');
             }
           },
           function () {
             file.gettingPreviewLink = false;
-            toast.show('无法连接到服务器', '', 'error')
+            toast.show('无法连接到服务器', 'error')
           });
       };
       Downloader.downloadLesson = function (lesson) {
@@ -73,11 +73,11 @@ angular.module('onepiece')
             if (response['res_code'] === 0) {
               window.location = response['data']['link'];
             } else {
-              toast.show(response['msg'], '', 'error', false);
+              toast.show(response['msg'], 'error', false);
             }
           },
           function () {
-            toast.show('下载课程文件失败', '', 'error', false);
+            toast.show('下载课程文件失败', 'error', false);
           });
       };
 

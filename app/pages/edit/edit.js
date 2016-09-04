@@ -21,12 +21,12 @@ angular.module('onepiece')
               $scope.edits = response['data']['edits'];
               $scope.getEditsStatus = $scope.statuses[2];
             } else {
-              toast.show(response['msg'], '', 'error');
+              toast.show(response['msg'], 'error');
               $scope.getEditsStatus = $scope.statuses[3];
             }
           },
           function () {
-            toast.show('无法连接到服务器', '', 'error');
+            toast.show('无法连接到服务器', 'error');
             $scope.getEditsStatus = $scope.statuses[3];
           });
       }
@@ -57,7 +57,7 @@ angular.module('onepiece')
           switch (type) {
             case 'MOVE':
               if (explorer.path.length < ['ONEPIECE', 'LESSON_TYPE'].length) {
-                toast.show('无法移动到目标路径', '', 'warning');
+                toast.show('无法移动到目标路径', 'warning');
                 return;
               } else {
                 data.edit = [].concat(explorer.path).concat([target]).map(function (cur) {
@@ -77,18 +77,18 @@ angular.module('onepiece')
         } else {
           data.edit = edit;
         }
-        toast.show('正在提交', '', 'success');
+        toast.show('正在提交', 'success');
         Edit.save(data,
           function (response) {
             if (response['res_code'] === 0) {
-              toast.show(response['msg'], '', 'success');
+              toast.show(response['msg'], 'success');
               getEdit();
             } else {
-              toast.show(response['msg'], '', 'error');
+              toast.show(response['msg'], 'error');
             }
           },
           function () {
-            toast.show('无法连接到服务器', '', 'error');
+            toast.show('无法连接到服务器', 'error');
           });
       };
 

@@ -2,7 +2,7 @@ angular.module('onepiece')
   .factory('toast',
     function ($mdToast) {
       var toast = {};
-      toast.show = function (text, boundId, type, stayLong, position) {
+      toast.show = function (text, type, stayLong, position) {
         $mdToast.show(
           $mdToast
             .simple()

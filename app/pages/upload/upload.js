@@ -15,7 +15,7 @@ angular.module('onepiece')
 
       $scope.startUpload = function () {
         if ($scope.explorer.path.length < 3) {
-          toast.show('无法上传到当前位置。请选择课程分类、课程名称。', '', 'warning');
+          toast.show('无法上传到当前位置。请选择课程分类、课程名称。', 'warning');
         } else {
           $scope.QUploader.start();
         }
@@ -47,14 +47,14 @@ angular.module('onepiece')
               file.validToken = true;
               return res['data']['uptoken'];
             } else {
-              toast.show(file.name + ' 上传失败：' + res['msg'], '', 'error', true);
+              toast.show(file.name + ' 上传失败：' + res['msg'], 'error', true);
               return '';
             }
           }, function () {
-            toast.show('服务器错误', '', 'error', true);
+            toast.show('服务器错误', 'error', true);
             return '';
           }, function () {
-            toast.show('无法连接到服务器', '', 'error', true);
+            toast.show('无法连接到服务器', 'error', true);
             return '';
           });
         },
@@ -95,7 +95,7 @@ angular.module('onepiece')
           },
           Error: function (up, err, errTip) {
             if (err.file.validToken) {
-              toast.show('上传失败! ' + err.file.name + ': ' + errTip, '', 'error', true);
+              toast.show('上传失败! ' + err.file.name + ': ' + errTip, 'error', true);
             }
             up.removeFile(err.file);
             $scope.doneFiles.push(err.file);
