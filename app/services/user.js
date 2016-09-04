@@ -5,6 +5,7 @@ angular.module('onepiece')
         cademy: null,
         id: null,
         name: null,
+        anonymous: false,
         token: cookie.loadTokenFromCookie()
       };
       user.statuses = ['OFFLINE', 'CONNECTING', 'ONLINE'];

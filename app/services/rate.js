@@ -1,6 +1,8 @@
 angular.module('onepiece')
   .factory('rate',
-    function ($http, toast, user) {
+    function ($resource, toast, user) {
+      var Rate = $resource('/:type/:key/score', {}, {});
+
       var rateManager = {};
       rateManager.file = {};
       rateManager.set = function (file) {
@@ -10,36 +12,42 @@ angular.module('onepiece')
       };
       rateManager.get = function () {
         rateManager.file.gettingRate = true;
-        $http.get(['file', rateManager.file.id, 'score'].join('/'))
-          .then(function (response) {
+        Rate.get({
+            type: 'file',
+            key: rateManager.file.id
+          },
+          function (response) {
             rateManager.file.gettingRate = false;
-            var responseData = response.data;
-            if (responseData['res_code'] === 0) {
-              rateManager.file.totalScore = responseData['data']['total_score'];
+            if (response['res_code'] === 0) {
+              rateManager.file.totalScore = response['data']['total_score'];
               rateManager.file.score = rateManager.file.totalScore;
             } else {
               rateManager.file.gettingRate = false;
-              toast.show(responseData['msg'], '', 'error');
+              toast.show(response['msg'], '', 'error');
             }
-          }, function () {
+          },
+          function () {
             rateManager.file.gettingRate = false;
             toast.show('无法获取评分', '', 'error');
           });
       };
       rateManager.send = function (score) {
         toast.show('正在提交评分', '', 'success');
-        $http.post(['file', rateManager.file.id, 'score'].join('/'), {
-          score: score,
-          token: user.token
-        })
-          .then(function (response) {
-            var responseData = response.data;
-            if (responseData['res_code'] === 0) {
+        Rate.save({
+            type: 'file',
+            key: rateManager.file.id
+          }, {
+            score: score,
+            token: user.token
+          },
+          function (response) {
+            if (response['res_code'] === 0) {
             } else {
-              toast.show(responseData['msg'], '', 'error');
+              toast.show(response['msg'], '', 'error');
             }
             rateManager.get();
-          }, function () {
+          },
+          function () {
             toast.show('无法连接到服务器', '', 'error');
           });
       };

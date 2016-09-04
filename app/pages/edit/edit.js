@@ -1,6 +1,8 @@
 angular.module('onepiece')
   .controller('EditController',
-    function ($scope, $mdDialog, $http, target, explorer, user, toast) {
+    function ($scope, $mdDialog, $resource, target, explorer, user, toast) {
+      var Edit = $resource('edit', {}, {});
+
       $scope.explorer = explorer;
       $scope.original = [].concat(explorer.path).concat([target]).map(function (cur) {
         return cur.name;
@@ -11,27 +13,22 @@ angular.module('onepiece')
 
       function getEdit() {
         $scope.getEditsStatus = $scope.statuses[1];
-        $http.get('edit', {
-          params: {
-            path: explorer.path.slice(1).map(function (cur) {
-              return cur.name;
-            }).join('/') + '/' + target.name
-          }
-        })
-          .then(function (response) {
-              var responseData = response['data'];
-              if (responseData['res_code'] === 0) {
-                $scope.edits = responseData['data']['edits'];
-                $scope.getEditsStatus = $scope.statuses[2];
-              } else {
-                toast.show(responseData['msg'], $scope.toastBound, 'error');
-                $scope.getEditsStatus = $scope.statuses[3];
-              }
-            },
-            function () {
-              toast.show('无法连接到服务器', $scope.toastBound, 'error');
+        Edit.get({
+          path: $scope.original
+        },
+          function (response) {
+            if (response['res_code'] === 0) {
+              $scope.edits = response['data']['edits'];
+              $scope.getEditsStatus = $scope.statuses[2];
+            } else {
+              toast.show(response['msg'], '', 'error');
               $scope.getEditsStatus = $scope.statuses[3];
-            });
+            }
+          },
+          function () {
+            toast.show('无法连接到服务器', '', 'error');
+            $scope.getEditsStatus = $scope.statuses[3];
+          });
       }
 
       getEdit();
@@ -41,10 +38,9 @@ angular.module('onepiece')
         $scope.actionName = actionName;
       };
 
-
       $scope.namingDirKeyPress = function (e) {
-        if (e.keyCode === 13 && $scope.explorer.newDirName) {
-          $scope.explorer.saveDir($scope.explorer.newDirName);
+        if (e.keyCode === 13 && explorer.newDirName) {
+          explorer.saveDir(explorer.newDirName);
         }
       };
 
@@ -60,43 +56,40 @@ angular.module('onepiece')
         if (!edit) {
           switch (type) {
             case 'MOVE':
-              if ($scope.explorer.path.length < 3) {
-                toast.show('无法移动到目标路径', $scope.toastBound, 'warning');
-                return;
+              if (explorer.path.length < ['ONEPIECE', 'LESSON_TYPE', 'LESSON_NAME'].length) {
+                toast.show('无法移动到目标路径', '', 'warning');
+              } else {
+                data.edit = explorer.path.map(function (cur) {
+                  return cur.name;
+                }).slice(1).join('/');
               }
-              data['edit'] = $scope.explorer.path.map(function (cur) {
-                return cur.name;
-              }).slice(1).join('/');
               break;
             case 'TRASH':
-              data['edit'] = '-';
+              data.edit = '-';
               break;
             case 'RENAME':
-              data['edit'] = $scope.newName;
+              data.edit = $scope.newName;
               break;
             default:
               return;
           }
         } else {
-          data['edit'] = edit;
+          data.edit = edit;
         }
-        toast.show('正在提交', $scope.toastBound, 'success');
-        $http.post('edit', data)
-          .then(function (response) {
-              var responseData = response['data'];
-              if (responseData['res_code'] === 0) {
-                toast.show(responseData['msg'], $scope.toastBound, 'success');
-                getEdit();
-              } else {
-                toast.show(responseData['msg'], $scope.toastBound, 'error');
-              }
-            },
-            function () {
-              toast.show('无法连接到服务器', $scope.toastBound, 'error');
-            });
+        toast.show('正在提交', '', 'success');
+        Edit.save(data,
+          function (response) {
+            if (response['res_code'] === 0) {
+              toast.show(response['msg'], '', 'success');
+              getEdit();
+            } else {
+              toast.show(response['msg'], '', 'error');
+            }
+          },
+          function () {
+            toast.show('无法连接到服务器', '', 'error');
+          });
       };
 
-      $scope.close = function () {
-        $mdDialog.cancel();
-      };
+      $scope.close = $mdDialog.cancel;
     });

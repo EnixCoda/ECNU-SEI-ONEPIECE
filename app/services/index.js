@@ -1,6 +1,8 @@
 angular.module('onepiece')
   .factory('indexLoader',
-    function ($http, $timeout, lessonLoader, explorer) {
+    function ($resource, $timeout, lessonLoader, explorer) {
+      var Index = $resource('index', {}, {});
+
       function success (data) {
         indexLoader.index = data;
         lessonLoader.parse(indexLoader.index);
@@ -20,15 +22,16 @@ angular.module('onepiece')
       indexLoader.index = [];
       indexLoader.status = indexLoader.statuses[0];
       indexLoader.load = function () {
-        $http.get('index')
-          .then(function (response) {
-            var responseData = response.data;
-            if (responseData['res_code'] === 0) {
-              success(responseData['data']['index']);
+        Index.get(
+          {},
+          function (response) {
+            if (response['res_code'] === 0) {
+              success(response['data']['index']);
             } else {
               fail();
             }
-          }, function () {
+          },
+          function () {
             fail();
           });
       };

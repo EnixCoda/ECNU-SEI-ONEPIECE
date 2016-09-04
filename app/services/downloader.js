@@ -1,26 +1,36 @@
 angular.module('onepiece')
   .factory('downloader',
-    function ($http, user, toast) {
+    function ($resource, user, toast) {
+      var DownloadServer = $resource('/:type/:key/:action', {}, {
+        downloadFile: {
+          method: 'GET'
+        },
+        previewFile: {
+          method: 'GET'
+        },
+        downloadLesson: {
+          method: 'GET'
+        }
+      });
+
       var Downloader = {};
       Downloader.downloadFile = function (file) {
         if (file.gettingDownloadLink) return;
         file.gettingDownloadLink = true;
-        var data = {};
-        if (user.status === 'ONLINE') {
-          data.token = user.token;
-        }
-        $http.get(['file', file.id.toString(), 'download'].join('/'), {
-          params: data
-        })
-          .then(function (response) {
+        DownloadServer.downloadFile({
+            type: 'file',
+            key: file.id.toString(),
+            action: 'download'
+          },
+          function (response) {
             file.gettingDownloadLink = false;
-            var responseData = response.data;
-            if (responseData) {
-              window.location = responseData['data']['downloadLink'];
+            if (response) {
+              window.location = response['data']['downloadLink'];
             } else {
-              toast.show(responseData['msg'], '', 'error');
+              toast.show(response['msg'], '', 'error');
             }
-          }, function () {
+          },
+          function () {
             file.gettingDownloadLink = false;
             toast.show('无法连接到服务器', '', 'error')
           });
@@ -32,42 +42,43 @@ angular.module('onepiece')
         if (user.status === 'ONLINE') {
           data.token = user.token;
         }
-        $http.get(['file', file.id.toString(), 'preview'].join('/'), {
-          params: data
-        })
-          .then(function (response) {
+        DownloadServer.previewFile({
+            type: 'file',
+            key: file.id.toString(),
+            action: 'preview'
+          },
+          function (response) {
             file.gettingPreviewLink = false;
-            var responseData = response.data;
-            if (responseData['res_code'] === 0) {
-              var promptedWindow = window.open(responseData['data']['previewLink'], '_blank');
+            if (response['res_code'] === 0) {
+              var promptedWindow = window.open(response['data']['previewLink'], '_blank');
               if (!promptedWindow) alert('预览窗口加载失败');
             } else {
-              toast.show(responseData['msg'], '', 'error');
+              toast.show(response['msg'], '', 'error');
             }
-          }, function () {
+          },
+          function () {
             file.gettingPreviewLink = false;
             toast.show('无法连接到服务器', '', 'error')
           });
       };
       Downloader.downloadLesson = function (lesson) {
         if (!user.token) return;
-        var data = {
-          token: user.token
-        };
-        $http.get(['lesson', lesson.name, 'download'].join('/'), {
-          params: data
-        })
-          .then(function (response) {
-              var responseData = response['data'];
-              if (responseData['res_code'] === 0) {
-                window.location = responseData['data']['link'];
-              } else {
-                toast.show(responseData['msg'], '', 'error', false);
-              }
-            },
-            function () {
-              toast.show('下载课程文件失败', '', 'error', false);
-            });
+        DownloadServer.downloadLesson({
+            type: 'lesson',
+            key: lesson.name,
+            action: 'download',
+            token: user.token
+          },
+          function (response) {
+            if (response['res_code'] === 0) {
+              window.location = response['data']['link'];
+            } else {
+              toast.show(response['msg'], '', 'error', false);
+            }
+          },
+          function () {
+            toast.show('下载课程文件失败', '', 'error', false);
+          });
       };
 
       return Downloader;

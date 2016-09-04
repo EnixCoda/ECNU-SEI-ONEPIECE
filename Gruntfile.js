@@ -70,6 +70,7 @@ module.exports = function (grunt) {
         files: {
           'dist/onepiece.js': [
             'bower_components/angular/angular.js',
+            'bower_components/angular-resource/angular-resource.js',
             'bower_components/angular-animate/angular-animate.js',
             'bower_components/angular-aria/angular-aria.js',
             'bower_components/angular-material/angular-material.js',
@@ -83,6 +84,7 @@ module.exports = function (grunt) {
         files: {
           'dist/onepiece.js': [
             'bower_components/angular/angular.min.js',
+            'bower_components/angular-resource/angular-resource.min.js',
             'bower_components/angular-animate/angular-animate.min.js',
             'bower_components/angular-aria/angular-aria.min.js',
             'bower_components/angular-material/angular-material.min.js',

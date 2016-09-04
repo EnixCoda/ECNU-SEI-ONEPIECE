@@ -1,4 +1,4 @@
-angular.module('onepiece', ['ngMaterial'])
+angular.module('onepiece', ['ngMaterial', 'ngResource'])
   .config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('default')
       .primaryPalette('blue')
@@ -8,4 +8,7 @@ angular.module('onepiece', ['ngMaterial'])
     $mdThemingProvider.theme('error-toast');
     $mdThemingProvider.theme('success-toast');
     $mdThemingProvider.theme('warning-toast');
+  }).config(function($resourceProvider) {
+    // Don't strip trailing slashes from calculated URLs
+    $resourceProvider.defaults.stripTrailingSlashes = false;
   });
