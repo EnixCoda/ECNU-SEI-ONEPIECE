@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .controller('UploadController',
-    function ($scope, $mdDialog, user, explorer, toast, popper, SJAX) {
+    function ($scope, $mdDialog, $http, user, explorer, toast, popper, SJAX) {
       $scope.user = user;
       $scope.explorer = explorer;
 
@@ -15,7 +15,7 @@ angular.module('onepiece')
 
       $scope.startUpload = function () {
         if ($scope.explorer.path.length < 3) {
-          toast.show('无法上传到当前位置。请选择课程分类、课程名称。', $scope.toastBound, 'warning');
+          toast.show('无法上传到当前位置。请选择课程分类、课程名称。', '', 'warning');
         } else {
           $scope.QUploader.start();
         }

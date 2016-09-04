@@ -27,7 +27,7 @@ angular.module('onepiece')
               $scope.status = $scope.statuses[3];
             }
           }, function () {
-            toast.show('无法获取排行', $scope.toastBound, 'error');
+            toast.show('无法获取排行', '', 'error');
             $scope.status = $scope.statuses[3];
           });
       }

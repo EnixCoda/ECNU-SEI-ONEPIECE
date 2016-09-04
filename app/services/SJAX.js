@@ -8,7 +8,7 @@ angular.module('onepiece')
         if (data.hasOwnProperty(key)) {
           if (postfix) postfix += '&';
           else postfix += '?';
-          postfix += key + '=' + encodeURI(data[key]);
+          postfix += key + '=' + encodeURIComponent(data[key]);
         }
       }
       xmlHttp.open(method, url + postfix, false);
