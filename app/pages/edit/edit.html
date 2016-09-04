@@ -75,7 +75,7 @@
                 <md-divider layout-padding></md-divider>
                 <div>目标位置：</div>
                 <div layout layout-wrap>
-                  <md-input-container class="locator-input-container" ng-repeat="dir in explorer.path track by $index">
+                  <md-input-container class="locator-input-container" ng-repeat="dir in explorer.path track by $index" ng-if="$index > 0">
                     <md-select aria-label="locator" ng-if="$index === 0" ng-model="dir">
                       <md-option ng-value="dir">{{dir.name}}</md-option>
                     </md-select>
@@ -103,11 +103,16 @@
                   </md-input-container>
                   <md-input-container class="locator-input-container" ng-show="explorer.namingDirDepth" aria-label="locator">
                     <label for="newDirName">
-                      新文件夹名(回车确认)
+                      新文件夹名
                     </label>
-                    <input id="newDirName" ng-keypress="namingDirKeyPress($event)" ng-blur="explorer.cancelCreateDir()"
-                           ng-model="explorer.newDirName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
+                    <input id="newDirName" ng-keypress="namingDirKeyPress($event)" ng-model="explorer.newDirName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
                   </md-input-container>
+                  <md-button ng-show="explorer.newDirName" class="md-fab md-mini background-white" ng-click="explorer.saveDir(explorer.newDirName)">
+                    <md-icon class="material-icons">done</md-icon>
+                  </md-button>
+                  <md-button ng-show="explorer.newDirName" class="md-fab md-mini background-white" ng-click="explorer.cancelCreateDir()">
+                    <md-icon class="material-icons">clear</md-icon>
+                  </md-button>
                 </div>
               </div>
             </div>

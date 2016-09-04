@@ -56,6 +56,7 @@ angular.module('onepiece')
         explorer.cancelCreateDir = function () {
           if (explorer.namingDir) {
             explorer.namingDirDepth = 0;
+            explorer.newDirName = '';
             explorer.namingDir = false;
             explorer.nextDir = undefined;
           }

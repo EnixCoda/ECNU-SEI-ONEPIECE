@@ -56,10 +56,11 @@ angular.module('onepiece')
         if (!edit) {
           switch (type) {
             case 'MOVE':
-              if (explorer.path.length < ['ONEPIECE', 'LESSON_TYPE', 'LESSON_NAME'].length) {
+              if (explorer.path.length < ['ONEPIECE', 'LESSON_TYPE'].length) {
                 toast.show('无法移动到目标路径', '', 'warning');
+                return;
               } else {
-                data.edit = explorer.path.map(function (cur) {
+                data.edit = [].concat(explorer.path).concat([target]).map(function (cur) {
                   return cur.name;
                 }).slice(1).join('/');
               }
