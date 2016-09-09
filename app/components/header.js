@@ -29,7 +29,7 @@ angular.module('onepiece')
         {
           func: popper.showRanking,
           icon: 'format_list_numbered',
-          tip: '贡献度排行'
+          tip: '积分排行'
         },
         {
           func: popper.showAbout,

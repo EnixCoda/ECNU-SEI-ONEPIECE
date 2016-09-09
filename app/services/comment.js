@@ -35,7 +35,7 @@ angular.module('onepiece')
           });
       };
       commentManager.send = function () {
-        toast.show('正在提交评论', 'success');
+        toast.show('正在提交评论');
         Comment.save({
             type: commentManager.type,
             key: commentManager.key,
@@ -56,7 +56,7 @@ angular.module('onepiece')
           });
       };
       commentManager.remove = function (commentId) {
-        toast.show('正在删除', 'success');
+        toast.show('正在删除', 'warn');
         Comment.delete({
             type: commentManager.type,
             key: commentManager.key,
@@ -66,7 +66,7 @@ angular.module('onepiece')
           function (response) {
             if (response['res_code'] === 0) {
               commentManager.get();
-              toast.show(response['msg'], 'success');
+              toast.show(response['msg']);
             } else {
               toast.show(response['msg'], 'error');
             }

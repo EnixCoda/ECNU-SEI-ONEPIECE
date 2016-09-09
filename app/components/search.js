@@ -16,7 +16,7 @@ angular.module('onepiece')
             <span md-highlight-text="searchText" md-highlight-flags="^i">{{lesson.name}}</span>
           </md-item-template>
           <md-not-found>
-            未找到"{{searchText}}"有关的课程
+            未找到匹配"{{searchText}}"的课程
           </md-not-found>
         </md-autocomplete>
       </form>

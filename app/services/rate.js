@@ -32,7 +32,7 @@ angular.module('onepiece')
           });
       };
       rateManager.send = function (score) {
-        toast.show('正在提交评分', 'success');
+        toast.show('正在提交评分');
         Rate.save({
             type: 'file',
             key: rateManager.file.id

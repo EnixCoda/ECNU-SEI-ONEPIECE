@@ -1,8 +1,9 @@
 angular.module('onepiece')
   .controller('UploadController',
-    function ($scope, $mdDialog, $http, user, explorer, toast, popper, SJAX) {
+    function ($scope, $mdDialog, $http, indexLoader, user, explorer, toast, popper, SJAX) {
       $scope.user = user;
       $scope.explorer = explorer;
+      $scope.indexLoader = indexLoader;
 
       $scope.namingDirKeyPress = function (e) {
         if (e.keyCode === 13 && $scope.explorer.newDirName) {
@@ -91,6 +92,7 @@ angular.module('onepiece')
             file.success = true;
             $scope.doneFiles.push(file);
             $scope.uploadingCount--;
+            $scope.indexLoader.load();
             $scope.$apply();
           },
           Error: function (up, err, errTip) {

@@ -13,7 +13,7 @@ angular.module('onepiece')
       user.logOut = function () {
         user.status = user.statuses[0];
         cookie.clearTokenFromCookie();
-        toast.show('您已登出', 'success');
+        toast.show('您已登出');
       };
       user.login = function (data) {
         user.status = user.statuses[1];

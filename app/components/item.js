@@ -37,6 +37,13 @@ angular.module('onepiece')
                 <p md-menu-align-target>修改文件</p>
               </md-button>
             </md-menu-item>
+            <md-menu-item>
+              <md-button ng-click="explorer.copyShareLink(content)">
+                <md-icon class="material-icons adjust-icon-top-margin-down color-primary">share</md-icon>
+                <div flex></div>
+                <p md-menu-align-target>复制链接</p>
+              </md-button>
+            </md-menu-item>
           </md-menu-content>
         </md-menu>
         <md-menu class="no-padding-top no-padding-bottom" ng-if="content.isDir && explorer.path.length > 1" md-position-mode="target-right target">
@@ -49,6 +56,13 @@ angular.module('onepiece')
                 <md-icon class="material-icons adjust-icon-top-margin-down color-primary">feedback</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>课程评价</p>
+              </md-button>
+            </md-menu-item>
+            <md-menu-item>
+              <md-button ng-click="explorer.copyShareLink(content)">
+                <md-icon class="material-icons adjust-icon-top-margin-down color-primary">share</md-icon>
+                <div flex></div>
+                <p md-menu-align-target>复制链接</p>
               </md-button>
             </md-menu-item>
             <md-menu-item ng-if="content.isLesson">

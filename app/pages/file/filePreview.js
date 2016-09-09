@@ -14,5 +14,8 @@ angular.module('onepiece')
       comment.set('file', file);
       comment.get();
 
-      $scope.cancel = $mdDialog.cancel;
-    });
+      $scope.cancel = function () {
+        $mdDialog.cancel();
+      }
+    })
+;
