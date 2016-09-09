@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (grunt) {
-  grunt.loadNpmTasks('grunt-wiredep');
   grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
@@ -235,6 +234,16 @@ module.exports = function (grunt) {
             dest: '../ECNU-SEI-ONEPIECE-API-V2/public/'
           }
         ]
+      },
+      fonts: {
+        files: [
+          {
+            expand: true,
+            cwd: 'app/deps/',
+            src: ['*.woff', '*.woff2'],
+            dest: 'dist/'
+          }
+        ]
       }
     },
     watch: {
@@ -272,9 +281,9 @@ module.exports = function (grunt) {
     }
     fs.writeFileSync('dist/onepiece.js', data, {encoding: 'utf-8'});
   });
-  grunt.registerTask('prepare', ['clean:dist', 'htmlmin', 'ngAnnotate']);
+  grunt.registerTask('prepare', ['clean:dist', 'copy:fonts', 'htmlmin', 'ngAnnotate']);
   grunt.registerTask('curtain', ['injectHTML', 'clean:afterDist']);
-  grunt.registerTask('dev', ['prepare', 'concat:dev', 'replace:scriptsDev', 'replace:cssDev', 'replace:comments', 'curtain', 'copy']);
-  grunt.registerTask('deploy', ['prepare', 'cssmin', 'concat:deploy', 'replace:scriptsDeploy', 'replace:cssDeploy', 'replace:comments', 'curtain', 'babel', 'uglify', 'copy']);
+  grunt.registerTask('dev', ['prepare', 'concat:dev', 'replace:scriptsDev', 'replace:cssDev', 'replace:comments', 'curtain', 'copy:toServer']);
+  grunt.registerTask('deploy', ['prepare', 'cssmin', 'concat:deploy', 'replace:scriptsDeploy', 'replace:cssDeploy', 'replace:comments', 'curtain', 'babel', 'uglify', 'copy:toServer']);
 
 };

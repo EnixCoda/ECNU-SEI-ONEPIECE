@@ -6,7 +6,6 @@
   "main": "index.js",
   "devDependencies": {
     "babel-preset-es2015": "^6.13.2",
-    "google-cdn-data": "^0.1.23",
     "grunt": "^0.4.5",
     "grunt-babel": "^6.0.0",
     "grunt-contrib-clean": "^1.0.0",
@@ -16,10 +15,9 @@
     "grunt-contrib-htmlmin": "^0.6.0",
     "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-google-cdn": "^0.4.3",
     "grunt-ng-annotate": "^2.0.2",
     "grunt-replace": "^0.11.0",
-    "grunt-wiredep": "^2.0.0"
+    "webpack": "^1.13.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
