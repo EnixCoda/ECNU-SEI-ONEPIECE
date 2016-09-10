@@ -77,11 +77,11 @@ angular.module('onepiece')
         } else {
           data.edit = edit;
         }
-        toast.show('正在提交', 'success');
+        toast.show('正在提交');
         Edit.save(data,
           function (response) {
             if (response['res_code'] === 0) {
-              toast.show(response['msg'], 'success');
+              toast.show(response['msg']);
               getEdit();
             } else {
               toast.show(response['msg'], 'error');
