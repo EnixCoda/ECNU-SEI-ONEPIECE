@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('explorer',
-    function ($timeout, $location, popper, toast) {
+    function ($timeout, $location, $document, $compile, $rootScope, popper, toast) {
       function targetInDirectory(target, dir) {
         if (dir.isDir) {
           for (var i = 0; i < dir.content.length; i++) {
@@ -12,8 +12,12 @@ angular.module('onepiece')
         return false;
       }
 
-      function generatePathURIArr () {
-        return explorer.path.slice(1).concat(explorer.focusedFile ? [explorer.focusedFile]:[]).map(function (cur) {
+      function generatePathURIArr (extra) {
+        return explorer.path
+          .slice(1)
+          .concat(explorer.focusedFile ? [explorer.focusedFile]:[])
+          .concat(extra ? [extra] : [])
+          .map(function (cur) {
           return cur.name;
         });
       }
@@ -55,7 +59,7 @@ angular.module('onepiece')
 
         if (!localStorage.getItem('notFirstTime')) {
           localStorage.setItem('notFirstTime', 'yes');
-          toast.show('初次访问?正在为你读取使用帮助...');
+          toast.show('初次访问?正在为你读取使用帮助...', undefined, true);
           $timeout(popper.showAbout, 4000);
         }
       };
@@ -141,8 +145,26 @@ angular.module('onepiece')
         return true;
       };
 
-      explorer.getShareLink = function () {
-        return $location.protocol() + '://' + $location.host() + ($location.port() === 80 ? '' : ':' + $location.port()) + '/#/' + generatePathURIArr().join('/');
+      explorer.copyShareLink = function (extra) {
+        var link = $location.protocol() + '://' + $location.host() + ($location.port() === 80 ? '' : ':' + $location.port()) + '/#/' + generatePathURIArr(extra).join('/');
+        var copyElement = angular.element('<span id="ngClipboardCopyId">'+link+'</span>');
+        var body = $document.find('body').eq(0);
+        body.append($compile(copyElement)($rootScope));
+
+        var ngClipboardElement = angular.element(document.getElementById('ngClipboardCopyId'));
+        var range = document.createRange();
+        range.selectNode(ngClipboardElement[0]);
+
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        if (document.execCommand('copy')) {
+          toast.show('链接已复制,快去粘贴吧!');
+        } else {
+          window.prompt("自动复制链接失败,请手动复制", link);
+        }
+        window.getSelection().removeAllRanges();
+        copyElement.remove();
       };
 
       return explorer;
