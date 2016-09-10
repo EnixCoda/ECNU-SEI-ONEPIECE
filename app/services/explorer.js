@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('explorer',
-    function ($timeout, popper) {
+    function ($timeout, $location, popper) {
       function targetInDirectory(target, dir) {
         if (dir.isDir) {
           for (var i = 0; i < dir.content.length; i++) {
@@ -12,6 +12,27 @@ angular.module('onepiece')
         return false;
       }
 
+      function savePathToStorage() {
+        sessionStorage.setItem('lastPath', JSON.stringify(explorer.path.slice(1).map(function (cur) {
+          return cur.name;
+        })));
+      }
+
+      function loadPath(rawPath) {
+        if (rawPath) {
+          var path = rawPath.map(function (cur) {
+            return {
+              name: cur,
+              isDir: true
+            };
+          });
+          while (path.length) {
+            explorer.goTo(path.shift());
+          }
+          return explorer.path.slice(-1)[0].name === rawPath.slice(-1)[0];
+        }
+      }
+
       var explorer = {};
       explorer.setIndex = function (index) {
         explorer.path = [index];
@@ -20,74 +41,89 @@ angular.module('onepiece')
         explorer.namingDir = false;
         explorer.namingDirDepth = 0;
 
-        // set the max depth of path
-        explorer.cutTail = function (depth) {
-          explorer.path.splice(depth + 1);
-        };
+        if (!loadPath($location.path().split('/')))
+          if (!loadPath(JSON.parse(sessionStorage.getItem('lastPath'))))
+            explorer.goBack(Infinity);
+        $location.path('/').replace();
+      };
 
-        explorer.createDir = function (depth) {
-          explorer.cutTail(depth - 1);
-          explorer.namingDir = true;
-          explorer.namingDirDepth = depth;
-        };
+      // set the max depth of path
+      explorer.cutTail = function (depth) {
+        explorer.path.splice(depth + 1);
+      };
 
-        explorer.pushNext = function () {
-          if (explorer.nextDir) {
-            explorer.path.push(explorer.nextDir);
-          }
-        };
+      explorer.createDir = function (depth) {
+        explorer.cutTail(depth - 1);
+        explorer.namingDir = true;
+        explorer.namingDirDepth = depth;
+      };
 
-        explorer.saveDir = function (name) {
-          var newDir = {
-            name: name,
-            content: [],
-            isDir: true
-          };
-          if (explorer.path[explorer.path.length - 1] === 0) {
-            explorer.path.pop();
-          }
-          explorer.path[explorer.path.length - 1].content.push(newDir);
-          explorer.path.push(newDir);
+      explorer.pushNext = function () {
+        if (explorer.nextDir) {
+          explorer.path.push(explorer.nextDir);
+        }
+      };
+
+      explorer.saveDir = function (name) {
+        var newDir = {
+          name: name,
+          content: [],
+          isDir: true
+        };
+        if (explorer.path[explorer.path.length - 1] === 0) {
+          explorer.path.pop();
+        }
+        explorer.path[explorer.path.length - 1].content.push(newDir);
+        explorer.path.push(newDir);
+        explorer.namingDirDepth = 0;
+        explorer.newDirName = '';
+        explorer.nextDir = undefined;
+      };
+
+      explorer.cancelCreateDir = function () {
+        if (explorer.namingDir) {
           explorer.namingDirDepth = 0;
           explorer.newDirName = '';
+          explorer.namingDir = false;
           explorer.nextDir = undefined;
-        };
+        }
+      };
 
-        explorer.cancelCreateDir = function () {
-          if (explorer.namingDir) {
-            explorer.namingDirDepth = 0;
-            explorer.newDirName = '';
-            explorer.namingDir = false;
-            explorer.nextDir = undefined;
-          }
-        };
-
-        explorer.disableGoTo = false; // prevent error which occurs when folder double clicked
-        explorer.goTo = function (target, e) {
-          if (explorer.disableGoTo) return;
-          var pos = targetInDirectory(target, explorer.path.slice(-1)[0]);
-          if (pos !== false) {
-            if (target.isDir) {
-              explorer.disableGoTo = true;
-              if (e !== undefined) {
-                $timeout(function () {
-                  explorer.path.push(target);
-                  explorer.disableGoTo = false;
-                }, 200); // TODO
-              } else {
+      explorer.disableGoTo = false; // prevent error which occurs when folder double clicked
+      explorer.goTo = function (target, e) {
+        if (explorer.disableGoTo) return;
+        var pos = targetInDirectory(target, explorer.path.slice(-1)[0]);
+        if (pos !== false) {
+          target = explorer.path.slice(-1)[0].content[pos];
+          if (target.isDir) {
+            explorer.disableGoTo = true;
+            if (e !== undefined) {
+              // user-triggered
+              $timeout(function () {
                 explorer.path.push(target);
                 explorer.disableGoTo = false;
-              }
+                savePathToStorage();
+              }, 200); // TODO
             } else {
-              popper.showFileDetail(target, e);
+              explorer.path.push(target);
+              explorer.disableGoTo = false;
+              savePathToStorage();
             }
+          } else {
+            explorer.path.push(target);
+            savePathToStorage();
+            $timeout(function () {
+              popper.showFileDetail(target, e);
+            }, 0);
           }
-        };
-        explorer.goBack = function (step) {
-          if (explorer.path.length === 1) return false;
-          explorer.path.splice(Math.max(explorer.path.length - step, 1));
-          return true;
-        };
+        }
+      };
+      explorer.goBack = function (step) {
+        if (explorer.path.length === 1) return false;
+        step = step || 1;
+        explorer.path.splice(Math.max(explorer.path.length - step, 1));
+        savePathToStorage();
+        return true;
       };
 
       return explorer;
