@@ -12,10 +12,14 @@ angular.module('onepiece')
         return false;
       }
 
-      function savePathToStorage() {
-        sessionStorage.setItem('lastPath', JSON.stringify(explorer.path.slice(1).map(function (cur) {
+      function generatePathURIArr () {
+        return explorer.path.slice(1).concat(explorer.focusedFile ? [explorer.focusedFile]:[]).map(function (cur) {
           return cur.name;
-        })));
+        });
+      }
+
+      function savePathToStorage () {
+        sessionStorage.setItem('lastPath', JSON.stringify(generatePathURIArr()));
       }
 
       function loadPath(rawPath) {
@@ -29,11 +33,14 @@ angular.module('onepiece')
           while (path.length) {
             explorer.goTo(path.shift());
           }
-          return explorer.path.slice(-1)[0].name === rawPath.slice(-1)[0];
+          return explorer.path.slice(-1)[0].name === rawPath.slice(-1)[0] || explorer.focusedFile && explorer.focusedFile.name === rawPath.slice(-1)[0];
         }
       }
 
       var explorer = {};
+
+      explorer.focusedFile = null;
+
       explorer.setIndex = function (index) {
         explorer.path = [index];
         explorer.nextDir = undefined;
@@ -102,28 +109,33 @@ angular.module('onepiece')
               $timeout(function () {
                 explorer.path.push(target);
                 explorer.disableGoTo = false;
-                savePathToStorage();
               }, 200); // TODO
             } else {
               explorer.path.push(target);
               explorer.disableGoTo = false;
-              savePathToStorage();
             }
           } else {
-            explorer.path.push(target);
             savePathToStorage();
+            explorer.focusedFile = target;
             $timeout(function () {
               popper.showFileDetail(target, e);
             }, 0);
           }
+          savePathToStorage();
         }
       };
+
       explorer.goBack = function (step) {
         if (explorer.path.length === 1) return false;
         step = step || 1;
         explorer.path.splice(Math.max(explorer.path.length - step, 1));
         savePathToStorage();
+        explorer.focusedFile = null;
         return true;
+      };
+
+      explorer.getShareLink = function () {
+        return $location.protocol() + '://' + $location.host() + ($location.port() === 80 ? '' : ':' + $location.port()) + '/#/' + generatePathURIArr().join('/');
       };
 
       return explorer;

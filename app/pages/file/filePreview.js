@@ -14,8 +14,14 @@ angular.module('onepiece')
       comment.set('file', file);
       comment.get();
 
+      $scope.getShareLink = function () {
+        var copySucceeded;
+        if (!copySucceeded) window.prompt("自动复制失败了,请手动复制一下~", explorer.getShareLink());
+      };
+
       $scope.cancel = function () {
-            explorer.goBack();
-            $mdDialog.cancel();
+        explorer.goBack();
+        $mdDialog.cancel();
       }
-    });
+    })
+;

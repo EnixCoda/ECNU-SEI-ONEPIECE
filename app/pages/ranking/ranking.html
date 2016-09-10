@@ -10,7 +10,7 @@
   </md-toolbar>
   <md-dialog-content>
     <md-list class="no-padding-top ranking-supporter">
-      <md-list-item class="centeredText light-background-color">
+      <md-list-item class="center-text light-background-color">
         <div flex="100" layout layout-align="space-between center">
           <div>排名</div>
           <div flex="25">用户</div>
@@ -31,7 +31,7 @@
           获取排名失败
         </div>
       </md-list-item>
-      <md-list-item class="centeredText" ng-repeat="ranking in ranking" ng-click="">
+      <md-list-item class="center-text" ng-repeat="ranking in ranking" ng-click="">
         <div flex="100" layout layout-align="space-between center">
           <div>{{$index + 1}}</div>
           <div flex="25">{{ranking.name}}</div>
@@ -56,7 +56,7 @@
             获取排名失败
           </div>
         </md-list-item>
-        <md-list-item ng-if="status==='SUCCESS'" class="centeredText" ng-click="">
+        <md-list-item ng-if="status==='SUCCESS'" class="center-text" ng-click="">
           <div flex="100" layout layout-align="space-between center">
             <div>{{userRanking.pos}}</div>
             <div flex="25">{{userRanking.name}}</div>
