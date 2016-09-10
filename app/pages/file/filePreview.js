@@ -20,7 +20,6 @@ angular.module('onepiece')
       };
 
       $scope.cancel = function () {
-        explorer.goBack();
         $mdDialog.cancel();
       }
     })

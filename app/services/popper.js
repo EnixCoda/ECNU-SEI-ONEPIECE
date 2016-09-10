@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('popper',
-    function ($mdDialog, $mdMedia) {
+    function ($mdDialog, $mdMedia, $injector) {
       var popper = {};
       popper.showUserCenter = function (e){
         $mdDialog.show({
@@ -53,7 +53,10 @@ angular.module('onepiece')
             file: file
           },
           fullscreen: $mdMedia('xs'),
-          clickOutsideToClose: true
+          clickOutsideToClose: true,
+          onRemoving: function (/* element, promise */) {
+            $injector.get('explorer').goBack();
+          }
         });
       };
       popper.showLessonPreview = function (lesson, e) {

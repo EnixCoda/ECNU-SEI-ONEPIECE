@@ -51,7 +51,7 @@ angular.module('onepiece')
         if (!loadPath($location.path().split('/')))
           if (!loadPath(JSON.parse(sessionStorage.getItem('lastPath'))))
             explorer.goBack(Infinity);
-        $location.path('/').replace();
+        $location.url('/');
 
         if (!localStorage.getItem('notFirstTime')) {
           localStorage.setItem('notFirstTime', 'yes');
@@ -115,6 +115,7 @@ angular.module('onepiece')
               $timeout(function () {
                 explorer.path.push(target);
                 explorer.disableGoTo = false;
+                savePathToStorage();
               }, 200); // TODO
             } else {
               explorer.path.push(target);
@@ -133,10 +134,10 @@ angular.module('onepiece')
 
       explorer.goBack = function (step) {
         if (explorer.path.length === 1) return false;
-        step = step || 1;
+        step = step || 0;
         explorer.path.splice(Math.max(explorer.path.length - step, 1));
-        savePathToStorage();
         explorer.focusedFile = null;
+        savePathToStorage();
         return true;
       };
 
