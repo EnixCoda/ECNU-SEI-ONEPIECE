@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('explorer',
-    function ($timeout, $location, popper) {
+    function ($timeout, $location, popper, toast) {
       function targetInDirectory(target, dir) {
         if (dir.isDir) {
           for (var i = 0; i < dir.content.length; i++) {
@@ -52,6 +52,12 @@ angular.module('onepiece')
           if (!loadPath(JSON.parse(sessionStorage.getItem('lastPath'))))
             explorer.goBack(Infinity);
         $location.path('/').replace();
+
+        if (!localStorage.getItem('notFirstTime')) {
+          localStorage.setItem('notFirstTime', 'yes');
+          toast.show('初次访问?正在为你读取使用帮助...');
+          $timeout(popper.showAbout, 4000);
+        }
       };
 
       // set the max depth of path

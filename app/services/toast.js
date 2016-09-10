@@ -8,7 +8,7 @@ angular.module('onepiece')
             .simple()
             .textContent(text)
             .position(position || 'top right')
-            .theme(type + '-toast')
+            .theme((type || 'success') + '-toast')
             .hideDelay(stayLong ? 4500 : 1500)
         );
       };
