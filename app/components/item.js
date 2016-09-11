@@ -11,7 +11,6 @@ angular.module('onepiece')
           </div>
         </div>
         <div flex></div>
-        <span>{{!content.isDir && explorer.path.length > 1 && content.score !== 0 ? content.score : ""}}</span>
         <md-button ng-if="!content.isDir && explorer.path.length > 1" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
           <md-tooltip md-direction="left">
             {{content.gettingDownloadLink?'正在获取下载链接':formatFileSize(content)}}
@@ -25,7 +24,7 @@ angular.module('onepiece')
             </md-progress-circular>
           </div>
         </md-button>
-        <md-menu class="no-padding-top no-padding-bottom" ng-if="!content.isDir && explorer.path.length > 2" md-position-mode="target-right target">
+        <md-menu class="no-padding-top no-padding-bottom" ng-if="!content.isDir && explorer.path.length > 1" md-position-mode="target-right target">
           <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)" layout-align="center center">
             <md-icon class="material-icons adjust-icon-top-margin-up-3 color-primary">more_vert</md-icon>
           </md-button>
