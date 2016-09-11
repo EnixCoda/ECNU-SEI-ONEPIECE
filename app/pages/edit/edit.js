@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .controller('EditController',
-    function ($scope, $mdDialog, $resource, target, explorer, user, toast) {
+    function ($scope, $mdDialog, $resource, indexLoader, target, explorer, user, toast) {
       var Edit = $resource('edit', {}, {});
 
       $scope.explorer = explorer;
@@ -83,6 +83,7 @@ angular.module('onepiece')
             if (response['res_code'] === 0) {
               toast.show(response['msg']);
               getEdit();
+              indexLoader.load();
             } else {
               toast.show(response['msg'], 'error');
             }
