@@ -54,12 +54,12 @@
           </md-list>
         </div>
         <div ng-if="getEditsStatus==='FAIL'">
-          获取其他修改意见失败
+          获取修改意见失败
         </div>
       </div>
       <md-divider></md-divider>
       <div>
-        你要{{actionName}}的是：{{original}}
+        将要{{actionName}}的是：{{original}}
       </div>
       <md-tabs md-dynamic-height md-border-bottom>
         <md-tab label="移动" ng-click="nameAction('移动')">
@@ -68,9 +68,9 @@
               <div layout="column">
                 <div>
                   * 使用说明：<br>
-                  * 假设你需要将“专业必修课程”下的“C语言程序设计”移动至“专业选修课程”下<br>
+                  * 假设你需要将“专业必修课程”下的“C++语言程序设计”移动至“专业选修课程”下<br>
                   * 则应在下方菜单中选择 "ONEPIECE", "专业选修课程"<br>
-                  * 不需要再次建立“C语言程序设计”文件夹<br>
+                  * 不需要再次建立“C++语言程序设计”文件夹<br>
                 </div>
                 <md-divider layout-padding></md-divider>
                 <div>目标位置：</div>
