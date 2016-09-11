@@ -32,7 +32,7 @@ angular.module('onepiece')
           locals: {},
           targetEvent: e,
           fullscreen: $mdMedia('xs'),
-          clickOutsideToClose: false
+          clickOutsideToClose: true
         });
       };
       popper.showAbout = function (e) {
