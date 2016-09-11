@@ -39,9 +39,7 @@ angular.module('onepiece')
         uptoken_func: function (file) {
           return SJAX.run('GET', 'uploadToken', {
             token: user.token,
-            key: explorer.path.slice(1).map(function (cur) {
-              return cur.name;
-            }).concat([file.name]).join('/')
+            key: file.key
           }, function (responseText) {
             var res = JSON.parse(responseText);
             if (res['res_code'] === 0) {
@@ -69,7 +67,11 @@ angular.module('onepiece')
         init: {
           FilesAdded: function (up, files) {
             plupload.each(files, function (file) {
-
+              file.key = explorer.path.slice(1).map(
+                  function (cur) {
+                    return cur.name;
+                  }
+                ).concat([file.name]).join('/');
             });
             $scope.$apply();
           },
@@ -107,11 +109,7 @@ angular.module('onepiece')
           UploadComplete: function () {
           },
           Key: function (up, file) {
-            return explorer.path.slice(1).map(
-              function (cur) {
-                return cur.name;
-              }
-            ).concat([file.name]).join('/');
+            return file.key;
           }
         }
       };
