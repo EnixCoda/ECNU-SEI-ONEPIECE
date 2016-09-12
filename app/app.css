@@ -211,6 +211,13 @@ file-list,
 
 .file-name-in-list {
   line-height: 20px !important;
+  overflow: hidden;
+}
+
+.file-name-in-list p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .top-right-menu {
