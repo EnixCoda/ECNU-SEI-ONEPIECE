@@ -22,7 +22,7 @@ angular.module('onepiece')
           tip: '用户中心'
         },
         {
-          func: popper.showContribute,
+          func: popper.showUpload,
           icon: 'cloud_upload',
           tip: '上传资料'
         },

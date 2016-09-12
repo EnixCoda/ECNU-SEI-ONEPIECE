@@ -3,7 +3,7 @@
     <div class="md-toolbar-tools">
       <h2>上传你的优质资料</h2>
       <span flex></span>
-      <md-button class="md-icon-button" ng-click="close()" ng-disabled="uploadingCount > 0">
+      <md-button class="md-icon-button" ng-click="close()" ng-disabled="uploadManager.uploadingCount > 0">
         <md-icon md-svg-src="md-close" aria-label="Close dialog"></md-icon>
       </md-button>
     </div>
@@ -11,11 +11,10 @@
   <md-dialog-content>
     <md-content layout-padding>
       <div>
-        * 上传前请仔细阅读根目录的管理规则。<br>
-        * 请遵照管理规则确定你要上传的资料的名称、位置。<br>
+        * 非常感谢你为本站提供资料，请务必仔细阅读并理解管理规则后再上传资料。<br>
         * 每个文件大小限制为200MB。<br>
+        * 站点资源有限，请珍惜使用，勿恶意上传。<br>
         * 注：目前不支持Edge浏览器/iOS版Safari浏览器访问时上传文件。<br>
-        * 站点资源有限，请勿恶意上传。<br>
       </div>
       <md-divider></md-divider>
       <div ng-show="user.status === 'ONLINE'">
@@ -25,7 +24,7 @@
             <dummy-explorer></dummy-explorer>
           </div>
           <div>
-            <md-button class="md-fab md-primary" id="pickfiles">
+            <md-button class="md-fab md-primary" id="pickfiles" ng-click="checkPath()">
               <md-icon class="material-icons">add</md-icon>
               <md-tooltip md-direction="bottom">添加文件</md-tooltip>
             </md-button>
@@ -37,10 +36,10 @@
               文件列表
             </md-subheader>
             <md-divider></md-divider>
-            <md-list-item ng-show="QUploader.files.length === 0 && doneFiles.length === 0">
+            <md-list-item ng-show="QUploader.files.length === 0 && uploadManager.doneFiles.length === 0">
               什么都没有
             </md-list-item>
-            <md-list-item ng-repeat="file in doneFiles">
+            <md-list-item ng-repeat="file in uploadManager.doneFiles">
               <md-icon class="material-icons adjust-icon-top-margin-up-3"
                        ng-class="file.success?'md-primary':'md-warn'">{{file.success?"check_circle":"error"}}
               </md-icon>

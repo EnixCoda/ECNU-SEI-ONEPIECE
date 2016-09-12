@@ -1,37 +1,35 @@
 angular.module('onepiece')
   .controller('UploadController',
-    function ($scope, $mdDialog, $http, indexLoader, user, explorer, toast, popper, SJAX) {
+    function ($scope, $mdDialog, $http, uploadManager, indexLoader, user, explorer, toast, popper, SJAX) {
       $scope.user = user;
       $scope.explorer = explorer;
       $scope.indexLoader = indexLoader;
+      $scope.uploadManager = uploadManager;
 
-      $scope.namingDirKeyPress = function (e) {
-        if (e.keyCode === 13 && $scope.explorer.newDirName) {
-          $scope.explorer.saveDir($scope.explorer.newDirName);
+      $scope.checkPath = function (e) {
+        if (explorer.path.length < 3) {
+          e.stopPropagation();
+          e.preventDefault();
+          toast.show('无法上传到当前位置。请选择课程分类、课程名称。', 'warning')
         }
       };
 
-      $scope.doneFiles = [];
-      $scope.uploadingCount = 0;
-
       $scope.startUpload = function () {
-        if ($scope.explorer.path.length < 3) {
-          toast.show('无法上传到当前位置。请选择课程分类、课程名称。', 'warning');
-        } else {
-          $scope.QUploader.start();
-        }
+        $scope.QUploader.start();
       };
 
       $scope.cancel = function (file) {
-        $scope.uploadingCount--;
+        uploadManager.uploadingCount--;
         $scope.canceling = true;
         $scope.QUploader.removeFile(file);
-        $scope.doneFiles.push(file);
+        if (file.uploadStarted) uploadManager.doneFiles.push(file);
       };
 
-      $scope.close = $mdDialog.hide;
+      $scope.close = function () {
+        $mdDialog.hide();
+      };
 
-
+      // TODO: scope chain is messy
       $scope.QUploaderConfig = {
         runtimes: 'html5',
         browse_button: 'pickfiles',
@@ -59,7 +57,7 @@ angular.module('onepiece')
         },
         get_new_uptoken: true,
         domain: '7xt1vj.com1.z0.glb.clouddn.com',
-        max_file_size: '100mb',
+        max_file_size: '200mb',
         max_retries: 1,
         chunk_size: '4mb',
         dragdrop: true,
@@ -75,8 +73,9 @@ angular.module('onepiece')
             });
             $scope.$apply();
           },
-          BeforeUpload: function (/*up, file*/) {
-            $scope.uploadingCount++;
+          BeforeUpload: function (up, file) {
+            uploadManager.uploadingCount++;
+            file.uploadStarted = true;
           },
           UploadProgress: function (/*up, file*/) {
             if (!$scope.canceling) $scope.$apply();
@@ -92,9 +91,9 @@ angular.module('onepiece')
             $http.post('uploaded', data);
             up.removeFile(file);
             file.success = true;
-            $scope.doneFiles.push(file);
-            $scope.uploadingCount--;
-            $scope.indexLoader.load();
+            uploadManager.doneFiles.push(file);
+            uploadManager.uploadingCount--;
+            indexLoader.load();
             $scope.$apply();
           },
           Error: function (up, err, errTip) {
@@ -102,8 +101,8 @@ angular.module('onepiece')
               toast.show('上传失败! ' + err.file.name + ': ' + errTip, 'error', true);
             }
             up.removeFile(err.file);
-            $scope.doneFiles.push(err.file);
-            $scope.uploadingCount--;
+            uploadManager.doneFiles.push(err.file);
+            uploadManager.uploadingCount--;
             $scope.$apply();
           },
           UploadComplete: function () {
@@ -113,4 +112,5 @@ angular.module('onepiece')
           }
         }
       };
+
     });

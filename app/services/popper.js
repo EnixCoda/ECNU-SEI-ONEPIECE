@@ -12,13 +12,14 @@ angular.module('onepiece')
           clickOutsideToClose: true
         });
       };
-      popper.showContribute = function (e) {
+      popper.showUpload = function (e) {
         $mdDialog.show({
           controller: 'UploadController',
           templateUrl: 'upload.html',
           targetEvent: e,
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: false,
+          preserveScope: true,
           locals: {},
           onComplete: function ($scope) {
             $scope.QUploader = Qiniu.uploader($scope.QUploaderConfig);
