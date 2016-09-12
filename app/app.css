@@ -100,10 +100,6 @@ body md-content {
   height: 100%;
 }
 
-.left-offset-10 {
-  padding-left: 10px;
-}
-
 /* padding */
 .no-padding, comment {
   padding: 0 !important;
@@ -115,6 +111,10 @@ body md-content {
 
 .no-padding-bottom {
   padding-bottom: 0 !important;
+}
+
+.left-offset-10 {
+  padding-left: 10px;
 }
 
 /* margin */
@@ -134,6 +134,7 @@ body md-content {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
+
 /* icon position */
 .adjust-icon-top-margin-down {
   margin-top: 5px;
@@ -149,7 +150,7 @@ body md-content {
 
 /* color */
 .color-white {
-  color: white !important;
+  color: #fff !important;
 }
 
 .color-primary {
@@ -158,7 +159,7 @@ body md-content {
 
 /* background */
 .background-white {
-  background-color: white !important;
+  background-color: #fff !important;
 }
 
 .background-blue {
@@ -181,11 +182,6 @@ file-list,
 
 .hide-overflow {
   overflow: hidden;
-}
-
-.set-height-to-ac {
-  height: 40px;
-  min-height: 40px;
 }
 
 .upload-dialog {
@@ -235,20 +231,8 @@ file-list,
   box-shadow: none !important;
 }
 
-.warn-msg {
-  color: #f44336;
-}
-
 .short-user-name {
   font-size: 18px;
-}
-
-.min-height-65 {
-  min-height: 65px;
-}
-
-.min-height-100 {
-  min-height: 100px;
 }
 
 .thumb-up-enabled {
@@ -300,48 +284,30 @@ file-list,
 
 /* top left back button */
 .back-btn {
-  transition-duration: 0.3s !important;
+  transition-duration: 0.5s !important;
   transition-property: all !important;
-  min-width: 36px;
-  border-radius: 100%;
 }
 
 .back-btn.active {
   opacity: 1;
 }
 
-.back-btn .md-ripple-container {
-  border-radius: 100%;
-}
-
 .back-btn.hidden {
-  margin-left: 8px;
   opacity: 0;
 }
 
 /* file action button in file preview page */
 
-.file-action-button {
-  transition-duration: 0.3s !important;
-  transition-property: all !important;
-  min-width: 36px;
-  border-radius: 100%;
-}
-
-.file-action-button .md-ripple-container {
-  border-radius: 100%;
-}
-
 .file-action-button .material-icons {
   color: #2196f3;
 }
 
-.explorer-naming-button {
-  min-width: 36px;
-  border-radius: 100%;
-  margin: 0;
+.upload-list-item {
+  margin-top: 4px;
 }
 
-.explorer-naming-button .md-ripple-container{
-  border-radius: 100%;
+.progress-wrapper {
+  position: absolute;
+  top: 0;
+  width: 100%;
 }

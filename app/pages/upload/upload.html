@@ -39,26 +39,18 @@
               什么都没有
             </md-list-item>
             <md-list-item ng-repeat="file in uploadManager.doneFiles">
-              <md-icon class="material-icons adjust-icon-top-margin-up-3"
-                       ng-class="file.success?'md-primary':'md-warn'">{{file.success?"check_circle":"error"}}
-              </md-icon>
+              <md-icon class="material-icons adjust-icon-top-margin-up-3" ng-class="file.success?'md-primary':'md-warn'">{{file.success ? 'check_circle' : 'error'}}</md-icon>
               <div>{{file.name}}</div>
             </md-list-item>
             <md-list-item ng-repeat="file in QUploader.files" layout="column" layout-align="center">
-              <div layout>
-                <div flex layout="column" layout-align="space-around">
-                  <div layout layout-align="start center">
-                    <div>{{file.key}}</div>
-                  </div>
-                  <div layout layout-align="start center">
-                    <md-progress-linear flex md-mode="determinate" value="{{file.percent}}"></md-progress-linear>
-                    <div class="left-offset-10">{{file.percent}}%</div>
-                  </div>
+              <div class="upload-list-item" layout layout-align="start center">
+                <div class="progress-wrapper">
+                  <md-progress-linear flex md-mode="determinate" ng-show="file.percent" value="{{file.percent}}"></md-progress-linear>
                 </div>
+                <div>{{file.key}}</div>
+                <span flex></span>
                 <div layout layout-align="center center">
-                  <md-button class="md-fab md-mini no-margin-right background-white"
-                             ng-class="uploadingCount>0?'md-warn':''"
-                             ng-click="cancel(file)" aria-label="cancel upload">
+                  <md-button class="md-icon-button no-margin-right" ng-class="file.uploadStarted ? 'md-warn' : ''" ng-click="cancel(file)" aria-label="cancel upload">
                     <md-icon class="material-icons color-primary">close</md-icon>
                   </md-button>
                 </div>
@@ -73,7 +65,7 @@
           </md-button>
         </div>
       </div>
-      <need-login></need-login>
+      <need-login ng-if="user.status !== 'ONLINE'"></need-login>
     </md-content>
   </md-dialog-content>
 </md-dialog>
