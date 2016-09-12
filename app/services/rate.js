@@ -4,10 +4,10 @@ angular.module('onepiece')
       var Rate = $resource('/:type/:key/score', {}, {});
 
       var rateManager = {};
-      rateManager.file = {};
+      rateManager.file = null;
       rateManager.set = function (file) {
-        rateManager.gettingRate = false;
         rateManager.file = file;
+        rateManager.file.gettingRate = false;
         rateManager.key = rateManager.file.id;
       };
       rateManager.get = function () {
