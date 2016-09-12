@@ -31,12 +31,14 @@ angular.module('onepiece')
           </label>
           <input id="newDirName" ng-keypress="namingDirKeyPress($event)" ng-model="explorer.newDirName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
         </md-input-container>
-        <md-button ng-show="explorer.newDirName" class="md-fab md-mini background-white" ng-click="explorer.saveDir(explorer.newDirName)">
-          <md-icon class="material-icons">done</md-icon>
-        </md-button>
-        <md-button ng-show="explorer.newDirName" class="md-fab md-mini background-white" ng-click="explorer.cancelCreateDir()">
-          <md-icon class="material-icons">clear</md-icon>
-        </md-button>
+        <div>
+          <md-button ng-show="explorer.newDirName" class="explorer-naming-button" ng-click="explorer.saveDir(explorer.newDirName)">
+            <md-icon class="material-icons">done</md-icon>
+          </md-button>
+          <md-button ng-show="explorer.newDirName" class="explorer-naming-button" ng-click="explorer.cancelCreateDir()">
+            <md-icon class="material-icons">clear</md-icon>
+          </md-button>
+        </div>
       </div>
     `,
     controller: function ($scope, explorer) {

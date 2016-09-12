@@ -325,67 +325,12 @@ file-list,
   color: #2196f3;
 }
 
-/* lesson search */
-.lesson-search {
-  position: relative;
+.explorer-naming-button {
+  min-width: 36px;
+  border-radius: 100%;
+  margin: 0;
 }
 
-.lesson-search input {
-  -webkit-appearance: none;
-  border: 1px solid #fff;
-  border-radius: 2px;
-  padding: 10px 16px;
-  height: 40px;
-  width: 200px;
-  box-shadow: 0 2px 3px #aaa;
-  box-sizing: border-box;
-  outline: none;
-}
-
-.lesson-search md-icon {
-  display: none;
-  cursor: pointer;
-  position: absolute;
-  outline: none;
-  right: 8px;
-  top: 8px;
-  transition: all .5s;
-}
-
-.lesson-search input:focus ~ md-icon {
-  display: block;
-}
-
-.lesson-search input:focus ~ .search-results {
-  visibility: visible;
-  overflow: auto;
-}
-
-.lesson-search .search-results {
-  visibility: hidden;
-  position: absolute;
-  background: #fff;
-  font-size: 16px;
-  z-index: 4;
-  border: 1px solid #ddd;
-  border-radius: 2px;
-  max-height: 200px;
-  overflow: hidden;
-  width: 100%;
-  margin: -1px;
-  transition: visibility .1s;
-}
-
-.lesson-search .search-result {
-  height: 40px;
-  line-height: 40px;
-  padding-left: 10px;
-  cursor: pointer;
-  outline: none;
-  transition: background .5s;
-  overflow: hidden;
-}
-
-.lesson-search .search-result:hover {
-  background: #ddd;
+.explorer-naming-button .md-ripple-container{
+  border-radius: 100%;
 }
