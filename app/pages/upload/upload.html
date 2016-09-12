@@ -23,7 +23,7 @@
             <dummy-explorer></dummy-explorer>
           </div>
           <div>
-            <md-button class="md-fab md-primary" id="pickfiles" ng-click="checkPath()">
+            <md-button class="md-fab md-primary" id="pickfiles" ng-disabled="explorer.path.length < 3">
               <md-icon class="material-icons">add</md-icon>
               <md-tooltip md-direction="bottom">添加文件</md-tooltip>
             </md-button>
