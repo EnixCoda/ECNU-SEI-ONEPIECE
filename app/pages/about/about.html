@@ -11,9 +11,9 @@
     <md-tabs md-dynamic-height md-border-bottom>
       <md-tab ng-repeat="tab in tabs" label="{{tab.label}}">
         <md-content layout-padding>
-          <div ng-repeat="note in tab.notes">
+          <div ng-repeat="note in tab.notes track by $index">
             <h3>{{note.title}}</h3>
-            <p ng-repeat="content in note.content">{{content}}<br></p>
+            <p ng-repeat="content in note.content track by $index">{{content}}<br></p>
           </div>
         </md-content>
       </md-tab>
