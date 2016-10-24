@@ -13,6 +13,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-babel');
 
   grunt.initConfig({
+    config: grunt.file.readJSON('config.json'),
     angularMaterial: {
       version: '1.1.0-rc4'
     },
@@ -231,7 +232,7 @@ module.exports = function (grunt) {
             expand: true,
             cwd: 'dist/',
             src: ['**'],
-            dest: '../ECNU-SEI-ONEPIECE-API-V2/public/'
+            dest: '<%= config.serverRoot %>'
           }
         ]
       },
