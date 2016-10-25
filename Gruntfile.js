@@ -1,55 +1,57 @@
 'use strict';
 
 module.exports = function (grunt) {
-  grunt.loadNpmTasks('grunt-replace');
-  grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
-  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-babel');
 
   grunt.initConfig({
     config: grunt.file.readJSON('config.json'),
-    angularMaterial: {
-      version: '1.1.0-rc4'
-    },
-    angular: {
-      version: '1.5.8'
-    },
     clean: {
+      options: {
+        force: true
+      },
+      serverRoot: ['<%= config.serverRoot %>'],
       dist: ['dist'],
-      afterDist: ['dist/pages', 'dist/scripts']
+      midFile: ['dist/html', 'dist/scripts', 'dist/css']
     },
     cssmin: {
-      target: {
+      allCSS:{
         files: {
-          'dist/onepiece.min.css': ['bower_components/angular-material/angular-material.min.css', 'app/app.css']
+          'dist/app.css': ['dist/app.css']
         }
       }
     },
     htmlmin: {
-      dist: {
-        options: {
-          removeComments: false,
-          collapseWhitespace: true
-        },
+      options: {
+        removeComments: true,
+        collapseWhitespace: true
+      },
+      index: {
         files: [
           {
             expand: true,
-            dest: './dist/',
+            dest: 'dist/',
             src: ['app/index.html'],
             flatten: true
-          },
+          }
+        ]
+      },
+      pages: {
+        files: [
           {
             expand: true,
-            dest: './dist/pages/',
+            dest: 'dist/html/',
             src: ['app/pages/**/*.html'],
             flatten: true
-          },
+          }
         ]
       }
     },
@@ -66,32 +68,45 @@ module.exports = function (grunt) {
         //   // return src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
         // }
       },
-      dev: {
+      css: {
         files: {
-          'dist/onepiece.js': [
-            'bower_components/angular/angular.js',
-            'bower_components/angular-resource/angular-resource.js',
-            'bower_components/angular-animate/angular-animate.js',
-            'bower_components/angular-aria/angular-aria.js',
-            'bower_components/angular-material/angular-material.js',
-            'dist/scripts/app.js',
-            'dist/scripts/*.js'],
-          'dist/qiniuUpload.js': ['app/deps/*.js', '!app/deps/*.min.js'],
-          'dist/onepiece.css': ['bower_components/angular-material/angular-material.css', 'app/app.css']
+          'dist/app.css': [
+            'node_modules/angular-material/angular-material.css',
+            'app/app.css'
+          ]
         }
       },
-      deploy: {
+      controllers: {
         files: {
-          'dist/onepiece.js': [
-            'bower_components/angular/angular.min.js',
-            'bower_components/angular-resource/angular-resource.min.js',
-            'bower_components/angular-animate/angular-animate.min.js',
-            'bower_components/angular-aria/angular-aria.min.js',
-            'bower_components/angular-material/angular-material.min.js',
-            'dist/scripts/app.js',
-            'dist/scripts/*.js'],
-          'dist/qiniuUpload.min.js': ['app/deps/*.min.js'],
-          'dist/qiniu.min.map': ['app/deps/qiniu.min.map']
+          'dist/scripts/controllers.js': [
+            'app/pages/**/*.js'
+          ]
+        }
+      },
+      allAppJS: {
+        files: {
+          'dist/app.js': [
+            'node_modules/angular/angular.js',
+            'node_modules/angular-resource/angular-resource.js',
+            'node_modules/angular-animate/angular-animate.js',
+            'node_modules/angular-aria/angular-aria.js',
+            'node_modules/angular-material/angular-material.js',
+            'app/app.js',
+            'app/components/*.js',
+            'app/controllers/*.js',
+            'dist/scripts/controllers.js',
+            'app/filters/*.js',
+            'app/services/*.js',
+            'dist/scripts/*.js'
+          ]
+        }
+      },
+      vendorJS: {
+        files: {
+          'dist/app.js': [
+            'dist/app.js',
+            'vendors/*.min.js'
+          ]
         }
       }
     },
@@ -100,15 +115,15 @@ module.exports = function (grunt) {
           presets: ['es2015']
       },
       dist: {
-          files: {
-              'dist/onepiece.js': 'dist/onepiece.js'
-          }
+        files: {
+          'dist/app.js': 'dist/app.js'
+        }
       }
     },
     uglify: {
       dist: {
         files: {
-          'dist/onepiece.min.js': ['dist/onepiece.js']
+          'dist/app.js': ['dist/app.js']
         }
       }
     },
@@ -132,80 +147,6 @@ module.exports = function (grunt) {
           },
         ]
       },
-      scriptsDeploy: {
-        options: {
-          patterns: [
-            {
-              match: /<!--foot scripts-->(.|[\n])*<!--end foot scripts-->/m,
-              replacement: [
-                '<script src="qiniuUpload.min.js"></script>',
-                '<script src="onepiece.min.js"></script>'
-              ].join('')
-            }
-          ]
-        },
-        files: [
-          {
-            src: ['dist/index.html'],
-            dest: './'
-          }
-        ]
-      },
-      cssDeploy: {
-        options: {
-          patterns: [
-            {
-              match: /<!--head stylesheets-->(.|[\n])*<!--end head stylesheets-->/m,
-              replacement: [
-                '<link rel="stylesheet" href="onepiece.min.css"/>'
-              ].join('')
-            }
-          ]
-        },
-        files: [
-          {
-            src: ['dist/index.html'],
-            dest: './'
-          }
-        ]
-      },
-      scriptsDev: {
-        options: {
-          patterns: [
-            {
-              match: /<!--foot scripts-->(.|[\n])*<!--end foot scripts-->/m,
-              replacement: [
-                '<script src="qiniuUpload.js"></script>',
-                '<script src="onepiece.js"></script>'
-              ].join('')
-            }
-          ]
-        },
-        files: [
-          {
-            src: ['dist/index.html'],
-            dest: './'
-          }
-        ]
-      },
-      cssDev: {
-        options: {
-          patterns: [
-            {
-              match: /<!--head stylesheets-->(.|[\n])*<!--end head stylesheets-->/m,
-              replacement: [
-                '<link rel="stylesheet" href="onepiece.css"/>'
-              ].join('')
-            }
-          ]
-        },
-        files: [
-          {
-            src: ['dist/index.html'],
-            dest: './'
-          }
-        ]
-      },
     },
     ngAnnotate: {
       options: {
@@ -217,10 +158,10 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
-            src: ['app/**/*.js', '!app/deps/*'],
+            src: ['dist/app.js'],
             flatten: true,
             ext: '.js',
-            dest: 'dist/scripts/'
+            dest: 'dist/'
           }
         ]
       }
@@ -240,16 +181,23 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
-            cwd: 'app/deps/',
-            src: ['*.woff', '*.woff2'],
+            cwd: 'vendors/fonts/',
+            src: ['*'],
             dest: 'dist/'
           }
         ]
+      },
+      qiniuMap: {
+        files: {
+          'dist/qiniu.min.map': ['app/deps/qiniu.min.map']
+        }
       }
     },
     watch: {
-      files: ['app/**/*'],
-      tasks: ['dev']
+      app: {
+        files: ['app/**/*'],
+        tasks: ['dev']
+      }
     }
   });
 
@@ -259,13 +207,13 @@ module.exports = function (grunt) {
 
   grunt.registerTask('injectHTML', 'inject angular HTML templates into js', function () {
     var fs = require('fs');
-    var data = fs.readFileSync('dist/onepiece.js', {encoding: 'utf-8'});
-    grunt.log.writeln('onepiece.js loaded!');
+    var data = fs.readFileSync('dist/app.js', {encoding: 'utf-8'});
+    grunt.log.writeln('controllers.js loaded!');
     let matches = data.match(/templateUrl: '(.*)'/g);
     grunt.log.writeln('found ' + matches.length + ' templates');
     if (matches) {
       matches.forEach(function (match) {
-        let filepath = 'dist/pages/' + /templateUrl: '(.*)'/.exec(match)[1];
+        let filepath = 'dist/html/' + /templateUrl: '(.*)'/.exec(match)[1];
         try {
           fs.statSync(filepath);
           let toInject = fs.readFileSync(filepath, {encoding: 'utf-8'});
@@ -280,11 +228,22 @@ module.exports = function (grunt) {
         }
       });
     }
-    fs.writeFileSync('dist/onepiece.js', data, {encoding: 'utf-8'});
+    fs.writeFileSync('dist/app.js', data, {encoding: 'utf-8'});
   });
-  grunt.registerTask('prepare', ['clean:dist', 'copy:fonts', 'htmlmin', 'ngAnnotate']);
-  grunt.registerTask('curtain', ['injectHTML', 'clean:afterDist']);
-  grunt.registerTask('dev', ['prepare', 'concat:dev', 'replace:scriptsDev', 'replace:cssDev', 'replace:comments', 'curtain', 'copy:toServer']);
-  grunt.registerTask('deploy', ['prepare', 'cssmin', 'concat:deploy', 'replace:scriptsDeploy', 'replace:cssDeploy', 'replace:comments', 'curtain', 'babel', 'uglify', 'copy:toServer']);
-
+  grunt.registerTask('dev', [
+    'clean:dist','clean:serverRoot',
+    'htmlmin', 'concat:css',
+    'concat:controllers', 'concat:allAppJS', 'injectHTML', 'ngAnnotate',
+    'concat:vendorJS', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
+    'copy:toServer'
+  ]);
+  grunt.registerTask('deploy', [
+    'clean:dist','clean:serverRoot',
+    'htmlmin', 'concat:css',
+    'cssmin',
+    'concat:controllers', 'concat:allAppJS', 'injectHTML', 'ngAnnotate',
+    'babel', 'uglify',
+    'concat:vendorJS', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
+    'copy:toServer'
+  ]);
 };
