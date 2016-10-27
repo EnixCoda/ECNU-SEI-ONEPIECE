@@ -331,6 +331,6 @@ file-list,
   border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.ranking-table  {
-  
+.thin-input {
+  max-width: 120px;
 }

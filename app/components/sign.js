@@ -5,7 +5,7 @@ angular.module('onepiece')
         <md-checkbox class="no-margin" ng-model="user.anonymous">
           匿名
         </md-checkbox>
-        <md-input-container flex-xs class="no-margin" ng-show="!user.anonymous">
+        <md-input-container class="no-margin thin-input" ng-show="!user.anonymous">
           <label for="username">留个昵称</label>
           <input id="username" type="text" ng-model="user.username" placeholder="{{user.name}}">
         </md-input-container>
