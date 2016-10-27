@@ -312,3 +312,26 @@ file-list,
   top: 0;
   width: 100%;
 }
+
+.ranking-table {
+  width: 100%;
+  text-align: center;
+}
+
+.ranking-table .header-row {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.ranking-table th,
+.ranking-table tr td {
+  font-weight: normal;
+  height: 40px;
+}
+
+.ranking-table tr td:not(:only-child) {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.ranking-table  {
+  
+}

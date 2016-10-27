@@ -8,64 +8,64 @@
     </div>
   </md-toolbar>
   <md-dialog-content>
-    <md-list class="no-padding-top ranking-supporter">
-      <md-list-item class="center-text light-background-color">
-        <div flex="100" layout layout-align="space-between center">
-          <div>排名</div>
-          <div flex="25">用户昵称</div>
-          <div>上传</div>
-          <div>评价</div>
-          <div>总分</div>
-        </div>
-        <md-divider></md-divider>
-      </md-list-item>
-      <md-list-item ng-if="status==='CONNECTING'">
-        <div flex="100" layout layout-align="center center">
-          <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
-          </md-progress-circular>
-        </div>
-      </md-list-item>
-      <md-list-item ng-if="status==='FAIL'">
-        <div flex="100" layout layout-align="center center">
-          获取排名失败
-        </div>
-      </md-list-item>
-      <md-list-item class="center-text" ng-repeat="ranking in ranking" ng-click="">
-        <div flex="100" layout layout-align="space-between center">
-          <div>{{$index + 1}}</div>
-          <div flex="25">{{ranking.name}}</div>
-          <div>{{ranking.upload}}</div>
-          <div>{{ranking.rc}}</div>
-          <div>{{ranking.total}}</div>
-        </div>
-        <md-divider></md-divider>
-      </md-list-item>
-      <md-subheader class="md-no-sticky">
-        <span>你的排名</span>
-      </md-subheader>
-      <md-list-item ng-if="status==='CONNECTING'">
-        <div flex="100" layout layout-align="center center">
-          <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
-          </md-progress-circular>
-        </div>
-      </md-list-item>
-      <div ng-if="user.status === 'ONLINE'">
-        <md-list-item ng-if="status==='FAIL'">
-          <div flex="100" layout layout-align="center center">
-            获取排名失败
-          </div>
-        </md-list-item>
-        <md-list-item ng-if="status==='SUCCESS'" class="center-text" ng-click="">
-          <div flex="100" layout layout-align="space-between center">
-            <div>{{userRanking.pos}}</div>
-            <div flex="25">{{userRanking.name}}</div>
-            <div>{{userRanking.upload}}</div>
-            <div>{{userRanking.rc}}</div>
-            <div>{{userRanking.total}}</div>
-          </div>
-        </md-list-item>
-      </div>
-      <need-login></need-login>
-    </md-list>
+    <table class="ranking-table" cellspacing="0">
+      <thead class="header-row">
+        <th>名次</th>
+        <th>用户名</th>
+        <th>上传</th>
+        <th>评价</th>
+        <th>总分</th>
+      </thead>
+      <tbody>
+        <tr ng-if="status==='CONNECTING'">
+          <td colspan="5">
+            <div layout layout-align="center center">
+              <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
+              </md-progress-circular>
+            </div>
+          </td>
+        </tr>
+        <tr ng-if="status==='FAIL'">
+          <td colspan="5">
+            获取数据失败
+          </td>
+        </tr>
+        <tr ng-repeat="ranking in ranking">
+          <td>{{$index + 1}}</td>
+          <td>{{ranking.name}}</td>
+          <td>{{ranking.upload}}</td>
+          <td>{{ranking.rc}}</td>
+          <td>{{ranking.total}}</td>
+        </tr>
+        <tr class="header-row">
+          <td colspan="5">你的数据</td>
+        </tr>
+        <tr ng-if="status==='CONNECTING'">
+          <td colspan="5">
+            <div layout layout-align="center center">
+              <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
+              </md-progress-circular>
+            </div>
+          </td>
+        </tr>
+        <tr ng-if="user.status === 'ONLINE' && status === 'FAIL'">
+          <td colspan="5">
+            获取数据失败
+          </td>
+        </tr>
+        <tr ng-if="user.status === 'ONLINE' && status === 'SUCCESS'">
+          <td>{{userRanking.pos}}</td>
+          <td>{{userRanking.name}}</td>
+          <td>{{userRanking.upload}}</td>
+          <td>{{userRanking.rc}}</td>
+          <td>{{userRanking.total}}</td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <need-login></need-login>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </md-dialog-content>
 </md-dialog>
