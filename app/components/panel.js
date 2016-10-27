@@ -3,7 +3,7 @@ angular.module('onepiece')
     template: `
       <div class="fill-height" layout="column">
         <onepiece-header></onepiece-header>
-        <file-list></file-list>
+        <file-list flex></file-list>
       </div>
     `,
     controller: function ($scope, indexLoader) {

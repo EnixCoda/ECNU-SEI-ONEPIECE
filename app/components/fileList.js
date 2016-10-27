@@ -1,7 +1,7 @@
 angular.module('onepiece')
   .component('fileList', {
     template: `
-      <div class="protect-overflow">
+      <div class="protect-overflow flex">
         <md-list class="no-padding">
           <md-subheader class="md-no-sticky">
             <span class="lesson-route" ng-repeat="item in explorer.path" ng-click="explorer.goBack(explorer.path.length - $index - 1)">

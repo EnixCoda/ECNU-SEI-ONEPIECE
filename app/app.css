@@ -178,7 +178,6 @@ onepiece-panel,
 file-list,
 .protect-overflow {
   overflow: auto;
-  height: 100%;
 }
 
 .hide-overflow {
