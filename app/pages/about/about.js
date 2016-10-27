@@ -1,9 +1,7 @@
 angular.module('onepiece')
   .controller('AboutController',
-    function ($scope, $mdDialog) {
-      $scope.close = function () {
-        $mdDialog.hide();
-      };
+    function ($scope, $mdDialog, popper) {
+      $scope.popper = popper;
 
       var about = {
         label: '欢迎与简介',

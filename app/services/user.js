@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('user',
-    function ($http, $mdDialog, $timeout, cookie, toast) {
+    function ($http, $mdDialog, $timeout, cookie, toast, popper) {
       var user = {
         cademy: null,
         id: null,
@@ -28,7 +28,7 @@ angular.module('onepiece')
               user.status = user.statuses[2];
               cookie.saveTokenToCookie(user.token);
               toast.show(responseData['msg'], 'success', true, 'top left');
-              $mdDialog.hide();
+              popper.hide('user center');
             } else {
               user.status = user.statuses[0];
               toast.show(responseData['msg'], 'error', true);

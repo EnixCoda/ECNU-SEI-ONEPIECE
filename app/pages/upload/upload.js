@@ -5,6 +5,7 @@ angular.module('onepiece')
       $scope.explorer = explorer;
       $scope.indexLoader = indexLoader;
       $scope.uploadManager = uploadManager;
+      $scope.popper = popper;
 
       $scope.checkPath = function (e) {
         if (explorer.path.length < 3) {
@@ -23,10 +24,6 @@ angular.module('onepiece')
         $scope.canceling = true;
         $scope.QUploader.removeFile(file);
         if (file.uploadStarted) uploadManager.doneFiles.push(file);
-      };
-
-      $scope.close = function () {
-        $mdDialog.hide();
       };
 
       // TODO: scope chain is messy

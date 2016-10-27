@@ -2,10 +2,9 @@ angular.module('onepiece')
   .controller('RankingController',
     function ($scope, $mdDialog, $mdBottomSheet, $document, $http, user, toast, popper) {
       $scope.user = user;
-      $scope.showUserCenter = popper.showUserCenter;
+      $scope.popper = popper;
 
       $scope.statuses = ['STANDBY', 'CONNECTING', 'SUCCESS', 'FAIL'];
-
       $scope.status = $scope.statuses[0];
 
       function getRanking() {
@@ -33,6 +32,4 @@ angular.module('onepiece')
       }
 
       getRanking();
-
-      $scope.close = $mdDialog.hide;
     });

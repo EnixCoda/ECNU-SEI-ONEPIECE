@@ -1,9 +1,11 @@
 angular.module('onepiece')
   .controller('EditController',
-    function ($scope, $mdDialog, $resource, indexLoader, target, explorer, user, toast) {
+    function ($scope, $mdDialog, $resource, indexLoader, target, explorer, user, toast, popper) {
       var Edit = $resource('edit', {}, {});
 
       $scope.explorer = explorer;
+      $scope.popper = popper;
+
       $scope.original = [].concat(explorer.path).concat([target]).map(function (cur) {
         return cur.name;
       }).slice(1).join('/');
@@ -92,6 +94,4 @@ angular.module('onepiece')
             toast.show('无法连接到服务器', 'error');
           });
       };
-
-      $scope.close = $mdDialog.cancel;
     });

@@ -1,7 +1,8 @@
 angular.module('onepiece')
   .controller('UserCenterController',
-    function ($scope, $mdDialog, $http, user) {
+    function ($scope, $mdDialog, $http, user, popper) {
       $scope.user = user;
+      $scope.popper = popper;
 
       $scope.keyLogIn = function (e) {
         if (e.keyCode === 13) $scope.logIn();
@@ -9,6 +10,4 @@ angular.module('onepiece')
 
       $scope.logIn = user.loginWithPassword;
       $scope.logOut = user.logOut;
-
-      $scope.close = $mdDialog.hide;
     });
