@@ -7,5 +7,7 @@ angular.module('onepiece')
       comment.set('lesson', lesson);
       comment.get();
 
-      $scope.cancel = $mdDialog.cancel;
+      $scope.cancel = function () {
+      	$mdDialog.cancel;
+      };
     });

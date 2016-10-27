@@ -16,6 +16,6 @@ angular.module('onepiece')
 
       $scope.cancel = function () {
         $mdDialog.cancel();
-      }
+      };
     })
 ;

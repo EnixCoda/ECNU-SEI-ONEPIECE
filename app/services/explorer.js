@@ -115,7 +115,7 @@ angular.module('onepiece')
           if (target.isDir) {
             explorer.disableGoTo = true;
             if (e !== undefined) {
-              // user-triggered
+              // user-triggered, delay for animation
               $timeout(function () {
                 explorer.path.push(target);
                 explorer.disableGoTo = false;
@@ -124,25 +124,26 @@ angular.module('onepiece')
             } else {
               explorer.path.push(target);
               explorer.disableGoTo = false;
+              savePathToStorage();
             }
           } else {
-            savePathToStorage();
             explorer.focusedFile = target;
-            $timeout(function () {
-              popper.showFileDetail(target, e);
-            }, 0);
+            popper.showFileDetail(target, e);
+            savePathToStorage();
           }
-          savePathToStorage();
         }
       };
 
       explorer.goBack = function (step) {
-        if (explorer.path.length === 1) return false;
-        step = step || 0;
-        explorer.path.splice(Math.max(explorer.path.length - step, 1));
+        var moved = false;
+        if (explorer.path.length > 1) {
+          step = step || 0;
+          explorer.path.splice(Math.max(explorer.path.length - step, 1));
+          moved = true;
+        }
         explorer.focusedFile = null;
         savePathToStorage();
-        return true;
+        return moved;
       };
 
       explorer.copyShareLink = function (extra) {
