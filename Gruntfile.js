@@ -125,14 +125,19 @@ module.exports = function (grunt) {
         files: {
           'dist/app.js': ['dist/app.js']
         }
+      },
+      loader: {
+        files: {
+          'dist/scripts/loader.js': ['app/loader.js']
+        }
       }
     },
     replace: {
-      comments: {
+      task: {
         options: {
           patterns: [
             {
-              match: /\/\/.*/,
+              match: /to replace/,
               replacement: ''
             }
           ]
@@ -142,7 +147,7 @@ module.exports = function (grunt) {
             expand: true,
             cwd: 'dist/',
             dest: 'dist/',
-            src: ['*.js'],
+            src: ['*'],
             flatten: true
           },
         ]
@@ -205,6 +210,17 @@ module.exports = function (grunt) {
     grunt.log.writeln(target + ': ' + path + ' has ' + action);
   });
 
+  grunt.registerTask('injectLoader', 'inject loader.js into index.html', function () {
+    // run after htmlmin, concat scripts
+    var fs = require('fs');
+    var html = fs.readFileSync('dist/index.html', {encoding: 'utf-8'});
+    grunt.log.writeln('index.html loaded!');
+    var loader = fs.readFileSync('dist/scripts/loader.js', {encoding: 'utf-8'});
+    grunt.log.writeln('loader.js loaded!');
+    html = html.replace('<loader></loader>', `<script>${loader}</script>`);
+    fs.writeFileSync('dist/index.html', html, {encoding: 'utf-8'});
+  });
+
   grunt.registerTask('injectHTML', 'inject angular HTML templates into js', function () {
     var fs = require('fs');
     var data = fs.readFileSync('dist/app.js', {encoding: 'utf-8'});
@@ -230,19 +246,20 @@ module.exports = function (grunt) {
     }
     fs.writeFileSync('dist/app.js', data, {encoding: 'utf-8'});
   });
+
   grunt.registerTask('dev', [
     'clean:dist','clean:serverRoot',
     'htmlmin', 'concat:css',
-    'concat:controllers', 'concat:allAppJS', 'injectHTML', 'ngAnnotate',
+    'concat:controllers', 'concat:allAppJS', 'injectHTML', 'uglify:loader', 'injectLoader', 'ngAnnotate',
     'concat:vendorJS', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
     'copy:toServer'
   ]);
+
   grunt.registerTask('deploy', [
     'clean:dist','clean:serverRoot',
     'htmlmin', 'concat:css',
-    'cssmin',
-    'concat:controllers', 'concat:allAppJS', 'injectHTML', 'ngAnnotate',
-    'babel', 'uglify',
+    'concat:controllers', 'concat:allAppJS', 'injectHTML', 'uglify:loader', 'injectLoader', 'ngAnnotate',
+    'cssmin', 'babel', 'uglify:dist',
     'concat:vendorJS', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
     'copy:toServer'
   ]);
