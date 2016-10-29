@@ -3,12 +3,12 @@ angular.module('onepiece')
     template: `
       <md-menu md-position-mode="target-right target">
         <md-button class="md-raised top-right-menu background-white" ng-click="$mdOpenMenu($event)">
-          <md-icon class="material-icons adjust-icon-top-margin-up-3 color-grey">more_vert</md-icon>
+          <md-icon class="material-icons  color-grey">more_vert</md-icon>
         </md-button>
         <md-menu-content width="3">
           <md-menu-item ng-repeat="func in funcs">
             <md-button ng-click="func.func($event)" layout layout-align="center center">
-              <md-icon class="material-icons color-primary adjust-icon-top-margin-down">{{func.icon}}</md-icon>
+              <md-icon class="material-icons color-primary">{{func.icon}}</md-icon>
               <span flex></span>
               <p md-menu-align-target>{{func.tip}}</p>
             </md-button>

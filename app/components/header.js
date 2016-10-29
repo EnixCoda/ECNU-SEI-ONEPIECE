@@ -4,7 +4,7 @@ angular.module('onepiece')
       <div class="top-banner md-whiteframe-3dp light-background-color" layout layout-align="space-between center">
         <div>
           <md-button ng-show="explorer.path.length>1" class="md-icon-button back-btn" ng-class="explorer.path.length > 1 ? 'active':'hidden'" ng-click="explorer.goBack(1)">
-            <md-icon class="material-icons adjust-icon-top-margin-up-3">keyboard_backspace</md-icon>
+            <md-icon class="material-icons">keyboard_backspace</md-icon>
           </md-button>
         </div>
         <div layout layout-align="start center">

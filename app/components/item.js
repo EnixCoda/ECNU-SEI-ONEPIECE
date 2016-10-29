@@ -13,7 +13,7 @@ angular.module('onepiece')
             {{content.gettingDownloadLink?'正在获取下载链接':formatFileSize(content)}}
           </md-tooltip>
           <div>
-            <md-icon ng-show="!content.gettingDownloadLink" class="material-icons adjust-icon-top-margin-up-3 color-primary">file_download
+            <md-icon ng-show="!content.gettingDownloadLink" class="material-icons color-primary">file_download
             </md-icon>
           </div>
           <div layout layout-align="center center">
@@ -23,19 +23,19 @@ angular.module('onepiece')
         </md-button>
         <md-menu class="no-padding-top no-padding-bottom" ng-if="!content.isDir && explorer.path.length > 1" md-position-mode="target-right target">
           <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)" layout-align="center center">
-            <md-icon class="material-icons adjust-icon-top-margin-up-3 color-primary">more_vert</md-icon>
+            <md-icon class="material-icons  color-primary">more_vert</md-icon>
           </md-button>
           <md-menu-content width="3">
             <md-menu-item>
               <md-button ng-click="showEdit(content, $event)" ng-disabled="user.status !== 'ONLINE'">
-                <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
+                <md-icon class="material-icons color-primary">mode_edit</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>修改文件</p>
               </md-button>
             </md-menu-item>
             <md-menu-item>
               <md-button ng-click="explorer.copyShareLink(content)">
-                <md-icon class="material-icons adjust-icon-top-margin-down color-primary">share</md-icon>
+                <md-icon class="material-icons color-primary">share</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>复制链接</p>
               </md-button>
@@ -44,33 +44,33 @@ angular.module('onepiece')
         </md-menu>
         <md-menu class="no-padding-top no-padding-bottom" ng-if="content.isDir && explorer.path.length > 1" md-position-mode="target-right target">
           <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)" layout-align="center center">
-            <md-icon class="material-icons adjust-icon-top-margin-up-3 color-primary">more_vert</md-icon>
+            <md-icon class="material-icons  color-primary">more_vert</md-icon>
           </md-button>
           <md-menu-content width="3">
             <md-menu-item ng-if="content.isLesson">
               <md-button ng-click="showLessonPreview(content, $event)">
-                <md-icon class="material-icons adjust-icon-top-margin-down color-primary">feedback</md-icon>
+                <md-icon class="material-icons color-primary">feedback</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>课程评价</p>
               </md-button>
             </md-menu-item>
             <md-menu-item>
               <md-button ng-click="explorer.copyShareLink(content)">
-                <md-icon class="material-icons adjust-icon-top-margin-down color-primary">share</md-icon>
+                <md-icon class="material-icons color-primary">share</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>复制链接</p>
               </md-button>
             </md-menu-item>
             <md-menu-item ng-if="content.isLesson">
               <md-button ng-click="downloadLesson(content)" ng-disabled="user.status !== 'ONLINE'">
-                <md-icon class="material-icons adjust-icon-top-margin-down color-primary">file_download</md-icon>
+                <md-icon class="material-icons color-primary">file_download</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>打包下载</p>
               </md-button>
             </md-menu-item>
             <md-menu-item>
               <md-button ng-click="showEdit(content, $event)" ng-disabled="user.status !== 'ONLINE'">
-                <md-icon class="material-icons adjust-icon-top-margin-down color-primary">mode_edit</md-icon>
+                <md-icon class="material-icons color-primary">mode_edit</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>修改文件夹</p>
               </md-button>

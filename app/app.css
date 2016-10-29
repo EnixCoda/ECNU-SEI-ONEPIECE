@@ -135,19 +135,6 @@ body md-content {
   margin-bottom: 0 !important;
 }
 
-/* icon position */
-.adjust-icon-top-margin-down {
-  margin-top: 5px;
-}
-
-.adjust-icon-top-margin-up {
-  margin-top: -5px;
-}
-
-.adjust-icon-top-margin-up-3 {
-  margin-top: -3px;
-}
-
 /* color */
 .color-white {
   color: #fff !important;
