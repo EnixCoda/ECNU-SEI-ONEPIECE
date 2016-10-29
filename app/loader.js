@@ -16,8 +16,8 @@ function load(type, url) {
       if (request.status === 200 && request.readyState === 4) {
         var content = request.responseText;
         appendNode(type, content);
-        // localStorage.setItem('assets.' + type, content);
-        // localStorage.setItem('assets.version', version);
+        localStorage.setItem('assets.' + type, content);
+        localStorage.setItem('assets.version', version);
       }
     };
     request.onprogress = function (event) {
@@ -29,7 +29,15 @@ function load(type, url) {
 }
 
 function drawLoadProgress(type, loaded, total) {
-  // TODO
+  var loaderProgress = document.querySelector('#loader-progress');
+  progress = loaded / total;
+  width = progress * 100 + '%';
+  if (type === 'script') {
+    loaderProgress.style.width = width;
+    if (loaded === total) setTimeout(function () {
+      loaderProgress.style.display = 'none';
+    }, 200);
+  }
 }
 
 function appendNode(type, content) {
