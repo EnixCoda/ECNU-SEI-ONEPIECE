@@ -1,4 +1,4 @@
-var version = '1.0.2';
+var version = '1.0.3';
 
 load('script', '/assets/app.js');
 load('style', '/assets/app.css');
@@ -12,7 +12,6 @@ function load(type, url) {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function (event) {
       if (request.readyState === 4) {
-        console.log('in');
         var content = request.responseText;
         appendNode(type, content);
         localStorage.setItem('assets.' + type, content);

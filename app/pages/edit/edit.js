@@ -6,12 +6,11 @@ angular.module('onepiece')
       $scope.explorer = explorer;
       $scope.popper = popper;
 
-      $scope.original = [].concat(explorer.path).concat([target]).map(function (cur) {
-        return cur.name;
-      }).slice(1).join('/');
+      $scope.original = explorer.path.slice(1).concat([target]).map(cur => cur.name).join('/');
 
       $scope.statuses = ['STANDBY', 'CONNECTING', 'SUCCESS', 'FAIL'];
       $scope.getEditsStatus = $scope.statuses[0];
+      $scope.sendEditsStatus = $scope.statuses[0];
 
       function getEdit() {
         $scope.getEditsStatus = $scope.statuses[1];
@@ -80,8 +79,10 @@ angular.module('onepiece')
           data.edit = edit;
         }
         toast.show('正在提交');
+        $scope.sendEditsStatus = $scope.statuses[1];
         Edit.save(data,
           function (response) {
+            $scope.sendEditsStatus = $scope.statuses[0];
             if (response['res_code'] === 0) {
               toast.show(response['msg']);
               getEdit();
@@ -91,6 +92,7 @@ angular.module('onepiece')
             }
           },
           function () {
+            $scope.sendEditsStatus = $scope.statuses[0];
             toast.show('无法连接到服务器', 'error');
           });
       };

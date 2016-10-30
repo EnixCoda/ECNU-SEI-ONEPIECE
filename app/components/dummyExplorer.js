@@ -35,7 +35,7 @@ angular.module('onepiece')
           <md-button ng-show="explorer.newDirName" class="md-icon-button" ng-click="explorer.saveDir(explorer.newDirName)">
             <md-icon class="material-icons">done</md-icon>
           </md-button>
-          <md-button ng-show="explorer.newDirName" class="md-icon-button" ng-click="explorer.cancelCreateDir()">
+          <md-button ng-show="explorer.namingDirDepth" class="md-icon-button" ng-click="explorer.cancelCreateDir()">
             <md-icon class="material-icons">clear</md-icon>
           </md-button>
         </div>

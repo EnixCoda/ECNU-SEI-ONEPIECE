@@ -77,8 +77,7 @@
               </div>
             </div>
             <div layout layout-align="end center">
-              <md-button ng-disabled="explorer.path.length < 2" class="md-raised" ng-class="explorer.path.length < 2 ? '':'md-primary'"
-                         ng-click="submit('MOVE')">提交
+              <md-button class="md-raised" ng-class="explorer.path.length < 2 ? '':'md-primary'" ng-disabled="explorer.path.length < 2 || sendEditsStatus !== 'STANDBY'" ng-click="submit('MOVE')">提交
               </md-button>
             </div>
           </md-content>
@@ -92,7 +91,7 @@
               * - 不适用于学习用途<br>
             </div>
             <div layout layout-align="end center">
-              <md-button class="md-raised md-warn" ng-click="submit('TRASH')">提交
+              <md-button class="md-raised md-warn" ng-disabled="sendEditsStatus !== 'STANDBY'" ng-click="submit('TRASH')">提交
               </md-button>
             </div>
           </md-content>
@@ -108,7 +107,7 @@
               </md-input-container>
             </div>
             <div layout layout-align="end center">
-              <md-button ng-disabled="!newName" class="md-raised md-primary" ng-click="submit('RENAME')">提交
+              <md-button class="md-raised md-primary" ng-disabled="!newName || sendEditsStatus !== 'STANDBY'" ng-click="submit('RENAME')">提交
               </md-button>
             </div>
           </md-content>
