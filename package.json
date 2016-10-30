@@ -16,8 +16,7 @@
     "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-ng-annotate": "^2.0.2",
-    "grunt-replace": "^0.11.0",
-    "webpack": "^1.13.2"
+    "grunt-replace": "^0.11.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
