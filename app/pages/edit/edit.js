@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .controller('EditController',
-    function ($scope, $mdDialog, $resource, indexLoader, target, explorer, user, toast, popper) {
+    function ($scope, $resource, indexLoader, target, explorer, user, toast, popper) {
       var Edit = $resource('edit', {}, {});
 
       $scope.explorer = explorer;
@@ -15,8 +15,8 @@ angular.module('onepiece')
       function getEdit() {
         $scope.getEditsStatus = $scope.statuses[1];
         Edit.get({
-          path: $scope.original
-        },
+            path: $scope.original
+          },
           function (response) {
             if (response['res_code'] === 0) {
               $scope.edits = response['data']['edits'];
@@ -61,9 +61,7 @@ angular.module('onepiece')
                 toast.show('无法移动到目标路径', 'warning');
                 return;
               } else {
-                data.edit = [].concat(explorer.path).concat([target]).map(function (cur) {
-                  return cur.name;
-                }).slice(1).join('/');
+                data.edit = explorer.path.slice(1).concat([target]).map(cur => cur.name).join('/');
               }
               break;
             case 'TRASH':
@@ -80,18 +78,20 @@ angular.module('onepiece')
         }
         toast.show('正在提交');
         $scope.sendEditsStatus = $scope.statuses[1];
-        Edit.save(data,
-          function (response) {
+        Edit.save(
+          data,
+          response => {
             $scope.sendEditsStatus = $scope.statuses[0];
             if (response['res_code'] === 0) {
-              toast.show(response['msg']);
+              toast.show(response['msg'] + '，正在刷新文件目录…');
+              if (response['data']['executed'] === true) popper.hide();
               getEdit();
               indexLoader.load();
             } else {
               toast.show(response['msg'], 'error');
             }
           },
-          function () {
+          () => {
             $scope.sendEditsStatus = $scope.statuses[0];
             toast.show('无法连接到服务器', 'error');
           });

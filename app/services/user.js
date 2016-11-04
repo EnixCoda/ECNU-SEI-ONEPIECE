@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('user',
-    function ($http, $mdDialog, $timeout, cookie, toast, popper) {
+    function ($http, $timeout, cookie, toast, popper) {
       var user = {
         cademy: null,
         id: null,

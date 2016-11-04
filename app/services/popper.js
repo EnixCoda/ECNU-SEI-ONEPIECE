@@ -6,7 +6,7 @@ angular.module('onepiece')
       popper.hide = target => {
         (!target || target === status) && $mdDialog.hide();
       };
-      popper.showUserCenter = function (e){
+      popper.showUserCenter = function (e) {
         status = 'user center';
         $mdDialog.show({
           controller: 'UserCenterController',

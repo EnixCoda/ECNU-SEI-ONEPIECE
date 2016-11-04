@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .controller('UploadController',
-    function ($scope, $mdDialog, $http, uploadManager, indexLoader, user, explorer, toast, popper, SJAX) {
+    function ($scope,  $http, uploadManager, indexLoader, user, explorer, toast, popper, SJAX) {
       $scope.user = user;
       $scope.explorer = explorer;
       $scope.indexLoader = indexLoader;

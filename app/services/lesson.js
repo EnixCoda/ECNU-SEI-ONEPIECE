@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('lessonLoader',
-    function() {
+    function () {
       var lessonLoader = {
         lessons: []
       };

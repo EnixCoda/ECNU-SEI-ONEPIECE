@@ -1,13 +1,10 @@
 angular.module('onepiece')
   .factory('explorer',
-    function ($timeout, $location, $document, $compile, $rootScope, popper, toast) {
+    function ($timeout, $window, $location, $document, $compile, $rootScope, popper, toast) {
       function targetInDirectory(target, dir) {
         if (dir.isDir) {
-          for (var i = 0; i < dir.content.length; i++) {
-            if (dir.content[i].name === target.name) {
-              return i;
-            }
-          }
+          let i = dir.content.map(cur => cur.name).indexOf(target.name);
+          return i > -1 ? i : false;
         }
         return false;
       }
@@ -17,9 +14,7 @@ angular.module('onepiece')
           .slice(1)
           .concat(explorer.focusedFile ? [explorer.focusedFile]:[])
           .concat(extra ? [extra] : [])
-          .map(function (cur) {
-          return cur.name;
-        });
+          .map(cur => cur.name);
       }
 
       function savePathToStorage () {
@@ -28,16 +23,14 @@ angular.module('onepiece')
 
       function loadPath(rawPath) {
         if (rawPath) {
-          var path = rawPath.map(function (cur) {
+          var path = rawPath.map(cur => {
             return {
               name: cur,
               isDir: true
             };
           });
-          while (path.length) {
-            explorer.goTo(path.shift());
-          }
-          return explorer.path.slice(-1)[0].name === rawPath.slice(-1)[0] || explorer.focusedFile && explorer.focusedFile.name === rawPath.slice(-1)[0];
+          while (path.length) explorer.goTo(path.shift());
+          return explorer.path.slice(-1)[0].name === rawPath.slice(-1)[0] || explorer.focusedFile;
         }
       }
 
@@ -52,15 +45,17 @@ angular.module('onepiece')
         explorer.namingDir = false;
         explorer.namingDirDepth = 0;
 
-        if (!loadPath($location.path().split('/')))
-          if (!loadPath(JSON.parse(sessionStorage.getItem('lastPath'))))
+        if (!loadPath($location.path().split('/'))) {
+          if (!loadPath(JSON.parse(sessionStorage.getItem('lastPath')))) {
             explorer.goBack(Infinity);
+          }
+        }
         $location.url('/');
 
         if (!localStorage.getItem('notFirstTime')) {
-          localStorage.setItem('notFirstTime', 'yes');
+          localStorage.setItem('notFirstTime', new Date());
           toast.show('初次访问?正在为你读取使用帮助...', undefined, true);
-          $timeout(popper.showAbout, 4000);
+          $timeout(popper.showAbout, 3000);
         }
       };
 
@@ -83,27 +78,20 @@ angular.module('onepiece')
 
       explorer.saveDir = function (name) {
         var newDir = {
-          name: name,
+          name,
           content: [],
           isDir: true
         };
-        if (explorer.path[explorer.path.length - 1] === 0) {
-          explorer.path.pop();
-        }
         explorer.path[explorer.path.length - 1].content.push(newDir);
-        explorer.path.push(newDir);
-        explorer.namingDirDepth = 0;
-        explorer.newDirName = '';
-        explorer.nextDir = undefined;
+        explorer.goTo(newDir);
+        explorer.cancelCreateDir();
       };
 
       explorer.cancelCreateDir = function () {
-        if (explorer.namingDir) {
-          explorer.namingDirDepth = 0;
-          explorer.newDirName = '';
-          explorer.namingDir = false;
-          explorer.nextDir = undefined;
-        }
+        explorer.namingDirDepth = 0;
+        explorer.newDirName = '';
+        explorer.namingDir = false;
+        explorer.nextDir = undefined;
       };
 
       explorer.disableGoTo = false; // prevent error which occurs when folder double clicked
@@ -134,10 +122,9 @@ angular.module('onepiece')
         }
       };
 
-      explorer.goBack = function (step) {
+      explorer.goBack = (step = 0) => {
         var moved = false;
         if (explorer.path.length > 1) {
-          step = step || 0;
           explorer.path.splice(Math.max(explorer.path.length - step, 1));
           moved = true;
         }
@@ -152,19 +139,19 @@ angular.module('onepiece')
         var body = $document.find('body').eq(0);
         body.append($compile(copyElement)($rootScope));
 
-        var ngClipboardElement = angular.element(document.getElementById('ngClipboardCopyId'));
-        var range = document.createRange();
+        var ngClipboardElement = angular.element($document.getElementById('ngClipboardCopyId'));
+        var range = $document.createRange();
         range.selectNode(ngClipboardElement[0]);
 
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
+        $window.getSelection().removeAllRanges();
+        $window.getSelection().addRange(range);
 
-        if (document.execCommand('copy')) {
+        if ($document.execCommand('copy')) {
           toast.show('链接已复制,快去粘贴吧!');
         } else {
-          window.prompt("自动复制链接失败,请手动复制", link);
+          $window.prompt("自动复制链接失败,请手动复制", link);
         }
-        window.getSelection().removeAllRanges();
+        $window.getSelection().removeAllRanges();
         copyElement.remove();
       };
 

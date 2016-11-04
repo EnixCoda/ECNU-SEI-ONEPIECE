@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .controller('UserCenterController',
-    function ($scope, $mdDialog, $http, user, popper) {
+    function ($scope, $http, user, popper) {
       $scope.user = user;
       $scope.popper = popper;
 

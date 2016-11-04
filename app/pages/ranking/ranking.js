@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .controller('RankingController',
-    function ($scope, $mdDialog, $mdBottomSheet, $document, $http, user, toast, popper) {
+    function ($scope, $mdBottomSheet, $document, $http, user, toast, popper) {
       $scope.user = user;
       $scope.popper = popper;
 

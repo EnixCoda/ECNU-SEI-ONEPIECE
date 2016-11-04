@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .controller('LessonPreviewController',
-    function ($scope, $mdDialog, $http, comment, lesson, popper) {
+    function ($scope,  $http, comment, lesson, popper) {
       $scope.comment = comment;
       $scope.lesson = lesson;
       $scope.popper = popper;

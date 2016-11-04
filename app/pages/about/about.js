@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .controller('AboutController',
-    function ($scope, $mdDialog, popper) {
+    function ($scope, popper) {
       $scope.popper = popper;
 
       var about = {
