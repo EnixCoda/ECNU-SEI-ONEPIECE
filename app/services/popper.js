@@ -1,8 +1,10 @@
 angular.module('onepiece')
   .factory('popper',
     function ($mdDialog, $mdMedia, $injector) {
-      var popper = {};
       var status = null;
+
+      var popper = {};
+
       popper.hide = target => {
         (!target || target === status) && $mdDialog.hide();
       };
