@@ -51,7 +51,6 @@ angular.module('onepiece')
       $scope.submit = function (type, edit) {
         var data = {
           type: type,
-          token: user.token,
           original: $scope.original
         };
         if (!edit) {
@@ -83,10 +82,10 @@ angular.module('onepiece')
           response => {
             $scope.sendEditsStatus = $scope.statuses[0];
             if (response['res_code'] === 0) {
-              toast.show(response['msg'] + '，正在刷新文件目录…');
-              if (response['data']['executed'] === true) popper.hide();
               getEdit();
+              toast.show(response['msg'] + '，正在刷新文件目录…');
               indexLoader.load();
+              if (response['data'] && response['data']['executed'] === true) popper.hide();
             } else {
               toast.show(response['msg'], 'error');
             }

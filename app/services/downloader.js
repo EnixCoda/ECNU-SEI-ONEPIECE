@@ -39,9 +39,6 @@ angular.module('onepiece')
         if (file.gettingPreviewLink) return;
         file.gettingPreviewLink = true;
         var data = {};
-        if (user.status === 'ONLINE') {
-          data.token = user.token;
-        }
         DownloadServer.previewFile({
             type: 'file',
             key: file.id.toString(),
@@ -62,12 +59,10 @@ angular.module('onepiece')
           });
       };
       Downloader.downloadLesson = function (lesson) {
-        if (!user.token) return;
         DownloadServer.downloadLesson({
             type: 'lesson',
             key: lesson.name,
             action: 'download',
-            token: user.token
           },
           function (response) {
             if (response['res_code'] === 0) {

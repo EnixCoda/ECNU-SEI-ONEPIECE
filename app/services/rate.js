@@ -37,8 +37,7 @@ angular.module('onepiece')
             type: 'file',
             key: rateManager.file.id
           }, {
-            score: score,
-            token: user.token
+            score: score
           },
           function (response) {
             if (response['res_code'] === 0) {

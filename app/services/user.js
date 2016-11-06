@@ -5,27 +5,29 @@ angular.module('onepiece')
         cademy: null,
         id: null,
         name: null,
-        anonymous: false,
-        token: cookie.loadTokenFromCookie()
+        anonymous: false
       };
       user.statuses = ['OFFLINE', 'CONNECTING', 'ONLINE'];
       user.status = user.statuses[0];
-      user.logOut = function () {
+      user.logOut = () => {
         user.status = user.statuses[0];
+        user.cademy = null;
+        user.id = null;
+        user.name = null;
         cookie.clearTokenFromCookie();
         toast.show('您已登出');
       };
-      user.login = function (data) {
+      user.login = data => {
         user.status = user.statuses[1];
         $http.post('login', data)
-          .then(function (response) {
+          .then(response => {
             var responseData = response.data;
             if (responseData['res_code'] === 0) {
               var userData = responseData['data'];
-              user.token = userData['token'];
+              user.status = user.statuses[2];
               user.name = userData['username'];
               user.cademy = userData['cademy'];
-              user.status = user.statuses[2];
+              user.token = userData['token'];
               cookie.saveTokenToCookie(user.token);
               toast.show(responseData['msg'], 'success', true, 'top left');
               popper.hide('user center');
@@ -33,12 +35,12 @@ angular.module('onepiece')
               user.status = user.statuses[0];
               toast.show(responseData['msg'], 'error', true);
             }
-          }, function () {
+          }, () => {
             user.status = user.statuses[0];
             toast.show('无法连接到服务器', 'error');
           });
       };
-      user.loginWithPassword = function () {
+      user.loginWithPassword = () => {
         if (!user.id || !user.password) return;
         var data = {
           id: user.id,
@@ -46,14 +48,11 @@ angular.module('onepiece')
         };
         user.login(data);
       };
-      user.loginWithToken = function () {
-        if (!user.token) return;
-        var data = {
-          token: user.token
-        };
-        user.login(data);
-      };
-      user.onFinish = function () {
+      user.loginWithToken = () => {
+        var token = cookie.loadTokenFromCookie();
+        if (token) {
+          user.login();
+        }
       };
 
       return user;

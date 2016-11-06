@@ -41,8 +41,7 @@ angular.module('onepiece')
             key: commentManager.key,
           }, {
             username: user.anonymous ? '匿名' : user.username || user.name,
-            comment: commentManager.comment,
-            token: user.token
+            comment: commentManager.comment
           },
           function (response) {
             if (response['res_code'] === 0) {
@@ -60,8 +59,7 @@ angular.module('onepiece')
         Comment.delete({
             type: commentManager.type,
             key: commentManager.key,
-            id: commentId,
-            token: user.token
+            id: commentId
           },
           function (response) {
             if (response['res_code'] === 0) {

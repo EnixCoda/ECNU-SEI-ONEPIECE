@@ -10,9 +10,6 @@ angular.module('onepiece')
       function getRanking() {
         $scope.status = $scope.statuses[1];
         var data = {};
-        if (user.status === 'ONLINE') {
-          data.token = user.token;
-        }
         $http.get('ranking', {
           params: data
         })

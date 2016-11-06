@@ -135,18 +135,19 @@ angular.module('onepiece')
 
       explorer.copyShareLink = function (extra) {
         var link = $location.protocol() + '://' + $location.host() + ($location.port() === 80 ? '' : ':' + $location.port()) + '/#/' + generatePathURIArr(extra).join('/');
+        var document = $window.document;
         var copyElement = angular.element('<span id="ngClipboardCopyId">'+link+'</span>');
         var body = $document.find('body').eq(0);
         body.append($compile(copyElement)($rootScope));
 
-        var ngClipboardElement = angular.element($document.getElementById('ngClipboardCopyId'));
-        var range = $document.createRange();
+        var ngClipboardElement = angular.element(document.getElementById('ngClipboardCopyId'));
+        var range = document.createRange();
         range.selectNode(ngClipboardElement[0]);
 
         $window.getSelection().removeAllRanges();
         $window.getSelection().addRange(range);
 
-        if ($document.execCommand('copy')) {
+        if (document.execCommand('copy')) {
           toast.show('链接已复制,快去粘贴吧!');
         } else {
           $window.prompt("自动复制链接失败,请手动复制", link);

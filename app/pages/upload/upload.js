@@ -33,7 +33,6 @@ angular.module('onepiece')
         // uptoken_url: 'uploadToken',
         uptoken_func: function (file) {
           return SJAX.run('GET', 'uploadToken', {
-            token: user.token,
             key: file.key
           }, function (responseText) {
             var res = JSON.parse(responseText);
@@ -81,7 +80,6 @@ angular.module('onepiece')
           FileUploaded: function (up, file, info) {
             info = JSON.parse(info);
             var data = {
-              token: user.token,
               fileId: info['etag'],
               filePath: info['key']
             };
