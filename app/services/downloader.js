@@ -48,7 +48,7 @@ angular.module('onepiece')
             file.gettingPreviewLink = false;
             if (response['res_code'] === 0) {
               var promptedWindow = window.open(response['data']['previewLink'], '_blank');
-              if (!promptedWindow) alert('预览窗口加载失败');
+              if (!promptedWindow) alert('因浏览器阻止无法打开预览窗口，请尝试下载');
             } else {
               toast.show(response['msg'], 'error');
             }
@@ -62,7 +62,7 @@ angular.module('onepiece')
         DownloadServer.downloadLesson({
             type: 'lesson',
             key: lesson.name,
-            action: 'download',
+            action: 'download'
           },
           function (response) {
             if (response['res_code'] === 0) {
