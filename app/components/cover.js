@@ -8,6 +8,7 @@ angular.module('onepiece')
           <span>读取文件列表失败</span>
         </div>
       </div>
+      <i class="material-icons invisible">stars</i><!--for earlier icon set loading-->
     `,
     controller: function ($scope, indexLoader) {
       $scope.indexLoader = indexLoader;

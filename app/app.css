@@ -321,3 +321,7 @@ file-list,
 .thin-input {
   max-width: 120px;
 }
+
+.invisible {
+  opacity: 0;
+}
