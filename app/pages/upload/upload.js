@@ -83,12 +83,12 @@ angular.module('onepiece')
               fileId: info['etag'],
               filePath: info['key']
             };
-            $http.post('uploaded', data);
+            $http.post('uploaded', data)
+                .then(() => indexLoader.load());
             up.removeFile(file);
             file.success = true;
             uploadManager.doneFiles.push(file);
             uploadManager.uploadingCount--;
-            indexLoader.load();
             $scope.$apply();
           },
           Error: function (up, err, errTip) {
