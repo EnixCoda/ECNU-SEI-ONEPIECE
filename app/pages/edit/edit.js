@@ -14,10 +14,9 @@ angular.module('onepiece')
 
       function getEdit() {
         $scope.getEditsStatus = $scope.statuses[1];
-        Edit.get({
-            path: $scope.original
-          },
-          function (response) {
+        Edit.get(
+          { path: $scope.original },
+          response => {
             if (response['res_code'] === 0) {
               $scope.edits = response['data']['edits'];
               $scope.getEditsStatus = $scope.statuses[2];
@@ -26,7 +25,7 @@ angular.module('onepiece')
               $scope.getEditsStatus = $scope.statuses[3];
             }
           },
-          function () {
+          () => {
             toast.show('无法连接到服务器', 'error');
             $scope.getEditsStatus = $scope.statuses[3];
           });
@@ -35,11 +34,11 @@ angular.module('onepiece')
       getEdit();
 
       $scope.actionName = '移动';
-      $scope.nameAction = function (actionName) {
+      $scope.nameAction = actionName => {
         $scope.actionName = actionName;
       };
 
-      $scope.namingDirKeyPress = function (e) {
+      $scope.namingDirKeyPress = (e) => {
         if (e.keyCode === 13 && explorer.newDirName) {
           explorer.saveDir(explorer.newDirName);
         }
@@ -48,7 +47,7 @@ angular.module('onepiece')
       // RENAME
       $scope.newName = '';
 
-      $scope.submit = function (type, edit) {
+      $scope.submit = (type, edit) => {
         var data = {
           type: type,
           original: $scope.original

@@ -29,21 +29,21 @@
             <md-list-item ng-repeat="move in edits.MOVE">
               <p>移动为"{{move[0]}}"</p>
               <md-button class="md-raised md-secondary md-icon-button" ng-click="submit('MOVE', move[0])">
-                {{move[1]}}
+                {{move[1]}}/{{edits.LIMIT}}
                 <md-tooltip md-direction="left">+1</md-tooltip>
               </md-button>
             </md-list-item>
             <md-list-item ng-repeat="rename in edits.RENAME">
               <p>重命名为"{{rename[0]}}"</p>
               <md-button class="md-raised md-secondary md-icon-button" ng-click="submit('RENAME', rename[0])">
-                {{rename[1]}}
+                {{rename[1]}}/{{edits.LIMIT}}
                 <md-tooltip md-direction="left">+1</md-tooltip>
               </md-button>
             </md-list-item>
             <md-list-item ng-if="edits.TRASH > 0">
               <p>删除</p>
               <md-button class="md-raised md-secondary md-icon-button" ng-click="submit('TRASH', '')">
-                {{edits.TRASH}}
+                {{edits.TRASH}}/{{edits.LIMIT}}
                 <md-tooltip md-direction="left">+1</md-tooltip>
               </md-button>
             </md-list-item>
