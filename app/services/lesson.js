@@ -9,10 +9,10 @@ angular.module('onepiece')
         var itemLv1, itemLv2;
         for (var i = 0; i < index.content.length; i++) {
           itemLv1 = index.content[i];
-          if (!itemLv1.isDir) continue;
+          if (!itemLv1.content) continue;
           for (var j = 0; j < itemLv1.content.length; j++) {
             itemLv2 = itemLv1.content[j];
-            if (itemLv2.isDir) {
+            if (itemLv2.content) {
               this.lessons.push({
                 name: itemLv2.name,
                 path: [itemLv1, itemLv2]

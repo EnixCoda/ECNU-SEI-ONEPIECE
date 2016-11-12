@@ -325,3 +325,10 @@ file-list,
 .invisible {
   opacity: 0;
 }
+
+.uploader {
+  white-space: nowrap;
+  font-size: 12px;
+  color: #999;
+  font-weight: 100;
+}

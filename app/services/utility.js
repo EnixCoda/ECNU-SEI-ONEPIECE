@@ -8,7 +8,7 @@ angular.module('onepiece')
       };
       Utility.getFileColor = function (file) {
         var filename = file.name.toLowerCase();
-        if (file.isDir) return {color: '#00bcd4'};
+        if (file.content) return {color: '#00bcd4'};
         if (filename.indexOf('.') > -1 && filename[-1] !== '.') {
           var color;
           var fileType = filename.substr(filename.lastIndexOf('.') + 1);
@@ -114,7 +114,7 @@ angular.module('onepiece')
         return sizeBody + tail;
       };
       Utility.getContentNameStyle = function (content) {
-        if (content.isDir) {
+        if (content.content) {
           return '';
         } else {
           if (content.score > Utility.config.GOOD_FILE_SCORE) return 'good-file';

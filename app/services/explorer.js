@@ -2,7 +2,7 @@ angular.module('onepiece')
   .factory('explorer',
     function ($timeout, $window, $location, $document, $compile, $rootScope, popper, toast) {
       function targetInDirectory(target, dir) {
-        if (dir.isDir) {
+        if (dir.content) {
           let i = dir.content.map(cur => cur.name).indexOf(target.name);
           return i > -1 ? i : false;
         }
@@ -26,7 +26,7 @@ angular.module('onepiece')
           var path = rawPath.map(cur => {
             return {
               name: cur,
-              isDir: true
+              content: []
             };
           });
           while (path.length) explorer.goTo(path.shift());
@@ -79,8 +79,7 @@ angular.module('onepiece')
       explorer.saveDir = function (name) {
         var newDir = {
           name,
-          content: [],
-          isDir: true
+          content: []
         };
         explorer.path[explorer.path.length - 1].content.push(newDir);
         explorer.goTo(newDir);
@@ -100,7 +99,7 @@ angular.module('onepiece')
         var pos = targetInDirectory(target, explorer.path.slice(-1)[0]);
         if (pos !== false) {
           target = explorer.path.slice(-1)[0].content[pos];
-          if (target.isDir) {
+          if (target.content) {
             explorer.disableGoTo = true;
             if (e !== undefined) {
               // user-triggered, delay for animation

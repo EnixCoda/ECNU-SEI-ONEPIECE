@@ -7,7 +7,7 @@ angular.module('onepiece')
             <md-option ng-value="dir">{{dir.name}}</md-option>
           </md-select>
           <md-select aria-label="locator" ng-if="$index > 0" ng-model="explorer.path[$index]" ng-change="explorer.cutTail($index)">
-            <md-option ng-repeat="content in explorer.path[$index - 1].content" ng-if="content.isDir" ng-value="content">
+            <md-option ng-repeat="content in explorer.path[$index - 1].content" ng-if="content.content" ng-value="content">
               {{content.name}}
             </md-option>
             <md-option ng-if="$index > 1" ng-click="explorer.createDir($index)" ng-value="0">
@@ -17,7 +17,7 @@ angular.module('onepiece')
         </md-input-container>
         <md-input-container class="locator-input-container" ng-show="!explorer.namingDirDepth" aria-label="locator">
           <md-select aria-label="locator" ng-model="explorer.nextDir" ng-change="explorer.pushNext()">
-            <md-option ng-repeat="item in explorer.path[explorer.path.length - 1].content" ng-if="item.isDir" ng-value="item">
+            <md-option ng-repeat="item in explorer.path[explorer.path.length - 1].content" ng-if="item.content" ng-value="item">
               {{item.name}}
             </md-option>
             <md-option ng-if="explorer.path.length > 1" ng-click="explorer.createDir(explorer.path.length)" ng-value="0">

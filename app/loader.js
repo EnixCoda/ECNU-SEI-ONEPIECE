@@ -1,6 +1,6 @@
 (function () {
-  var debug = false;
-  var version = '1.0.8';
+  var debug = true;
+  var version = '1.0.9';
 
   load('script', '/assets/app.js');
   load('style', '/assets/app.css');

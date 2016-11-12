@@ -3,12 +3,12 @@ angular.module('onepiece')
     template: `
       <md-list-item ng-click="explorer.goTo(content, $event)">
         <md-icon class="material-icons no-margin" ng-style="getFileColor(content)">
-          {{content.isDir ? 'folder' : getFileIcon(content)}}
+          {{content.content ? 'folder' : getFileIcon(content)}}
         </md-icon>
         <div flex class="left-offset-10 file-name-in-list" ng-class="getContentNameStyle(content)">
           <p class="no-margin">{{content.name}}</p>
         </div>
-        <md-button ng-if="!content.isDir && explorer.path.length > 1" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
+        <md-button ng-if="!content.content && explorer.path.length > 1" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
           <md-tooltip md-direction="left">
             {{content.gettingDownloadLink?'正在获取下载链接':formatFileSize(content)}}
           </md-tooltip>
@@ -21,7 +21,7 @@ angular.module('onepiece')
             </md-progress-circular>
           </div>
         </md-button>
-        <md-menu class="no-padding-top no-padding-bottom" ng-if="!content.isDir && explorer.path.length > 1" md-position-mode="target-right target">
+        <md-menu class="no-padding-top no-padding-bottom" ng-if="!content.content && explorer.path.length > 1" md-position-mode="target-right target">
           <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)" layout-align="center center">
             <md-icon class="material-icons  color-primary">more_vert</md-icon>
           </md-button>
@@ -42,7 +42,7 @@ angular.module('onepiece')
             </md-menu-item>
           </md-menu-content>
         </md-menu>
-        <md-menu class="no-padding-top no-padding-bottom" ng-if="content.isDir && explorer.path.length > 1" md-position-mode="target-right target">
+        <md-menu class="no-padding-top no-padding-bottom" ng-if="content.content && explorer.path.length > 1" md-position-mode="target-right target">
           <md-button class="md-icon-button" ng-click="openNestedMenu($mdOpenMenu, $event)" layout-align="center center">
             <md-icon class="material-icons  color-primary">more_vert</md-icon>
           </md-button>
