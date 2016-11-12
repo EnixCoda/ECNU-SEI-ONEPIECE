@@ -62,8 +62,7 @@
             </md-list-item>
           </md-list>
         </div>
-        <div ng-show="QUploader.files.length>0" class="upload-footer" layout layout-align="space-between center">
-          <sign></sign>
+        <div ng-show="QUploader.files.length>0" class="upload-footer" layout layout-align="end center">
           <md-button class="md-raised" ng-class="path.length<3?'':'md-primary'" ng-click="startUpload()" ng-disabled="uploadingCount>0">开始上传
           </md-button>
         </div>
