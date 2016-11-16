@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('downloader',
-    function ($resource, user, toast) {
+    function ($resource, $http, user, toast) {
       var DownloadServer = $resource('/:type/:key/:action', {}, {
         downloadFile: {
           method: 'GET'
@@ -36,27 +36,52 @@ angular.module('onepiece')
           });
       };
       Downloader.previewFile = function (file) {
-        if (file.gettingPreviewLink) return;
+        if (file.gettingPreviewLink || file.preview) return;
         file.gettingPreviewLink = true;
         var data = {};
-        DownloadServer.previewFile({
+        return DownloadServer.previewFile({
             type: 'file',
             key: file.id.toString(),
             action: 'preview'
-          },
-          function (response) {
+          })
+          .$promise
+          .then(response => {
             file.gettingPreviewLink = false;
             if (response['res_code'] === 0) {
-              var promptedWindow = window.open(response['data']['previewLink'], '_blank');
-              if (!promptedWindow) alert('因浏览器阻止无法打开预览窗口，请尝试下载');
+              file.preview = {
+                multiPage: response.data.multiPage,
+                previewLink: response.data.previewLink
+              };
+              if (file.preview.multiPage) {
+                file.preview.pageNumber = 1;
+                file.preview.raws = [];
+              }
             } else {
               toast.show(response['msg'], 'error');
             }
-          },
-          function () {
+            return null;
+          }, () => {
             file.gettingPreviewLink = false;
             toast.show('无法连接到服务器', 'error')
+            throw false;
           });
+      };
+      Downloader.previewFilePageUp = function (file) {
+        if (file && file.preview && file.preview.multiPage && file.preview.pageNumber > 0) {
+          file.preview.previewLink = file.preview.previewLink.replace(/page_number=\d+/, 'page_number=' + --file.preview.pageNumber); 
+        }
+      };
+      Downloader.previewFilePageDown = function (file) {
+        if (file && file.preview && file.preview.multiPage && file.preview.pageNumber < 5) {
+          file.preview.previewLink = file.preview.previewLink.replace(/page_number=\d+/, 'page_number=' + ++file.preview.pageNumber);
+        }
+      };
+      Downloader.fetchPreviewPage = (file) => {
+        return $http({
+          responseType: 'arraybuffer',
+          method: 'get',
+          url: file.preview.previewLink
+        });
       };
       Downloader.downloadLesson = function (lesson) {
         DownloadServer.downloadLesson({

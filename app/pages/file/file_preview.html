@@ -14,19 +14,19 @@
       <div class="no-padding" layout layout-align="start center">
         <rate file="file"></rate>
         <div flex></div>
-        <md-button class="md-icon-button file-action-button" ng-click="explorer.copyShareLink()" layout layout-align="center center">
-          <md-tooltip md-direction="bottom">分享链接</md-tooltip>
-          <div>
-            <md-icon class="material-icons">share</md-icon>
-          </div>
-        </md-button>
-        <md-button class="md-icon-button file-action-button" ng-click="previewFile(file)" ng-if="previewable(file)" layout layout-align="center center">
-          <md-tooltip md-direction="bottom">预览</md-tooltip>
+        <md-button ng-if="previewable(file)" class="md-icon-button file-action-button" ng-click="previewFile(file)" ng-disabled="user.status !== 'ONLINE'" layout layout-align="center center">
+          <md-tooltip md-direction="bottom" ng-bind="user.status === 'ONLINE' ? '预览' : '登陆后可预览'"></md-tooltip>
           <div>
             <md-icon ng-show="!file.gettingPreviewLink" class="material-icons ">visibility</md-icon>
           </div>
           <div layout layout-align="center center">
             <md-progress-circular ng-show="file.gettingPreviewLink" class="color-white" md-mode="indeterminate" md-diameter="20"></md-progress-circular>
+          </div>
+        </md-button>
+        <md-button class="md-icon-button file-action-button" ng-click="explorer.copyShareLink()" layout layout-align="center center">
+          <md-tooltip md-direction="bottom">分享链接</md-tooltip>
+          <div>
+            <md-icon class="material-icons">share</md-icon>
           </div>
         </md-button>
         <md-button class="md-icon-button file-action-button" ng-click="downloadFile(file)" ng-if="explorer.path.length > 1" layout layout-align="center center">

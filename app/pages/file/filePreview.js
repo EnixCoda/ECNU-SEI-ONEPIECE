@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .controller('FilePreviewController',
-    function ($scope, $http, file, user, comment, explorer, rate, utility, downloader, popper) {
+    function ($scope, file, user, comment, explorer, rate, utility, downloader, popper) {
       $scope.file = file;
       $scope.user = user;
       $scope.explorer = explorer;
@@ -8,11 +8,12 @@ angular.module('onepiece')
       $scope.formatFileSize = utility.formatFileSize;
       $scope.previewable = utility.previewable;
       $scope.downloadFile = downloader.downloadFile;
-      $scope.previewFile = downloader.previewFile;
+      $scope.previewFile = ($event) => {
+        popper.showPreviewPanel($event, file);
+      };
 
       rate.set(file);
       rate.get();
       comment.set('file', file);
       comment.get();
-    })
-;
+    });

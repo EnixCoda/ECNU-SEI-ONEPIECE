@@ -332,3 +332,29 @@ file-list,
   color: #999;
   font-weight: 500;
 }
+
+.panel-preview {
+  width: 100%;
+  height: 100%;
+}
+
+.panel-body-guard {
+  width: 100%;
+  height: 100%;
+}
+
+.panel-body {
+  margin: auto;
+  width: 100%;
+  max-width: 600px;
+  height: 100%;
+  outline: none;
+}
+
+.panel-body .pager {
+  width: 100%;
+}
+
+.panel-body .page-number {
+  color: #fff;
+}

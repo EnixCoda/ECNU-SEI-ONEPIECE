@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('popper',
-    function ($mdDialog, $mdMedia, $injector) {
+    function ($mdDialog, $mdPanel, $mdMedia, $injector) {
       var status = null;
 
       var popper = {};
@@ -8,7 +8,7 @@ angular.module('onepiece')
       popper.hide = target => {
         (!target || target === status) && $mdDialog.hide();
       };
-      popper.showUserCenter = function (e) {
+      popper.showUserCenter = (e) => {
         status = 'user center';
         $mdDialog.show({
           controller: 'UserCenterController',
@@ -20,7 +20,7 @@ angular.module('onepiece')
           onRemoving: () => status = null
         });
       };
-      popper.showUpload = function (e) {
+      popper.showUpload = (e) => {
         status = 'upload';
         $mdDialog.show({
           controller: 'UploadController',
@@ -30,13 +30,13 @@ angular.module('onepiece')
           clickOutsideToClose: false,
           preserveScope: true,
           locals: {},
-          onComplete: function ($scope) {
+          onComplete: ($scope) => {
             $scope.QUploader = Qiniu.uploader($scope.QUploaderConfig);
           },
           onRemoving: () => status = null
         });
       };
-      popper.showRanking = function (e) {
+      popper.showRanking = (e) => {
         status = 'ranking';
         $mdDialog.show({
           controller: 'RankingController',
@@ -48,7 +48,7 @@ angular.module('onepiece')
           onRemoving: () => status = null
         });
       };
-      popper.showAbout = function (e) {
+      popper.showAbout = (e) => {
         status = 'about';
         $mdDialog.show({
           controller: 'AboutController',
@@ -59,7 +59,7 @@ angular.module('onepiece')
           onRemoving: () => status = null
         });
       };
-      popper.showFileDetail = function (file, e) {
+      popper.showFileDetail = (file, e) => {
         status = 'file detail';
         $mdDialog.show({
           controller: 'FilePreviewController',
@@ -70,14 +70,14 @@ angular.module('onepiece')
           },
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
-          onRemoving: function (/* element, promise */) {
+          onRemoving: (/* element, promise */) => {
             // use $injector to avoid bi-direction dep
             $injector.get('explorer').goBack();
             status = null;
           }
         });
       };
-      popper.showLessonPreview = function (lesson, e) {
+      popper.showLessonPreview = (lesson, e) => {
         status = 'lesson preview';
         $mdDialog.show({
           controller: 'LessonPreviewController',
@@ -91,7 +91,7 @@ angular.module('onepiece')
           onRemoving: () => status = null
         });
       };
-      popper.showEdit = function (item, e) {
+      popper.showEdit = (item, e) => {
         status = 'edit';
         $mdDialog.show({
           controller: 'EditController',
@@ -104,6 +104,24 @@ angular.module('onepiece')
           clickOutsideToClose: true,
           onRemoving: () => status = null
         });
+      };
+      popper.showPreviewPanel = ($e, file) => {
+        var config = {
+          attachTo: angular.element(document.body),
+          controller: 'PreviewPanelController',
+          locals: {
+            file
+          },
+          templateUrl: 'preview.html',
+          panelClass: 'panel-preview',
+          position: $mdPanel.newPanelPosition().center(),
+          focusOnOpen: true,
+          zIndex: 128,
+          disableParentScroll: false,
+          hasBackdrop: true,
+          trapFocus: true,
+        };
+        $mdPanel.open(config);
       };
 
       return popper;

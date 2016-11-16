@@ -1,0 +1,14 @@
+<div class="panel-body-guard" ng-click="close()">
+  <div class="panel-body" layout="column" layout-align="center center">
+    <div ng-if="file.preview.multiPage" class="pager" layout layout-align="space-between center">
+      <md-button class="md-raised" ng-disabled="file.preview.pageNumber === 1" ng-click="prevPage($event)">上一页</md-button>
+      <span class="page-number" ng-bind="file.preview.pageNumber"></span>
+      <md-button class="md-raised" ng-disabled="file.preview.pageNumber > 4 || lastPage() || overflow()" ng-click="nextPage($event)">下一页</md-button>
+    </div>
+    <md-progress-circular ng-show="!file.preview.complete && !overflow()" class="color-white"></md-progress-circular>
+    <span ng-show="!file.preview.complete && !overflow()" class="color-white">服务器正在努力地转码，请稍后</span>
+    <span ng-show="overflow()" class="color-white">翻到底了哦</span>
+    <div><md-icon ng-show="overflow()" class="material-icons color-white">error_outline</md-icon></div>
+    <img id="file-preview-image" class="image" ng-show="file.preview.complete" md-swipe-left="nextPage($event)" md-swipe-right="prevPage($event)"></img>
+  </div>
+</div>

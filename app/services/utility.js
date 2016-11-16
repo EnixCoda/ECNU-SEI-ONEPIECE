@@ -86,12 +86,15 @@ angular.module('onepiece')
         if (filename.indexOf('.') > -1 && filename[-1] !== '.') {
           var fileType = filename.substr(filename.lastIndexOf('.') + 1);
           switch (fileType) {
+            case 'jpeg':
             case 'jpg':
-            case 'gif':
             case 'bmp':
             case 'png':
             case 'pdf':
-            case 'txt':
+            case 'doc':
+            case 'docx':
+            case 'ppt':
+            case 'pptx':
               return true;
             default:
               return false;
