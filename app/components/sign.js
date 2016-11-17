@@ -6,8 +6,8 @@ angular.module('onepiece')
           匿名
         </md-checkbox>
         <md-input-container class="no-margin thin-input" ng-show="!user.anonymous">
-          <label for="username">留个昵称</label>
-          <input id="username" type="text" ng-model="user.username" placeholder="{{user.name}}">
+          <label for="alia">留个昵称</label>
+          <input id="alia" type="text" ng-model="user.alia" placeholder="{{user.name}}">
         </md-input-container>
       </div>
     `,

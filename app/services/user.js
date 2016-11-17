@@ -26,7 +26,7 @@ angular.module('onepiece')
               var userData = responseData['data'];
               user.status = user.statuses[2];
               user.name = userData['username'];
-              user.cademy = userData['cademy'];
+              user.alia = userData['alia'];
               cookie.saveTokenToCookie(userData['token']);
               toast.show(responseData['msg'], 'success', true, 'top left');
               popper.hide('user center');

@@ -3,7 +3,7 @@
     <md-content layout="column" layout-padding>
       <div layout>
         <div layout layout-align="start center">
-          <span ng-if="user.status === 'ONLINE'">当前用户：{{user.name}} - {{user.cademy}}</span>
+          <span ng-if="user.status === 'ONLINE'">当前用户：{{user.name !== user.alia ? user.name + ' - ' + user.alia : user.name}}</span>
           <span ng-if="user.status === 'OFFLINE'">使用校园数据库账户登录</span>
         </div>
         <div flex></div>
