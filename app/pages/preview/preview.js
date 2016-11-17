@@ -5,17 +5,19 @@ angular.module('onepiece')
       $scope.user = user;
 
       var p = downloader.previewFile(file);
-      if (p) { // first time
+      if (p) {
+        // first time
         p.then(() => {
           fetchPage(file);
         }, () => {
           $scope.close();
         })
       } else {
+        // cached
         $timeout(() => {
           if ($scope.overflow()) file.preview.pageNumber--; 
           fetchPage(file);
-        }, 0); // cached
+        }, 0);
       }
 
       $scope.prevPage = ($e) => {
@@ -39,13 +41,17 @@ angular.module('onepiece')
       $scope.close = () => {
         this.mdPanelRef.close();
       };
-      
+
       function paint (rawImage) {
         if (!rawImage) return;
         var arr = new Uint8Array(rawImage);
-        var raw = String.fromCharCode.apply(null, arr);
-        var b64=btoa(raw);
-        var dataURL="data:image/jpeg;base64,"+b64;
+        var i = 0, chunkSize = 0xffff;
+        var raw = '';
+        while (i * chunkSize < arr.length) {
+          raw += String.fromCharCode.apply(null, arr.subarray(i * chunkSize, ++i * chunkSize));
+        }
+        var b64 = btoa(raw);
+        var dataURL = "data:image/jpeg;base64," + b64;
         document.querySelector('#file-preview-image').src = dataURL;
       };
 
