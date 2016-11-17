@@ -54,7 +54,8 @@ angular.module('onepiece')
         }
         var b64 = btoa(raw);
         var dataURL = "data:image/jpeg;base64," + b64;
-        document.querySelector('#file-preview-image').style.background = `url(${dataURL})`;
+        var ele = document.querySelector('#file-preview-image');
+        if (ele) ele.style.background = `url(${dataURL})`;
       };
 
       function fetchPage(file) {
@@ -66,12 +67,12 @@ angular.module('onepiece')
           file.preview.complete = true;
           paint(file.preview.raw);
         } else {
-          downloader.fetchPreviewPage(file)
-          .then(response => {
+          var fetch = downloader.fetchPreviewPage(file);
+          fetch.$promise.then(response => {
             file.preview.complete = true;
-            if (file.preview.raws) file.preview.raws[file.preview.pageNumber] = response.data;
+            if (file.preview.raws) file.preview.raws[fetch.pageNumber] = response.data;
             else file.preview.raw = response.data;
-            paint(response.data);
+            if (file.preview.pageNumber === fetch.pageNumber) paint(response.data);
           }, err => {
             if (err.status === 595) {
               file.preview.maxPageNumber = file.preview.pageNumber - 1;

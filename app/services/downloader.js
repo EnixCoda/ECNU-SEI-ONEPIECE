@@ -78,11 +78,14 @@ angular.module('onepiece')
         }
       };
       Downloader.fetchPreviewPage = (file) => {
-        return $http({
-          responseType: 'arraybuffer',
-          method: 'get',
-          url: file.preview.previewLink
-        });
+        return {
+          $promise: $http({
+            responseType: 'arraybuffer',
+            method: 'get',
+            url: file.preview.previewLink
+          }),
+          pageNumber: file.preview.pageNumber
+        };
       };
       Downloader.downloadLesson = function (lesson) {
         DownloadServer.downloadLesson({
