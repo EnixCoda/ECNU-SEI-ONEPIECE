@@ -54,7 +54,7 @@ angular.module('onepiece')
         }
         var b64 = btoa(raw);
         var dataURL = "data:image/jpeg;base64," + b64;
-        document.querySelector('#file-preview-image').src = dataURL;
+        document.querySelector('#file-preview-image').style.background = `url(${dataURL})`;
       };
 
       function fetchPage(file) {

@@ -117,7 +117,7 @@ angular.module('onepiece')
           position: $mdPanel.newPanelPosition().center(),
           focusOnOpen: true,
           zIndex: 128,
-          disableParentScroll: false,
+          disableParentScroll: true,
           hasBackdrop: true,
           trapFocus: true,
         };

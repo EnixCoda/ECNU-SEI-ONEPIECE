@@ -1,5 +1,5 @@
 (function () {
-  var debug = false;
+  var debug = true;
   var version = '1.0.11';
 
   load('script', '/assets/app.js');

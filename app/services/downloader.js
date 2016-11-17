@@ -68,12 +68,12 @@ angular.module('onepiece')
           });
       };
       Downloader.previewFilePageUp = function (file) {
-        if (file && file.preview && file.preview.multiPage && file.preview.pageNumber > 0) {
+        if (file.preview.multiPage && file.preview.pageNumber > 1) {
           file.preview.previewLink = file.preview.previewLink.replace(/page_number=\d+/, 'page_number=' + --file.preview.pageNumber); 
         }
       };
       Downloader.previewFilePageDown = function (file) {
-        if (file && file.preview && file.preview.multiPage && file.preview.pageNumber < 5) {
+        if (file.preview.multiPage && !(file.preview.pageNumber >= file.preview.maxPageNumber)) {
           file.preview.previewLink = file.preview.previewLink.replace(/page_number=\d+/, 'page_number=' + ++file.preview.pageNumber);
         }
       };

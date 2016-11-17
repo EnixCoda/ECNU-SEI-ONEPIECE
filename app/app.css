@@ -346,15 +346,21 @@ file-list,
 .panel-body {
   margin: auto;
   width: 100%;
-  max-width: 600px;
   height: 100%;
   outline: none;
 }
 
 .panel-body .pager {
   width: 100%;
+  position: absolute;
 }
 
 .panel-body .page-number {
   color: #fff;
+}
+
+.panel-body .image {
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
 }
