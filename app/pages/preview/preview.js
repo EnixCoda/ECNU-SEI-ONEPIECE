@@ -21,22 +21,24 @@ angular.module('onepiece')
       }
 
       $scope.prevPage = ($e) => {
+        if (!file.preview.multiPage) return;
         downloader.previewFilePageUp(file);
         fetchPage(file);
         $e.stopPropagation();
         $e.preventDefault();
       };
       $scope.nextPage = ($e) => {
+        if (!file.preview.multiPage) return;
         downloader.previewFilePageDown(file);
         fetchPage(file);
         $e.stopPropagation();
         $e.preventDefault();
       };
       $scope.overflow = () => {
-        return file.preview && (file.preview.pageNumber > file.preview.maxPageNumber);
+        return file.preview.pageNumber > file.preview.maxPageNumber;
       };
       $scope.lastPage = () => {
-        return file.preview && (file.preview.pageNumber === file.preview.maxPageNumber);
+        return file.preview.pageNumber === file.preview.maxPageNumber;
       };
       $scope.close = () => {
         this.mdPanelRef.close();
@@ -57,10 +59,10 @@ angular.module('onepiece')
 
       function fetchPage(file) {
         file.preview.complete = false;
-        if (file.preview && file.preview.raws && file.preview.raws[file.preview.pageNumber]) {
+        if (file.preview.raws && file.preview.raws[file.preview.pageNumber]) {
           file.preview.complete = true;
           paint(file.preview.raws[file.preview.pageNumber]);
-        } else if (file.preview && file.preview.raw) {
+        } else if (file.preview.raw) {
           file.preview.complete = true;
           paint(file.preview.raw);
         } else {

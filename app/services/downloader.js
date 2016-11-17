@@ -38,6 +38,7 @@ angular.module('onepiece')
       Downloader.previewFile = function (file) {
         if (file.gettingPreviewLink || file.preview) return;
         file.gettingPreviewLink = true;
+        file.preview = {}; // save some code in other place
         var data = {};
         return DownloadServer.previewFile({
             type: 'file',
