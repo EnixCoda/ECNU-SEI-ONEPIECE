@@ -7,7 +7,10 @@ angular.module('onepiece')
           <md-list-item ng-show="cm.comments.length > 0" ng-repeat="cmt in cm.comments"
                         ng-class="cmt.comment.length>100?'md-2-line md-long-text':'md-2-line'">
             <div class="md-list-item-text">
-              <h4>{{cmt.username.length>0?cmt.username:"匿名"}} :</h4>
+              <div layout layout-align="space-between center">
+                <h4>{{cmt.username.length>0?cmt.username:"匿名"}} :</h4>
+                <span class="comment-time">{{cmt.time}}</span>
+              </div>
               <p>{{ cmt.comment }}</p>
             </div>
           </md-list-item>

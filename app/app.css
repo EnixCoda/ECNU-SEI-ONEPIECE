@@ -364,3 +364,9 @@ file-list,
   background-repeat: no-repeat !important;
   background-position: center !important;
 }
+
+.comment-time {
+  font-weight: 400;
+  font-size: 12px;
+  color: #999;
+}
