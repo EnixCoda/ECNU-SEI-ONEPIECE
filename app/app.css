@@ -352,7 +352,10 @@ file-list,
 
 .panel-body .pager {
   width: 100%;
+  max-width: 840px;
   position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .panel-body .page-number {
