@@ -44,14 +44,19 @@ angular.module('onepiece')
         this.mdPanelRef.close();
       };
 
-      function paint (rawImage) {
-        if (!rawImage) return;
-        var arr = new Uint8Array(rawImage);
+      function parseArrayBuffer(raw) {
+        var arr = new Uint8Array(raw);
         var i = 0, chunkSize = 0xffff;
         var raw = '';
         while (i * chunkSize < arr.length) {
           raw += String.fromCharCode.apply(null, arr.subarray(i * chunkSize, ++i * chunkSize));
         }
+        return raw;
+      }
+
+      function paint (rawImage) {
+        if (!rawImage) return;
+        raw = parseArrayBuffer(rawImage);
         var b64 = btoa(raw);
         var dataURL = "data:image/jpeg;base64," + b64;
         var ele = document.querySelector('#file-preview-image');
@@ -76,6 +81,9 @@ angular.module('onepiece')
           }, err => {
             if (err.status === 595) {
               file.preview.maxPageNumber = file.preview.pageNumber - 1;
+            } else {
+              file.preview.msg = parseArrayBuffer(err.data);
+              file.preview.fail = true;
             }
           });
         }
