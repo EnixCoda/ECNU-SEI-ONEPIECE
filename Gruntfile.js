@@ -69,14 +69,9 @@ module.exports = function (grunt) {
       allAppJS: {
         files: {
           'dist/app.js': [
-            'node_modules/angular/angular.js',
-            'node_modules/angular-resource/angular-resource.js',
-            'node_modules/angular-animate/angular-animate.js',
-            'node_modules/angular-aria/angular-aria.js',
-            'node_modules/angular-material/angular-material.js',
             'app/app.js',
-            'app/components/*.js',
             'app/controllers/*.js',
+            'app/components/*.js',
             'app/filters/*.js',
             'app/services/*.js',
             'dist/scripts/*.js'
@@ -85,7 +80,14 @@ module.exports = function (grunt) {
       },
       vendorJS: {
         files: {
-          'dist/app.js': ['dist/app.js', 'vendors/*.min.js']
+          'dist/vendor.js': [
+            'node_modules/angular/angular.js',
+            'node_modules/angular-resource/angular-resource.js',
+            'node_modules/angular-animate/angular-animate.js',
+            'node_modules/angular-aria/angular-aria.js',
+            'node_modules/angular-material/angular-material.js',
+            'vendors/*.min.js'
+          ]
         }
       }
     },
@@ -102,9 +104,12 @@ module.exports = function (grunt) {
     },
     uglify: {
       dist: {
-        files: {
-          'dist/app.js': ['dist/app.js']
-        }
+        files: [{
+          expand: true,
+          src: ['dist/*.js'],
+          flatten: true,
+          dest: 'dist'
+        }]
       },
       loader: {
         files: {
@@ -215,19 +220,19 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('dev', [
-    'clean:dist','clean:serverRoot',
+    'clean:dist', 'clean:serverRoot',
     'htmlmin', 'concat:css',
-    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'uglify:loader', 'injectLoader',
-    'concat:vendorJS', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
+    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader', 'injectLoader',
+    'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
     'copy:toServer'
   ]);
 
   grunt.registerTask('deploy', [
-    'clean:dist','clean:serverRoot',
+    'clean:dist', 'clean:serverRoot',
     'htmlmin', 'concat:css',
-    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'uglify:loader', 'injectLoader',
+    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader', 'injectLoader',
     'ngAnnotate', 'cssmin', 'babel', 'uglify:dist',
-    'concat:vendorJS', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
+    'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
     'copy:toServer'
   ]);
 };
