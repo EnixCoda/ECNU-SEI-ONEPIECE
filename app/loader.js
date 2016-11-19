@@ -1,12 +1,11 @@
 (function () {
-  var version = '@@version';
+  // load('script|style', 'path/to/source', 'filename@@version');
+  load('script', '/assets/app.js', 'app.js@@version');
+  load('style', '/assets/app.css', 'app.css@@version');
 
-  load('script', '/assets/app.js');
-  load('style', '/assets/app.css');
-
-  function load(type, url) {
-    var localVersion = localStorage.getItem('assets.version');
-    var item = localStorage.getItem('assets.' + type);
+  function load(type, url, version) {
+    var localVersion = localStorage.getItem('assets.version.' + url);
+    var item = localStorage.getItem('assets.' + url);
     if (version === localVersion && item) {
       appendNode(type, item);
     } else {
@@ -15,8 +14,8 @@
         if (request.readyState === 4) {
           var content = request.responseText;
           appendNode(type, content);
-          localStorage.setItem('assets.' + type, content);
-          localStorage.setItem('assets.version', version);
+          localStorage.setItem('assets.' + url, content);
+          localStorage.setItem('assets.version.' + url, version);
         }
       };
       request.open('get', url);

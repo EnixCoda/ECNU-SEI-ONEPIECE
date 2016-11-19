@@ -198,19 +198,18 @@ module.exports = function (grunt) {
     grunt.log.writeln('index.html loaded!');
     var loader = fs.readFileSync('dist/scripts/loader.js', {encoding: 'utf-8'});
     grunt.log.writeln('loader.js loaded!');
-    grunt.log.success(loader);
     var loads = loader
-      .match(/\w+\("(script|style)","(.*?)"\)/g)
+      .match(/\w+\("(script|style)","(.*?)"/g)
       .map(function (cur) {
-        return cur.replace(/\w+\(".*?","(.*?)"\)/, '$1').split('/').pop();
+        return cur.replace(/\w+\(".*?","(.*?)"/, '$1').split('/').pop();
+      })
+      .forEach(function (load) {
+        var content = fs.readFileSync('dist/' + load, {encoding: 'utf-8'});
+        var md5 = require('md5');
+        var hash = md5(content);
+        loader = loader.replace(new RegExp('"' + load + '@@version"'), '"' + hash + '"');
+        grunt.log.success(load + ' loaded with hash ' + hash);
       });
-    var hash = '';
-    loads.forEach(function (load) {
-      var content = fs.readFileSync('dist/' + load, {encoding: 'utf-8'});
-      var md5 = require('md5');
-      hash += md5(content);
-    });
-    loader = loader.replace(/@@version/, hash);
     html = html.replace('<loader></loader>', `<script>${loader}</script>`);
     fs.writeFileSync('dist/index.html', html, {encoding: 'utf-8'});
   });
