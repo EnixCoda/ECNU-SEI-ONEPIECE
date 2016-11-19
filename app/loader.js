@@ -1,6 +1,5 @@
 (function () {
-  var debug = false;
-  var version = '1.0.15';
+  var version = '@@version';
 
   load('script', '/assets/app.js');
   load('style', '/assets/app.css');
@@ -8,7 +7,7 @@
   function load(type, url) {
     var localVersion = localStorage.getItem('assets.version');
     var item = localStorage.getItem('assets.' + type);
-    if (version === localVersion && item && !debug) {
+    if (version === localVersion && item) {
       appendNode(type, item);
     } else {
       var request = new XMLHttpRequest();
