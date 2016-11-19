@@ -9,7 +9,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-ng-annotate');
-  grunt.loadNpmTasks('grunt-replace');
+  grunt.loadNpmTasks('grunt-angular-templates');
   grunt.loadNpmTasks('grunt-babel');
 
   grunt.initConfig({
@@ -35,24 +35,9 @@ module.exports = function (grunt) {
         collapseWhitespace: true
       },
       index: {
-        files: [
-          {
-            expand: true,
-            dest: 'dist/',
-            src: ['app/index.html'],
-            flatten: true
-          }
-        ]
-      },
-      pages: {
-        files: [
-          {
-            expand: true,
-            dest: 'dist/html/',
-            src: ['app/pages/**/*.html'],
-            flatten: true
-          }
-        ]
+        files: {
+          'dist/index.html': ['app/index.html']
+        }
       }
     },
     concat: {
@@ -78,9 +63,7 @@ module.exports = function (grunt) {
       },
       controllers: {
         files: {
-          'dist/scripts/controllers.js': [
-            'app/pages/**/*.js'
-          ]
+          'dist/scripts/controllers.js': ['app/pages/**/*.js']
         }
       },
       allAppJS: {
@@ -94,7 +77,6 @@ module.exports = function (grunt) {
             'app/app.js',
             'app/components/*.js',
             'app/controllers/*.js',
-            'dist/scripts/controllers.js',
             'app/filters/*.js',
             'app/services/*.js',
             'dist/scripts/*.js'
@@ -103,10 +85,7 @@ module.exports = function (grunt) {
       },
       vendorJS: {
         files: {
-          'dist/app.js': [
-            'dist/app.js',
-            'vendors/*.min.js'
-          ]
+          'dist/app.js': ['dist/app.js', 'vendors/*.min.js']
         }
       }
     },
@@ -133,26 +112,27 @@ module.exports = function (grunt) {
         }
       }
     },
-    replace: {
-      task: {
-        options: {
-          patterns: [
-            {
-              match: /to replace/,
-              replacement: ''
-            }
-          ]
-        },
-        files: [
-          {
-            expand: true,
-            cwd: 'dist/',
-            dest: 'dist/',
-            src: ['*'],
-            flatten: true
-          },
-        ]
+    ngtemplates: {
+      options: {
+        module: 'onepiece'
       },
+      dev: {
+        options: {
+          htmlmin: {
+            collapseBooleanAttributes:      true,
+            collapseWhitespace:             true,
+            removeAttributeQuotes:          true,
+            removeComments:                 true,
+            removeRedundantAttributes:      true,
+            removeScriptTypeAttributes:     true,
+            removeStyleLinkTypeAttributes:  true
+          },
+          url: function(url) { return url.split('/').pop(); }
+        },
+        prefix: './',
+        src: ['app/**/*.html'],
+        dest: 'dist/scripts/templates.js'
+      }
     },
     ngAnnotate: {
       options: {
@@ -222,36 +202,10 @@ module.exports = function (grunt) {
     fs.writeFileSync('dist/index.html', html, {encoding: 'utf-8'});
   });
 
-  grunt.registerTask('injectHTML', 'inject angular HTML templates into js', function () {
-    var fs = require('fs');
-    var data = fs.readFileSync('dist/app.js', {encoding: 'utf-8'});
-    grunt.log.writeln('controllers.js loaded!');
-    let matches = data.match(/templateUrl: '(.*)'/g);
-    grunt.log.writeln('found ' + matches.length + ' templates');
-    if (matches) {
-      matches.forEach(function (match) {
-        let filepath = 'dist/html/' + /templateUrl: '(.*)'/.exec(match)[1];
-        try {
-          fs.statSync(filepath);
-          let toInject = fs.readFileSync(filepath, {encoding: 'utf-8'});
-          grunt.log.writeln('found templateUrl: ' + match);
-          data = data.replace(match, `template: \`${toInject}\``);
-        } catch(err) {
-          if (err.code == 'ENOENT') {
-            console.log("skipped", filepath);
-          } else {
-            throw err;
-          }
-        }
-      });
-    }
-    fs.writeFileSync('dist/app.js', data, {encoding: 'utf-8'});
-  });
-
   grunt.registerTask('dev', [
     'clean:dist','clean:serverRoot',
     'htmlmin', 'concat:css',
-    'concat:controllers', 'concat:allAppJS', 'injectHTML', 'uglify:loader', 'injectLoader', 'ngAnnotate',
+    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'uglify:loader', 'injectLoader',
     'concat:vendorJS', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
     'copy:toServer'
   ]);
@@ -259,8 +213,8 @@ module.exports = function (grunt) {
   grunt.registerTask('deploy', [
     'clean:dist','clean:serverRoot',
     'htmlmin', 'concat:css',
-    'concat:controllers', 'concat:allAppJS', 'injectHTML', 'uglify:loader', 'injectLoader', 'ngAnnotate',
-    'cssmin', 'babel', 'uglify:dist',
+    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'uglify:loader', 'injectLoader',
+    'ngAnnotate', 'cssmin', 'babel', 'uglify:dist',
     'concat:vendorJS', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
     'copy:toServer'
   ]);
