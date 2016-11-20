@@ -6,9 +6,9 @@
   <title>*BETA* ECNU SEI Onepiece</title>
   <loader></loader>
 </head>
-<body ng-app="onepiece" ng-controller="MainController" layout="row" layout-align="center">
+<body ng-cloak ng-app="onepiece" ng-controller="MainController" layout="row" layout-align="center">
 <onepiece-cover class="fill-height" flex ng-if="indexLoader.status !== 'SUCCESS'"></onepiece-cover>
-<md-content ng-cloak ng-if="indexLoader.status === 'SUCCESS'" class="fill-height md-whiteframe-4dp" layout="column" flex>
+<md-content ng-if="indexLoader.status === 'SUCCESS'" class="fill-height md-whiteframe-4dp" layout="column" flex>
   <onepiece-panel class="fill-height" flex></onepiece-panel>
 </md-content>
 </body>

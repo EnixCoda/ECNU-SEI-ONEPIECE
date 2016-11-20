@@ -86,7 +86,10 @@ module.exports = function (grunt) {
             'node_modules/angular-animate/angular-animate.js',
             'node_modules/angular-aria/angular-aria.js',
             'node_modules/angular-material/angular-material.js',
-            'vendors/*.min.js'
+            'node_modules/plupload/js/moxie.js',
+            'node_modules/plupload/src/moxie/src/javascript/o.js',
+            'node_modules/plupload/js/plupload.dev.js',
+            'node_modules/tbs-qiniu-js/dist/qiniu.js',
           ]
         }
       }
@@ -222,17 +225,17 @@ module.exports = function (grunt) {
   grunt.registerTask('dev', [
     'clean:dist', 'clean:serverRoot',
     'htmlmin', 'concat:css',
-    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader', 'injectLoader',
-    'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
+    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader',
+    'injectLoader', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
     'copy:toServer'
   ]);
 
   grunt.registerTask('deploy', [
     'clean:dist', 'clean:serverRoot',
     'htmlmin', 'concat:css',
-    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader', 'injectLoader',
+    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader',
     'ngAnnotate', 'cssmin', 'babel', 'uglify:dist',
-    'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
+    'injectLoader', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
     'copy:toServer'
   ]);
 };
