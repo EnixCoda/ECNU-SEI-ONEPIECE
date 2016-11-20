@@ -47,17 +47,17 @@ angular.module('onepiece')
       function parseArrayBuffer(raw) {
         var arr = new Uint8Array(raw);
         var i = 0, chunkSize = 0xffff;
-        var raw = '';
+        var parsed = '';
         while (i * chunkSize < arr.length) {
-          raw += String.fromCharCode.apply(null, arr.subarray(i * chunkSize, ++i * chunkSize));
+          parsed += String.fromCharCode.apply(null, arr.subarray(i * chunkSize, ++i * chunkSize));
         }
-        return raw;
+        return parsed;
       }
 
       function paint (rawImage) {
         if (!rawImage) return;
-        raw = parseArrayBuffer(rawImage);
-        var b64 = btoa(raw);
+        var parsed = parseArrayBuffer(rawImage);
+        var b64 = btoa(parsed);
         var dataURL = "data:image/jpeg;base64," + b64;
         var ele = document.querySelector('#file-preview-image');
         if (ele) ele.style.background = `url(${dataURL})`;
