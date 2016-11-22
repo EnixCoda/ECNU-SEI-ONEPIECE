@@ -8,7 +8,7 @@ angular.module('onepiece')
         <div flex class="left-offset-10 file-name-in-list" ng-class="getContentNameStyle(content)">
           <p class="no-margin">{{content.name}}</p>
         </div>
-        <md-button ng-if="!content.content && explorer.path.length > 1" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
+        <md-button ng-disabled="user.status !== 'ONLINE'" ng-if="!content.content && explorer.path.length > 1" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
           <md-tooltip md-direction="left">
             {{content.gettingDownloadLink?'正在获取下载链接':formatFileSize(content)}}
           </md-tooltip>
