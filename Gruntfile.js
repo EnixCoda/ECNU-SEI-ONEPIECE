@@ -207,9 +207,12 @@ module.exports = function (grunt) {
     var loader = fs.readFileSync('dist/scripts/loader.js', {encoding: 'utf-8'});
     grunt.log.writeln('loader.js loaded!');
     var loads = loader
-      .match(/\w+\("(script|style)","(.*?)"/g)
+      .match(/\w+\("(\/assets.*?)"/g)
       .map(function (cur) {
-        return cur.replace(/\w+\(".*?","(.*?)"/, '$1').split('/').pop();
+        grunt.log.writeln(cur);
+        var x = cur.replace(/\w+\("(.*?)"/, '$1').split('/').pop();
+        grunt.log.writeln(x)
+        return x
       })
       .forEach(function (load) {
         var content = fs.readFileSync('dist/' + load, {encoding: 'utf-8'});
@@ -222,20 +225,22 @@ module.exports = function (grunt) {
     fs.writeFileSync('dist/index.html', html, {encoding: 'utf-8'});
   });
 
-  grunt.registerTask('dev', [
+  grunt.registerTask('p0', [
     'clean:dist', 'clean:serverRoot',
     'htmlmin', 'concat:css',
-    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader',
+    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader'
+  ])
+
+  grunt.registerTask('p1', [
     'injectLoader', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
     'copy:toServer'
-  ]);
+  ])
+
+  grunt.registerTask('dev', ['p0', 'p1']);
 
   grunt.registerTask('deploy', [
-    'clean:dist', 'clean:serverRoot',
-    'htmlmin', 'concat:css',
-    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader',
+    'p0',
     'ngAnnotate', 'cssmin', 'babel', 'uglify:dist',
-    'injectLoader', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
-    'copy:toServer'
+    'p1'
   ]);
 };
