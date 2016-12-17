@@ -40,7 +40,7 @@ angular.module('onepiece')
             type: commentManager.type,
             key: commentManager.key,
           }, {
-            username: user.anonymous ? '匿名' : user.username || user.name,
+            username: user.anonymous ? '匿名' : user.alia || user.name,
             comment: commentManager.comment
           },
           function (response) {
