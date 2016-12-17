@@ -226,14 +226,14 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('p0', [
-    'clean:dist', 'clean:serverRoot',
+    'clean:dist',
     'htmlmin', 'concat:css',
     'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader'
   ])
 
   grunt.registerTask('p1', [
     'injectLoader', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
-    'copy:toServer'
+    'clean:serverRoot', 'copy:toServer'
   ])
 
   grunt.registerTask('dev', ['p0', 'p1']);
