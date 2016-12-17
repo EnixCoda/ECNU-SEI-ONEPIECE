@@ -209,10 +209,7 @@ module.exports = function (grunt) {
     var loads = loader
       .match(/\w+\("(\/assets.*?)"/g)
       .map(function (cur) {
-        grunt.log.writeln(cur);
-        var x = cur.replace(/\w+\("(.*?)"/, '$1').split('/').pop();
-        grunt.log.writeln(x)
-        return x
+        return cur.replace(/\w+\("(.*?)"/, '$1').split('/').pop();
       })
       .forEach(function (load) {
         var content = fs.readFileSync('dist/' + load, {encoding: 'utf-8'});
