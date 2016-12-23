@@ -1,59 +1,61 @@
 (function () {
-  var preserves = ['notFirstTime'];
+  var oldAssetsIndex = JSON.parse(localStorage.getItem('assetsIndex')) || {}, assetsIndex = {};
   var progress = 0, goal = 0, DOMNodeCache = [];
 
+  /**
+   * append a <type>content</type> element into DOM's <head>
+   * until no cache in the position of DOMNodeCache
+   */
+  function appendNode(type, content, position) {
+    var node = document.createElement(type);
+    node.appendChild(document.createTextNode(content));
+    DOMNodeCache[position] = node;
+    while(DOMNodeCache[progress]) {
+      document.head.appendChild(DOMNodeCache[progress++]);
+    }
+  }
+
+  /**
+   * remove remained assets in oldAssetsIndex, call this after calling all load()
+   */
+  function clearRemainedAssets() {
+    for (var key in oldAssetsIndex) localStorage.removeItem('assets(' + key + ').content');
+  }
+
+  /**
+   * main function of this script
+   * load local cache from localStorage and compare versions
+   * if match and content exists, append the content
+   * else, fetch it with AJAX, then append the content and save to localStorage
+   */
   function load(url, version) {
-    function clearLocalStorage() {
-      var i = 0;
-      do {
-        var key = localStorage.key(i++);
-        var content = localStorage.getItem(key);
-        if (preserves.indexOf(key) === -1) localStorage.removeItem(key);
-      } while (content);
-    }
-
-    function appendNode(type, content, position) {
-      var node = document.createElement(type);
-      node.appendChild(document.createTextNode(content));
-      DOMNodeCache[position] = node;
-      while(DOMNodeCache[progress]) {
-        document.head.appendChild(DOMNodeCache[progress++]);
-      }
-    }
-
-    var type = url.split('.').pop() === 'js' ? 'script' : 'style';
+    var type = { 'js': 'script', 'css': 'style' }[url.split('.').pop()];
     var index = goal++;
     var contentKey = 'assets(' + url + ').content';
-    var versionKey = 'assets(' + url + ').version';
     var content = localStorage.getItem(contentKey);
-    var localVersion = localStorage.getItem(versionKey);
-    preserves.push(versionKey);
-    preserves.push(contentKey);
-    if (version === localVersion && content) {
-      window.setTimeout(function() {
-        appendNode(type, content, index);
-      }, 0);
+    var localVersion = oldAssetsIndex[url];
+    delete oldAssetsIndex[url];
+    assetsIndex[url] = version || null;
+    // if no version specified, use url as unique tag
+    if ((!version || version === localVersion) && content) {
+      appendNode(type, content, index);
     } else {
       var request = new XMLHttpRequest();
       request.onload = function(/* event */) {
         var content = request.responseText;
         appendNode(type, content, index);
-        try {
-          localStorage.setItem(contentKey, content);
-          localStorage.setItem(versionKey, version);
-        } catch(err) {
-          clearLocalStorage();
-          localStorage.setItem(contentKey, content);
-          localStorage.setItem(versionKey, version);
-        }
+        localStorage.setItem(contentKey, content);
       };
       request.open('get', url);
       request.send();
     }
   };
 
-  // load('script|style', 'path/to/source', 'filename@@version');
+  // load('path/to/source', 'filename@@version');
   load('/assets/app.css', 'app.css@@version');
   load('/assets/vendor.js', 'vendor.js@@version');
   load('/assets/app.js', 'app.js@@version');
+
+  localStorage.setItem('assetsIndex', JSON.stringify(assetsIndex));
+  clearRemainedAssets();
 })();
