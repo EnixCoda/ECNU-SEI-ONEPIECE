@@ -12,8 +12,8 @@
       <md-tab ng-repeat="tab in tabs" label="{{tab.label}}">
         <md-content layout-padding>
           <div ng-repeat="note in tab.notes track by $index">
-            <h3>{{note.title}}</h3>
-            <p ng-repeat="content in note.content track by $index">{{content}}<br></p>
+            <h3 ng-bind="note.title"></h3>
+            <p ng-repeat="content in note.content track by $index" ng-bind="content"><div></div></p>
           </div>
         </md-content>
       </md-tab>
