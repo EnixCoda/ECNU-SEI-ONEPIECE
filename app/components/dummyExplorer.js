@@ -1,7 +1,7 @@
 angular.module('onepiece')
   .component('dummyExplorer', {
     template: `
-      <div layout layout-wrap>
+      <div layout layout-wrap layout-align="start center">
         <md-input-container class="locator-input-container" ng-repeat="dir in explorer.path track by $index" ng-if="$index > 0">
           <md-select aria-label="locator" ng-if="$index === 0" ng-model="dir">
             <md-option ng-value="dir">{{dir.name}}</md-option>
@@ -25,6 +25,7 @@ angular.module('onepiece')
             </md-option>
           </md-select>
         </md-input-container>
+        <span class="hint" ng-if="explorer.path.length < 3 && !explorer.namingDirDepth">(当前路径过短)</span>
         <md-input-container class="locator-input-container" ng-show="explorer.namingDirDepth" aria-label="locator">
           <label for="newDirName">
             新文件夹名
