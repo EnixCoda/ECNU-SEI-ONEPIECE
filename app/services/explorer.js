@@ -18,7 +18,7 @@ angular.module('onepiece')
       }
 
       function savePathToStorage () {
-        sessionStorage.setItem('lastPath', JSON.stringify(generatePathURIArr()));
+        localStorage.setItem('lastPath', JSON.stringify(generatePathURIArr()));
       }
 
       function loadPath(rawPath) {
@@ -46,7 +46,7 @@ angular.module('onepiece')
         explorer.namingDirDepth = 0;
 
         if (!loadPath($location.path().split('/'))) {
-          if (!loadPath(JSON.parse(sessionStorage.getItem('lastPath')))) {
+          if (!loadPath(JSON.parse(localStorage.getItem('lastPath')))) {
             explorer.goBack(Infinity);
           }
         }
