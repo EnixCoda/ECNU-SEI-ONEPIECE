@@ -21,32 +21,28 @@ angular.module('onepiece')
         </md-autocomplete>
       </form>
     `,
-    controller: function ($scope, $log, explorer, lessonLoader) {
-
-      $scope.querySearch = function (query) {
-        function createFilterFor (query) {
-          return function filterFn(lesson) {
-            return angular.lowercase(lesson.name).indexOf(angular.lowercase(query)) > -1;
-          };
-        }
-        return query ? lessonLoader.lessons.filter( createFilterFor(query) ) : lessonLoader.lessons;
-      };
-      $scope.selectedLessonChange = function (lesson) {
-        $scope.goDirectTo(lesson);
-      };
-      $scope.goDirectTo = function (lesson) {
+    controller($scope, $log, explorer, lessonLoader) {
+      $scope.querySearch = (query) => {
+        return query ? lessonLoader.lessons.filter(lesson => {
+          return lesson.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+        }) : lessonLoader.lessons
+      }
+      $scope.selectedLessonChange = (lesson) => {
+        $scope.goDirectTo(lesson)
+      }
+      $scope.goDirectTo = (lesson) => {
         if (lesson && lesson.path) {
-          explorer.goBack(Infinity);
-          var dummyPath = [].concat(lesson.path);
+          explorer.goBack(Infinity)
+          const dummyPath = [].concat(lesson.path)
           while (dummyPath.length > 0) {
-            explorer.goTo(dummyPath.shift());
+            explorer.goTo(dummyPath.shift())
           }
         }
-      };
+      }
 
       /*
-       $scope.searchTextChange = function (text) {
+       $scope.searchTextChange = (text) => {
        }
        */
     },
-  });
+  })

@@ -15,8 +15,8 @@ angular.module('onepiece')
         </div>
       </div>
     `,
-    controller: function ($scope, user, comment) {
-      $scope.cm = comment;
-      $scope.user = user;
+    controller($scope, user, comment) {
+      $scope.cm = comment
+      $scope.user = user
     }
-  });
+  })

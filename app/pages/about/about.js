@@ -1,9 +1,9 @@
 angular.module('onepiece')
   .controller('AboutController',
-    function ($scope, popper) {
-      $scope.popper = popper;
+    ($scope, popper) => {
+      $scope.popper = popper
 
-      var about = {
+      const about = {
         label: '欢迎与简介',
         notes: [
           {
@@ -75,8 +75,8 @@ angular.module('onepiece')
             ]
           }
         ]
-      };
-      var rules = {
+      }
+      const rules = {
         'label': '文件规则',
         'notes': [
           {
@@ -116,8 +116,8 @@ angular.module('onepiece')
             ]
           }
         ]
-      };
-      var safari = {
+      }
+      const safari = {
         label: 'App模式',
         notes: [
           {
@@ -133,9 +133,9 @@ angular.module('onepiece')
             ]
           }
         ]
-      };
-      $scope.tabs = [about, rules];
-      if (navigator.userAgent.match(/(iPhone|iPad).*Safari/)) {
-        $scope.tabs.push(safari);
       }
-    });
+      $scope.tabs = [about, rules]
+      if (navigator.userAgent.match(/(iPhone|iPad).*Safari/)) {
+        $scope.tabs.push(safari)
+      }
+    })

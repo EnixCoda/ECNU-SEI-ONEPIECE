@@ -1,16 +1,14 @@
-'use strict';
-
 module.exports = function (grunt) {
-  grunt.loadNpmTasks('grunt-contrib-htmlmin');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-ng-annotate');
-  grunt.loadNpmTasks('grunt-angular-templates');
-  grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-contrib-htmlmin')
+  grunt.loadNpmTasks('grunt-contrib-cssmin')
+  grunt.loadNpmTasks('grunt-contrib-uglify')
+  grunt.loadNpmTasks('grunt-contrib-concat')
+  grunt.loadNpmTasks('grunt-contrib-watch')
+  grunt.loadNpmTasks('grunt-contrib-clean')
+  grunt.loadNpmTasks('grunt-contrib-copy')
+  grunt.loadNpmTasks('grunt-ng-annotate')
+  grunt.loadNpmTasks('grunt-angular-templates')
+  grunt.loadNpmTasks('grunt-babel')
 
   grunt.initConfig({
     config: grunt.file.readJSON('config.json'),
@@ -141,7 +139,7 @@ module.exports = function (grunt) {
             removeScriptTypeAttributes:     true,
             removeStyleLinkTypeAttributes:  true
           },
-          url: function(url) { return url.split('/').pop(); }
+          url: function(url) { return url.split('/').pop() }
         },
         prefix: './',
         src: ['app/**/*.html'],
@@ -199,34 +197,34 @@ module.exports = function (grunt) {
         tasks: ['dev']
       }
     }
-  });
+  })
 
   grunt.event.on('watch', function (action, path, target) {
-    grunt.log.writeln(target + ': ' + path + ' has ' + action);
-  });
+    grunt.log.writeln(target + ': ' + path + ' has ' + action)
+  })
 
   grunt.registerTask('injectLoader', 'inject loader.js into index.html', function () {
     // run after htmlmin, concat scripts
-    var fs = require('fs');
-    var html = fs.readFileSync('dist/index.html', {encoding: 'utf-8'});
-    grunt.log.writeln('index.html loaded!');
-    var loader = fs.readFileSync('dist/scripts/loader.js', {encoding: 'utf-8'});
-    grunt.log.writeln('loader.js loaded!');
+    var fs = require('fs')
+    var html = fs.readFileSync('dist/index.html', {encoding: 'utf-8'})
+    grunt.log.writeln('index.html loaded!')
+    var loader = fs.readFileSync('dist/scripts/loader.js', {encoding: 'utf-8'})
+    grunt.log.writeln('loader.js loaded!')
     var loads = loader
       .match(/\w+\("(\/assets.*?)"/g)
       .map(function (cur) {
-        return cur.replace(/\w+\("(.*?)"/, '$1').split('/').pop();
+        return cur.replace(/\w+\("(.*?)"/, '$1').split('/').pop()
       })
       .forEach(function (load) {
-        var content = fs.readFileSync('dist/' + load, {encoding: 'utf-8'});
-        var md5 = require('md5');
-        var hash = md5(content);
-        loader = loader.replace(new RegExp('"' + load + '@@version"'), '"' + hash + '"');
-        grunt.log.success(load + ' loaded with hash ' + hash);
-      });
-    html = html.replace('<loader></loader>', `<script>${loader}</script>`);
-    fs.writeFileSync('dist/index.html', html, {encoding: 'utf-8'});
-  });
+        var content = fs.readFileSync('dist/' + load, {encoding: 'utf-8'})
+        var md5 = require('md5')
+        var hash = md5(content)
+        loader = loader.replace(new RegExp('"' + load + '@@version"'), '"' + hash + '"')
+        grunt.log.success(load + ' loaded with hash ' + hash)
+      })
+    html = html.replace('<loader></loader>', `<script>${loader}</script>`)
+    fs.writeFileSync('dist/index.html', html, {encoding: 'utf-8'})
+  })
 
   grunt.registerTask('p0', [
     'clean:dist',
@@ -239,11 +237,11 @@ module.exports = function (grunt) {
     'clean:serverRoot', 'copy:toServer'
   ])
 
-  grunt.registerTask('dev', ['p0', 'p1']);
+  grunt.registerTask('dev', ['p0', 'p1'])
 
   grunt.registerTask('deploy', [
     'p0',
-    'ngAnnotate', 'cssmin', 'babel', 'uglify:dist',
+    'babel', 'ngAnnotate', 'cssmin', 'uglify:dist',
     'p1'
-  ]);
-};
+  ])
+}

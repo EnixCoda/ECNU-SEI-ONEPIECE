@@ -1,40 +1,40 @@
 angular.module('onepiece')
   .factory('indexLoader',
-    function ($resource, $timeout, lessonLoader, explorer) {
-      var Index = $resource('index', {}, {});
+    ($resource, $timeout, lessonLoader, explorer) => {
+      const Index = $resource('index', {}, {})
 
-      function success (data) {
-        indexLoader.index = data;
-        lessonLoader.parse(indexLoader.index);
-        explorer.setIndex(indexLoader.index);
-        $timeout(function () {
-          indexLoader.status = indexLoader.statuses[1];
-        }, 400);
+      const success = (data) => {
+        indexLoader.index = data
+        lessonLoader.parse(indexLoader.index)
+        explorer.setIndex(indexLoader.index)
+        $timeout(() => {
+          indexLoader.status = indexLoader.statuses[1]
+        }, 400)
       }
 
-      function fail () {
-        indexLoader.status = indexLoader.statuses[2];
+      const fail = () => {
+        indexLoader.status = indexLoader.statuses[2]
       }
 
       // TODO: cache with localStorage and timestamp
-      var indexLoader = {};
-      indexLoader.statuses = ['LOADING', 'SUCCESS', 'FAILED'];
-      indexLoader.index = [];
-      indexLoader.status = indexLoader.statuses[0];
-      indexLoader.load = function () {
+      const indexLoader = {}
+      indexLoader.statuses = ['LOADING', 'SUCCESS', 'FAILED']
+      indexLoader.index = []
+      indexLoader.status = indexLoader.statuses[0]
+      indexLoader.load = () => {
         Index.get(
           {},
-          function (response) {
+          (response) => {
             if (response['res_code'] === 0) {
-              success(response['data']['index']);
+              success(response['data']['index'])
             } else {
-              fail();
+              fail()
             }
           },
-          function () {
-            fail();
-          });
-      };
+          () => {
+            fail()
+          })
+      }
 
-      return indexLoader;
-  });
+      return indexLoader
+    })

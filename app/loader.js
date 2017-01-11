@@ -1,6 +1,7 @@
-(function () {
-  var oldAssetsIndex = JSON.parse(localStorage.getItem('assetsIndex')) || {}, assetsIndex = {};
-  var progress = 0, goal = 0, DOMNodeCache = [];
+/* eslint-env */
+(function() {
+  var oldAssetsIndex = JSON.parse(localStorage.getItem('assetsIndex')) || {}, assetsIndex = {}
+  var progress = 0, goal = 0, DOMNodeCache = []
 
   /**
    * append a <type>content</type> element into DOM's <head>
@@ -11,16 +12,16 @@
    * @param {number} position int
    */
   function appendNode(type, content, position) {
-    var node = document.createElement(type);
-    node.appendChild(document.createTextNode(content));
-    DOMNodeCache[position] = node;
+    var node = document.createElement(type)
+    node.appendChild(document.createTextNode(content))
+    DOMNodeCache[position] = node
     while(DOMNodeCache[progress]) {
-      progress++;
+      progress++
     }
-    if (progress < goal) return;
-    progress = 0;
+    if (progress < goal) return
+    progress = 0
     while(DOMNodeCache[progress]) {
-      document.head.appendChild(DOMNodeCache[progress++]);
+      document.head.appendChild(DOMNodeCache[progress++])
     }
   }
 
@@ -28,7 +29,7 @@
    * remove remained assets in oldAssetsIndex, call this after calling all load()
    */
   function clearRemainedAssets() {
-    for (var key in oldAssetsIndex) localStorage.removeItem('assets(' + key + ').content');
+    for (var key in oldAssetsIndex) localStorage.removeItem('assets(' + key + ').content')
   }
 
   /**
@@ -41,35 +42,35 @@
    * @param {string} version
    */
   function load(url, version) {
-    var type = { 'js': 'script', 'css': 'style' }[url.split('.').pop()];
-    var index = goal++;
-    var contentKey = 'assets(' + url + ').content';
-    var content = localStorage.getItem(contentKey);
-    var localVersion = oldAssetsIndex[url];
-    delete oldAssetsIndex[url];
-    assetsIndex[url] = version || null;
+    var type = { 'js': 'script', 'css': 'style' }[url.split('.').pop()]
+    var index = goal++
+    var contentKey = 'assets(' + url + ').content'
+    var content = localStorage.getItem(contentKey)
+    var localVersion = oldAssetsIndex[url]
+    delete oldAssetsIndex[url]
+    assetsIndex[url] = version || null
     // if no version specified, use url as unique tag
     if ((!version || version === localVersion) && content) {
-      window.setTimeout(function () {
-        appendNode(type, content, index);
-      }, 0);
+      window.setTimeout(function() {
+        appendNode(type, content, index)
+      }, 0)
     } else {
-      var request = new XMLHttpRequest();
+      var request = new XMLHttpRequest()
       request.onload = function(/* event */) {
-        var content = request.responseText;
-        appendNode(type, content, index);
-        localStorage.setItem(contentKey, content);
-      };
-      request.open('get', url);
-      request.send();
+        const content = request.responseText
+        appendNode(type, content, index)
+        localStorage.setItem(contentKey, content)
+      }
+      request.open('get', url)
+      request.send()
     }
-  };
+  }
 
-  // load('path/to/source', 'filename@@version');
-  load('/assets/app.css', 'app.css@@version');
-  load('/assets/vendor.js', 'vendor.js@@version');
-  load('/assets/app.js', 'app.js@@version');
+  // load('path/to/source', 'filename@@version')
+  load('/assets/app.css', 'app.css@@version')
+  load('/assets/vendor.js', 'vendor.js@@version')
+  load('/assets/app.js', 'app.js@@version')
 
-  localStorage.setItem('assetsIndex', JSON.stringify(assetsIndex));
-  clearRemainedAssets();
-})();
+  localStorage.setItem('assetsIndex', JSON.stringify(assetsIndex))
+  clearRemainedAssets()
+})()

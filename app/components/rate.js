@@ -18,12 +18,12 @@ angular.module('onepiece')
         </md-button>
       </div>
     `,
-    controller: function ($scope, user, rate) {
-      $scope.file = this.file;
-      $scope.user = user;
-      $scope.rate = rate;
+    controller($scope, user, rate) {
+      $scope.file = this.file
+      $scope.user = user
+      $scope.rate = rate
     },
     bindings: {
       file: '='
     }
-  });
+  })

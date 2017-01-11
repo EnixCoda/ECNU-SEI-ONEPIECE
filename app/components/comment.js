@@ -4,5 +4,5 @@ angular.module('onepiece')
       <comment-list></comment-list>
       <comment-input></comment-input>
     `,
-    controller: function () {}
-  });
+    controller() {}
+  })

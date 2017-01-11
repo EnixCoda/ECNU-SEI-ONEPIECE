@@ -10,7 +10,7 @@ angular.module('onepiece')
       </div>
       <i class="material-icons invisible">stars</i><!--for earlier icon set loading-->
     `,
-    controller: function ($scope, indexLoader) {
-      $scope.indexLoader = indexLoader;
+    controller($scope, indexLoader) {
+      $scope.indexLoader = indexLoader
     }
-  });
+  })

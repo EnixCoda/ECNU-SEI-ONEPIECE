@@ -1,27 +1,24 @@
 angular.module('onepiece')
   .factory('lessonLoader',
-    function () {
-      var lessonLoader = {
+    () => {
+      const lessonLoader = {
         lessons: []
-      };
-      lessonLoader.parse = function (index) {
-        this.lessons = [];
-        var itemLv1, itemLv2;
-        for (var i = 0; i < index.content.length; i++) {
-          itemLv1 = index.content[i];
-          if (!itemLv1.content) continue;
-          for (var j = 0; j < itemLv1.content.length; j++) {
-            itemLv2 = itemLv1.content[j];
-            if (itemLv2.content) {
-              this.lessons.push({
-                name: itemLv2.name,
-                path: [itemLv1, itemLv2]
-              });
-              itemLv2.isLesson = true;
-            }
+      }
+      lessonLoader.parse = (index) => {
+        lessonLoader.lessons = [].concat(...index.content.map(lessonType => {
+          const lessons = []
+          if (lessonType.content) {
+            lessons.push(...lessonType.content.map(lesson => {
+              lesson.isLesson = true
+              return {
+                name: lesson.name,
+                path: [lessonType, lesson]
+              }
+            }))
           }
-        }
-      };
+          return lessons
+        }))
+      }
 
-      return lessonLoader;
-    });
+      return lessonLoader
+    })

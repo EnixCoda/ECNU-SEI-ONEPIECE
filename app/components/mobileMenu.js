@@ -16,10 +16,10 @@ angular.module('onepiece')
         </md-menu-content>
       </md-menu>
     `,
-    controller: function ($scope) {
-      $scope.funcs = this.funcs;
+    controller($scope) {
+      $scope.funcs = this.funcs
     },
     bindings: {
       funcs: '='
     }
-  });
+  })

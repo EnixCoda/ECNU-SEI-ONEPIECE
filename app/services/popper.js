@@ -1,15 +1,15 @@
 angular.module('onepiece')
   .factory('popper',
-    function ($mdDialog, $mdPanel, $mdMedia, $injector) {
-      var status = null;
+    ($mdDialog, $mdPanel, $mdMedia, $injector) => {
+      let status = null
 
-      var popper = {};
+      const popper = {}
 
       popper.hide = target => {
-        (!target || target === status) && $mdDialog.hide();
-      };
+        (!target || target === status) && $mdDialog.hide()
+      }
       popper.showUserCenter = (e) => {
-        status = 'user center';
+        status = 'user center'
         $mdDialog.show({
           controller: 'UserCenterController',
           templateUrl: 'user_center.html',
@@ -18,10 +18,10 @@ angular.module('onepiece')
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
           onRemoving: () => status = null
-        });
-      };
+        })
+      }
       popper.showUpload = (e) => {
-        status = 'upload';
+        status = 'upload'
         $mdDialog.show({
           controller: 'UploadController',
           templateUrl: 'upload.html',
@@ -30,14 +30,14 @@ angular.module('onepiece')
           clickOutsideToClose: false,
           preserveScope: true,
           locals: {},
-          onComplete: ($scope) => {
-            $scope.QUploader = Qiniu.uploader($scope.QUploaderConfig);
+          onComplete: $scope => {
+            $scope.QUploader = Qiniu.uploader($scope.QUploaderConfig)
           },
           onRemoving: () => status = null
-        });
-      };
+        })
+      }
       popper.showRanking = (e) => {
-        status = 'ranking';
+        status = 'ranking'
         $mdDialog.show({
           controller: 'RankingController',
           templateUrl: 'ranking.html',
@@ -46,10 +46,10 @@ angular.module('onepiece')
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
           onRemoving: () => status = null
-        });
-      };
+        })
+      }
       popper.showAbout = (e) => {
-        status = 'about';
+        status = 'about'
         $mdDialog.show({
           controller: 'AboutController',
           templateUrl: 'about.html',
@@ -57,10 +57,10 @@ angular.module('onepiece')
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
           onRemoving: () => status = null
-        });
-      };
+        })
+      }
       popper.showFileDetail = (file, e) => {
-        status = 'file detail';
+        status = 'file detail'
         $mdDialog.show({
           controller: 'FilePreviewController',
           templateUrl: 'file_preview.html',
@@ -70,15 +70,15 @@ angular.module('onepiece')
           },
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
-          onRemoving: (/* element, promise */) => {
+          onRemoving(/* element, promise */) {
             // use $injector to avoid bi-direction dep
-            $injector.get('explorer').goBack();
-            status = null;
+            $injector.get('explorer').goBack()
+            status = null
           }
-        });
-      };
+        })
+      }
       popper.showLessonPreview = (lesson, e) => {
-        status = 'lesson preview';
+        status = 'lesson preview'
         $mdDialog.show({
           controller: 'LessonPreviewController',
           templateUrl: 'lesson_preview.html',
@@ -89,10 +89,10 @@ angular.module('onepiece')
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
           onRemoving: () => status = null
-        });
-      };
+        })
+      }
       popper.showEdit = (item, e) => {
-        status = 'edit';
+        status = 'edit'
         $mdDialog.show({
           controller: 'EditController',
           templateUrl: 'edit.html',
@@ -103,10 +103,10 @@ angular.module('onepiece')
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
           onRemoving: () => status = null
-        });
-      };
+        })
+      }
       popper.showPreviewPanel = ($e, file) => {
-        var config = {
+        const config = {
           attachTo: angular.element(document.body),
           controller: 'PreviewPanelController',
           locals: {
@@ -120,9 +120,9 @@ angular.module('onepiece')
           disableParentScroll: true,
           hasBackdrop: true,
           trapFocus: true,
-        };
-        $mdPanel.open(config);
-      };
+        }
+        $mdPanel.open(config)
+      }
 
-      return popper;
-  });
+      return popper
+    })

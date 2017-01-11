@@ -14,9 +14,9 @@ angular.module('onepiece')
         </div>
       </div>
     `,
-    controller: function ($scope, $mdMedia, explorer, popper) {
-      $scope.explorer = explorer;
-      $scope.$mdMedia = $mdMedia;
+    controller($scope, $mdMedia, explorer, popper) {
+      $scope.explorer = explorer
+      $scope.$mdMedia = $mdMedia
       $scope.topFuncs = [
         {
           func: popper.showUserCenter,
@@ -38,6 +38,6 @@ angular.module('onepiece')
           icon: 'info_outline',
           tip: '关于本站'
         }
-      ];
+      ]
     }
-  });
+  })

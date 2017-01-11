@@ -1,8 +1,8 @@
 angular.module('onepiece')
   .factory('toast',
-    function ($mdToast) {
-      var toast = {};
-      toast.show = function (text, type, stayLong, position) {
+    ($mdToast) => {
+      const toast = {}
+      toast.show = (text, type, stayLong, position) => {
         $mdToast.show(
           $mdToast
             .simple()
@@ -10,8 +10,8 @@ angular.module('onepiece')
             .position(position || 'top right')
             .theme((type || 'success') + '-toast')
             .hideDelay(stayLong ? 4500 : 1500)
-        );
-      };
+        )
+      }
 
-      return toast;
-    });
+      return toast
+    })

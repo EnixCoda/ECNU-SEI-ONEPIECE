@@ -13,7 +13,7 @@ angular.module('onepiece')
         </md-list>
       </div>
     `,
-    controller: function ($scope, explorer) {
-      $scope.explorer = explorer;
+    controller($scope, explorer) {
+      $scope.explorer = explorer
     }
-  });
+  })

@@ -42,7 +42,7 @@ angular.module('onepiece')
         </div>
       </div>
     `,
-    controller: function ($scope, explorer) {
-      $scope.explorer = explorer;
+    controller($scope, explorer) {
+      $scope.explorer = explorer
     }
-  });
+  })

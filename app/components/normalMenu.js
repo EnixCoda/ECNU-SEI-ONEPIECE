@@ -13,11 +13,11 @@ angular.module('onepiece')
         </md-button>
        </div>
     `,
-    controller: function ($scope, user) {
-      $scope.user = user;
-      $scope.funcs = this.funcs;
+    controller($scope, user) {
+      $scope.user = user
+      $scope.funcs = this.funcs
     },
     bindings: {
       funcs: '='
     }
-  });
+  })

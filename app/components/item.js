@@ -79,25 +79,25 @@ angular.module('onepiece')
         </md-menu>
         <md-divider></md-divider>
       </md-list-item>
-      `,
-    controller: function ($scope, user, explorer, downloader, utility, popper) {
-      $scope.content = this.content;
-      $scope.user = user;
-      $scope.explorer = explorer;
-      $scope.downloadFile = downloader.downloadFile;
-      $scope.downloadLesson = downloader.downloadLesson;
-      $scope.getFileColor = utility.getFileColor;
-      $scope.getFileIcon = utility.getFileIcon;
-      $scope.formatFileSize = utility.formatFileSize;
-      $scope.getContentNameStyle = utility.getContentNameStyle;
-      $scope.showLessonPreview = popper.showLessonPreview;
-      $scope.showEdit = popper.showEdit;
-      $scope.openNestedMenu = function ($mdOpenMenu, $e) {
-        $e.stopPropagation();
-        $mdOpenMenu($e);
-      };
+    `,
+    controller($scope, user, explorer, downloader, utility, popper) {
+      $scope.content = this.content
+      $scope.user = user
+      $scope.explorer = explorer
+      $scope.downloadFile = downloader.downloadFile
+      $scope.downloadLesson = downloader.downloadLesson
+      $scope.getFileColor = utility.getFileColor
+      $scope.getFileIcon = utility.getFileIcon
+      $scope.formatFileSize = utility.formatFileSize
+      $scope.getContentNameStyle = utility.getContentNameStyle
+      $scope.showLessonPreview = popper.showLessonPreview
+      $scope.showEdit = popper.showEdit
+      $scope.openNestedMenu = ($mdOpenMenu, $e) => {
+        $e.stopPropagation()
+        $mdOpenMenu($e)
+      }
     },
     bindings: {
       content: '='
     }
-  });
+  })

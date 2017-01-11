@@ -26,7 +26,7 @@ angular.module('onepiece')
         <p class="left-offset-10"> 正在加载评论... </p>
       </div>
     `,
-    controller: function ($scope, comment) {
-      $scope.cm = comment;
+    controller($scope, comment) {
+      $scope.cm = comment
     }
-  });
+  })

@@ -11,7 +11,7 @@ angular.module('onepiece')
         </md-input-container>
       </div>
     `,
-    controller: function ($scope, user) {
-      $scope.user = user;
+    controller($scope, user) {
+      $scope.user = user
     }
-  });
+  })

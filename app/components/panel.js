@@ -6,7 +6,7 @@ angular.module('onepiece')
         <file-list flex></file-list>
       </div>
     `,
-    controller: function ($scope, indexLoader) {
-      $scope.indexLoader = indexLoader;
+    controller($scope, indexLoader) {
+      $scope.indexLoader = indexLoader
     }
-  });
+  })
