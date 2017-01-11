@@ -7,7 +7,7 @@ angular.module('onepiece')
           <md-icon class="material-icons" ng-class="user.status === 'ONLINE' ? 'thumb-up-enabled' : ''">thumb_up</md-icon>
         </md-button>
         <div layout layout-align="start center">
-          <h3 ng-show="!rate.file.gettingRate" class="no-margin" ng-bind="file.totalScore">
+          <h3 ng-show="!rate.file.gettingRate" class="no-margin" ng-bind="file.score">
             <md-tooltip md-direction="top">当前评分</md-tooltip>
           </h3>
           <md-progress-circular ng-show="rate.file.gettingRate" md-diameter="20" md-mode="indeterminate"></md-progress-circular>

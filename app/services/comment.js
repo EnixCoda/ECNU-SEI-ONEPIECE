@@ -8,6 +8,7 @@ angular.module('onepiece')
         commentManager.gettingComment = false;
         commentManager.type = type;
         commentManager.item = item;
+        commentManager.comments = [];
         if (commentManager.type === 'file') commentManager.key = commentManager.item.id;
         else if (commentManager.type === 'lesson') commentManager.key = commentManager.item.name;
         else commentManager.disabled = true;

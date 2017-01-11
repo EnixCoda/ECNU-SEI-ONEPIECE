@@ -8,6 +8,7 @@ angular.module('onepiece')
       rateManager.set = function (file) {
         rateManager.file = file;
         rateManager.file.gettingRate = false;
+        rateManager.file.score = undefined;
         rateManager.key = rateManager.file.id;
       };
       rateManager.get = function () {
@@ -19,8 +20,7 @@ angular.module('onepiece')
           function (response) {
             rateManager.file.gettingRate = false;
             if (response['res_code'] === 0) {
-              rateManager.file.totalScore = response['data']['total_score'];
-              rateManager.file.score = rateManager.file.totalScore;
+              rateManager.file.score = response['data']['total_score'];
             } else {
               rateManager.file.gettingRate = false;
               toast.show(response['msg'], 'error');
