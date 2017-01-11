@@ -5,6 +5,10 @@
   /**
    * append a <type>content</type> element into DOM's <head>
    * until no cache in the position of DOMNodeCache
+   * 
+   * @param {string} type 'script'|'style'
+   * @param {string} content
+   * @param {number} position int
    */
   function appendNode(type, content, position) {
     var node = document.createElement(type);
@@ -27,6 +31,9 @@
    * load local cache from localStorage and compare versions
    * if match and content exists, append the content
    * else, fetch it with AJAX, then append the content and save to localStorage
+   * 
+   * @param {string} url
+   * @param {string} version
    */
   function load(url, version) {
     var type = { 'js': 'script', 'css': 'style' }[url.split('.').pop()];
