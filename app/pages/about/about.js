@@ -132,5 +132,25 @@ angular.module('onepiece')
           }
         ]
       };
+      var safari = {
+        label: 'App模式',
+        notes: [
+          {
+            title: '本站点支持App模式',
+            content: [
+              '通过下述方式进行简单的操作，即可将本站点添加到你的主屏幕。',
+              '自此从主屏幕进入本站点时将以App模式启动，以获得更佳的体验。',
+              '1. 请确认你正在使用Safari浏览器访问本站',
+              '2. 点击浏览器底部中间的分享按钮',
+              '3. 点击“添加到主屏幕”按钮',
+              '4. 点击弹出窗口右上角的“添加“按钮（如有需要，此时可以编辑标题，但请勿编辑地址）',
+              '5. 点击主屏幕上的本站图标，体验onepiece App'
+            ]
+          }
+        ]
+      };
       $scope.tabs = [about, rules, score];
+      if (navigator.userAgent.match(/(iPhone|iPad).*Safari/)) {
+        $scope.tabs.push(safari);
+      }
     });
