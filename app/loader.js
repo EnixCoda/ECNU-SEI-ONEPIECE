@@ -15,6 +15,11 @@
     node.appendChild(document.createTextNode(content));
     DOMNodeCache[position] = node;
     while(DOMNodeCache[progress]) {
+      progress++;
+    }
+    if (progress < goal) return;
+    progress = 0;
+    while(DOMNodeCache[progress]) {
       document.head.appendChild(DOMNodeCache[progress++]);
     }
   }
@@ -45,7 +50,9 @@
     assetsIndex[url] = version || null;
     // if no version specified, use url as unique tag
     if ((!version || version === localVersion) && content) {
-      appendNode(type, content, index);
+      window.setTimeout(function () {
+        appendNode(type, content, index);
+      }, 0);
     } else {
       var request = new XMLHttpRequest();
       request.onload = function(/* event */) {
