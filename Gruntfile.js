@@ -67,6 +67,9 @@ module.exports = function (grunt) {
         }
       },
       allAppJS: {
+        options: {
+          footer: '//# sourceURL=assets/app.js'
+        },
         files: {
           'dist/app.js': [
             'app/app.js',
@@ -79,6 +82,9 @@ module.exports = function (grunt) {
         }
       },
       vendorJS: {
+        options: {
+          footer: '//# sourceURL=assets/vendor.js'
+        },
         files: {
           'dist/vendor.js': [
             'node_modules/angular/angular.js',
