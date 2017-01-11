@@ -117,21 +117,6 @@ angular.module('onepiece')
           }
         ]
       };
-      var score = {
-        label: '积分规则',
-        notes: [
-          {
-            title: '',
-            content: [
-              '为文件作出评分:  +1分',
-              '上传的文件被评分:  好评+1分，差评-2分',
-              '为文件撰写评价:  +3分',
-              '上传新文件:  +10分',
-              '文件因差评被删除:  -20分'
-            ]
-          }
-        ]
-      };
       var safari = {
         label: 'App模式',
         notes: [
@@ -149,7 +134,7 @@ angular.module('onepiece')
           }
         ]
       };
-      $scope.tabs = [about, rules, score];
+      $scope.tabs = [about, rules];
       if (navigator.userAgent.match(/(iPhone|iPad).*Safari/)) {
         $scope.tabs.push(safari);
       }

@@ -1,7 +1,7 @@
 <md-dialog class="about-dialog hide-overflow">
   <md-toolbar>
     <div class="md-toolbar-tools">
-      <h4 flex>贡献度排行</h4>
+      <h4 flex>积分排行</h4>
       <md-button class="md-icon-button" ng-click="popper.hide()">
         <i class="material-icons color-white">close</i>
       </md-button>
@@ -13,8 +13,14 @@
         <tr>
           <th>名次</th>
           <th>用户名</th>
-          <th>上传</th>
-          <th>评价</th>
+          <th>
+            <span>上传</span>
+            <md-tooltip md-direction="top">上传一个文件+10，并合计该文件所得评分</md-tooltip>
+          </th>
+          <th>
+            <span>评价</span>
+            <md-tooltip md-direction="top">为文件评分+1，评价+3</md-tooltip>
+          </th>
           <th>总分</th>
         </tr>
       </thead>
