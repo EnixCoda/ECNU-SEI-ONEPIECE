@@ -18,10 +18,11 @@
     while(DOMNodeCache[progress]) {
       progress++
     }
-    if (progress < goal) return
-    progress = 0
-    while(DOMNodeCache[progress]) {
-      document.head.appendChild(DOMNodeCache[progress++])
+    if (progress === goal) {
+      progress = 0
+      while(DOMNodeCache[progress]) {
+        document.head.appendChild(DOMNodeCache[progress++])
+      }
     }
   }
 
