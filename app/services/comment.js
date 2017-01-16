@@ -8,7 +8,7 @@ angular.module('onepiece')
         commentManager.gettingComment = false
         commentManager.type = type
         commentManager.item = item
-        commentManager.comments = []
+        commentManager.comments = undefined
         if (commentManager.type === 'file') commentManager.key = commentManager.item.id
         else if (commentManager.type === 'lesson') commentManager.key = commentManager.item.name
         else commentManager.disabled = true
@@ -25,13 +25,13 @@ angular.module('onepiece')
             if (response['res_code'] === 0) {
               commentManager.comments = response['data']['comments']
             } else {
-              commentManager.comments = []
+              commentManager.comments = undefined
               toast.show(response['msg'], 'error')
             }
           },
           () => {
             commentManager.gettingComment = false
-            commentManager.comments = []
+            commentManager.comments = undefined
             toast.show('无法获取评论', 'error')
           })
       }

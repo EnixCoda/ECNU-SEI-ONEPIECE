@@ -15,15 +15,13 @@ angular.module('onepiece')
             </div>
           </md-list-item>
           <md-list-item ng-show="cm.comments.length === 0" ng-class="md-2-line">
-            <div class="md-list-item-text">
-              <h3>暂无评论</h3>
-            </div>
+            <h4>暂无评论</h4>
+          </md-list-item>
+          <md-list-item ng-show="cm.gettingComment" layout layout-align="start center">
+            <md-progress-circular md-diameter="20" md-mode="indeterminate"></md-progress-circular>
+            <h4 class="left-offset-10"> 正在加载评论... </h4>
           </md-list-item>
         </md-list>
-      </div>
-      <div ng-show="cm.gettingComment" layout layout-align="start center">
-        <md-progress-circular md-diameter="20" md-mode="indeterminate"></md-progress-circular>
-        <p class="left-offset-10"> 正在加载评论... </p>
       </div>
     `,
     controller($scope, comment) {
