@@ -30,13 +30,15 @@ angular.module('onepiece')
             }
           })
           while (path.length) explorer.goTo(path.shift())
-          return explorer.path.slice(-1)[0].name === rawPath.slice(-1)[0] || explorer.focusedFile
+          return explorer.peak().name === rawPath.slice(-1)[0] || explorer.focusedFile
         }
       }
 
       const explorer = {}
 
       explorer.focusedFile = null
+
+      explorer.peak = () => explorer.path[explorer.path.length - 1]
 
       explorer.setIndex = (index) => {
         explorer.path = [index]
@@ -96,9 +98,9 @@ angular.module('onepiece')
       explorer.disableGoTo = false // prevent error which occurs when folder double clicked
       explorer.goTo = (target, e) => {
         if (explorer.disableGoTo) return
-        const pos = targetInDirectory(target, explorer.path.slice(-1)[0])
+        const pos = targetInDirectory(target, explorer.peak())
         if (pos !== false) {
-          target = explorer.path.slice(-1)[0].content[pos]
+          target = explorer.peak().content[pos]
           if (target.content) {
             explorer.disableGoTo = true
             if (e !== undefined) {
@@ -153,6 +155,20 @@ angular.module('onepiece')
         }
         $window.getSelection().removeAllRanges()
         copyElement.remove()
+      }
+
+      explorer.getSliblingFile = (offset) => {
+        const currentFolder = explorer.peak()
+        const filesInCurrentFolder = currentFolder.content.filter(item => !item.content)
+        const focusedFileIndex = filesInCurrentFolder.indexOf(explorer.focusedFile)
+        const target = filesInCurrentFolder[focusedFileIndex + offset]
+        const targetIsFile = target && !target.content
+        explorer.existNextFile = focusedFileIndex + offset + 1 < filesInCurrentFolder.length
+        explorer.existPreviousFile = focusedFileIndex + offset > 0
+        if (targetIsFile) {
+          explorer.focusedFile = target
+          return target
+        }
       }
 
       return explorer

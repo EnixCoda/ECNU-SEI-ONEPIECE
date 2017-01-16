@@ -1,4 +1,4 @@
-<md-dialog>
+<md-dialog md-swipe-left="showNextFile()" md-swipe-right="showPreviousFile()">
   <md-toolbar>
     <div class="md-toolbar-tools">
       <h4 flex>文件评价</h4>
@@ -9,10 +9,20 @@
   </md-toolbar>
   <md-dialog-content>
     <md-content layout-padding>
-      <h4 class="no-margin">{{file.name}}</h4>
+      <div layout layout-wrap layout-align="space-between center">
+        <h4 class="no-margin">{{file.name}}</h4>
+        <div layout>
+          <div class="navigate-button">
+            <md-icon class="material-icons" ng-if="existPreviousFile" ng-click="showPreviousFile()">keyboard_arrow_left</md-icon>
+          </div>
+          <div class="navigate-button">
+            <md-icon class="material-icons" ng-if="existNextFile" ng-click="showNextFile()">keyboard_arrow_right</md-icon>
+          </div>
+        </div>
+      </div>
       <span class="uploader" ng-bind="'上传用户: ' + (file.uploader || '站长')"></span>
       <div class="no-padding" layout layout-align="start center">
-        <rate file="file"></rate>
+        <rate></rate>
         <div flex></div>
         <md-button class="md-icon-button file-action-button" ng-click="explorer.copyShareLink()" layout layout-align="center center">
           <md-tooltip md-direction="top">分享链接</md-tooltip>
