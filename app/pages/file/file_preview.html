@@ -21,6 +21,7 @@
         </div>
       </div>
       <span class="uploader" ng-bind="'上传用户: ' + (file.uploader || '站长')"></span>
+      <span class="download-count" ng-bind="'下载次数: ' + (file.download || 0)"></span>
       <div class="no-padding" layout layout-align="start center">
         <rate></rate>
         <div flex></div>

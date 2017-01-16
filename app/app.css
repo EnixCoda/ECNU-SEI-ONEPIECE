@@ -328,11 +328,10 @@ file-list,
   position: fixed;
 }
 
-.uploader {
-  white-space: nowrap;
+.uploader,
+.download-count {
   font-size: 12px;
   color: #999;
-  font-weight: 500;
 }
 
 .panel-preview {
