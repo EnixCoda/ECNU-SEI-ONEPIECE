@@ -63,7 +63,7 @@ angular.module('onepiece')
         status = 'file detail'
         $mdDialog.show({
           controller: 'FilePreviewController',
-          templateUrl: 'file_preview.html',
+          templateUrl: 'file_detail.html',
           targetEvent: e,
           locals: {
             file: file
