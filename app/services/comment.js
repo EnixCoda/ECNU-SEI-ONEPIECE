@@ -55,24 +55,22 @@ angular.module('onepiece')
             toast.show('无法连接到服务器', 'error')
           })
       }
-      commentManager.remove = (commentId) => {
-        toast.show('正在删除', 'warn')
+      commentManager.remove = (comment) => {
+        if (!confirm(`请确认是否删除该评论：${comment.comment}`)) return
+        toast.show('正在删除评论', 'warning')
         Comment.delete({
           type: commentManager.type,
           key: commentManager.key,
-          id: commentId
-        },
-          (response) => {
-            if (response['res_code'] === 0) {
-              commentManager.get()
-              toast.show(response['msg'])
-            } else {
-              toast.show(response['msg'], 'error')
-            }
-          },
-          () => {
-            toast.show('无法连接到服务器', 'error')
-          })
+          id: comment.id
+        },(response) => {
+          if (response['res_code'] === 0) {
+            commentManager.get()
+          } else {
+            toast.show(response['msg'], 'error')
+          }
+        },() => {
+          toast.show('无法连接到服务器', 'error')
+        })
       }
 
       return commentManager

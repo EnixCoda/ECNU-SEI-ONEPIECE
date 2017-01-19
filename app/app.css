@@ -369,10 +369,22 @@ file-list,
   background-position: center !important;
 }
 
+.comment-remove ,
 .comment-time {
   font-weight: 400;
   font-size: 12px;
   color: #999;
+}
+
+.comment-remove {
+  margin-right: 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.comment-remove:hover {
+  font-weight: bold;
+  color: #ff5722;
 }
 
 .hint {

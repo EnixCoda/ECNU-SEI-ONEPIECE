@@ -9,7 +9,10 @@ angular.module('onepiece')
             <div class="md-list-item-text">
               <div layout layout-align="space-between center">
                 <h4>{{cmt.username.length>0?cmt.username:"匿名"}} :</h4>
-                <span class="comment-time">{{cmt.time}}</span>
+                <div>
+                  <span class="comment-remove" ng-if="cmt.removable" ng-click="cm.remove(cmt)">删除</span>
+                  <span class="comment-time">{{cmt.time}}</span>
+                </div>
               </div>
               <p>{{ cmt.comment }}</p>
             </div>
