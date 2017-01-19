@@ -1,7 +1,7 @@
 <md-dialog>
   <md-toolbar>
     <div class="md-toolbar-tools">
-      <h4 flex>{{lesson.name}}</h4>
+      <h4 flex>课程评价</h4>
       <md-button class="md-icon-button" ng-click="popper.hide()">
         <md-icon class="material-icons color-white ">close</md-icon>
       </md-button>
@@ -9,10 +9,11 @@
   </md-toolbar>
   <md-dialog-content>
     <md-content layout-padding>
-      <div>
-        * 可在此对课程作出简单的评价，特别是选修课程，<br>
-        * 为其他同学未来选课提供一些帮助与参考。<br>
-      </div>
+      <h4 class="no-margin">{{lesson.name}}</h4>
+      <p>
+        * 在此对课程作出简短、客观的评价，<br>
+        * 这样可以为其他同学在选课时提供一些帮助与参考。<br>
+      </p>
       <comment></comment>
     </md-content>
   </md-dialog-content>
