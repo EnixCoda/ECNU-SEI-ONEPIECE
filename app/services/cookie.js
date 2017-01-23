@@ -2,9 +2,6 @@ angular.module('onepiece')
   .factory('cookie',
     () => {
       const CookieManager = {
-        saveTokenToCookie(token) {
-          CookieManager.setCookie('token', token)
-        },
         loadTokenFromCookie() {
           const rawCookies = document.cookie.split(' ')
           return rawCookies.map(cookie => {
