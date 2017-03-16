@@ -4,6 +4,15 @@
   var progress = 0, goal = 0, DOMNodeCache = []
 
   /**
+   * try setItem for private mode in Safari
+   */
+  function setItem(key, data) {
+    try {
+      setItem(key, date)
+    } catch(err) {}
+  }
+
+  /**
    * append a <type>content</type> element into DOM's <head>
    * until no cache in the position of DOMNodeCache
    * 
@@ -60,7 +69,7 @@
       request.onload = function(/* event */) {
         const content = request.responseText
         appendNode(type, content, index)
-        localStorage.setItem(contentKey, content)
+        setItem(contentKey, content)
       }
       request.open('get', url)
       request.send()
@@ -72,6 +81,6 @@
   load('/assets/vendor.js', 'vendor.js@@version')
   load('/assets/app.js', 'app.js@@version')
 
-  localStorage.setItem('assetsIndex', JSON.stringify(assetsIndex))
+  setItem('assetsIndex', JSON.stringify(assetsIndex))
   clearRemainedAssets()
 })()
