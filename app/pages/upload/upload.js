@@ -52,7 +52,7 @@ angular.module('onepiece')
           })
         },
         get_new_uptoken: true,
-        domain: '7xt1vj.com1.z0.glb.clouddn.com',
+        domain: 'qiniu.enix.one',
         max_file_size: '200mb',
         max_retries: 1,
         chunk_size: `4mb`,
