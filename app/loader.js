@@ -8,7 +8,7 @@
    */
   function setItem(key, data) {
     try {
-      setItem(key, date)
+      localStorage.setItem(key, data)
     } catch(err) {}
   }
 
