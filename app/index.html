@@ -6,6 +6,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="onepiece">
+  <meta name="theme-color" content="#2196F3" />
+  <link rel="manifest" href="/manifest.json">
   <title>ECNU SCSSE Onepiece</title>
   <style>.flex-center{width:100%;height:100%;display:flex;justify-content:center;align-items:center;}.round{width:40px;height:40px;border-radius:50%;}.zoom{animation:zoom infinite 1.5s;}@keyframes zoom{10%{transform:scale(1.2);}100%{transform:scale(0.9);}}.static{animation:static infinite 1.5s;}.static .round{background: #f44336 !important;}@keyframes static {0%{transform:scale(1);}}</style>
 </head>
@@ -16,7 +18,7 @@
       </div>
     </div>
   </div>
-  <md-content ng-if="indexLoader.status === 'SUCCESS'" class="fill-height md-whiteframe-4dp" layout="column" flex>
+  <md-content ng-show="indexLoader.status === 'SUCCESS'" class="fill-height md-whiteframe-4dp" layout="column" flex>
     <onepiece-panel class="fill-height" flex></onepiece-panel>
   </md-content>
   <loader></loader>

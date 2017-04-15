@@ -16,7 +16,11 @@ module.exports = function (grunt) {
       options: {
         force: true
       },
-      serverRoot: ['<%= config.serverRoot %>'],
+      serverRoot: [
+        '<%= config.serverRoot %>/assets/',
+        '<%= config.serverRoot %>/service-worker.js',
+        '<%= config.serverRoot %>/manifest.json',
+      ],
       dist: ['dist'],
       midFile: ['dist/html', 'dist/scripts', 'dist/css']
     },
@@ -171,7 +175,7 @@ module.exports = function (grunt) {
             expand: true,
             cwd: 'dist/',
             src: ['**'],
-            dest: '<%= config.serverRoot %>'
+            dest: '<%= config.serverRoot %>/assets'
           }
         ]
       },
@@ -189,6 +193,16 @@ module.exports = function (grunt) {
         files: {
           'dist/qiniu.min.map': ['app/deps/qiniu.min.map']
         }
+      },
+      serviceWorker: {
+        files: {
+          '<%= config.serverRoot %>/service-worker.js': ['app/service-worker.js']
+        }
+      },
+      manifest: {
+        files: {
+          '<%= config.serverRoot %>/manifest.json': ['app/manifest.json']
+        }
       }
     },
     watch: {
@@ -203,11 +217,14 @@ module.exports = function (grunt) {
     grunt.log.writeln(target + ': ' + path + ' has ' + action)
   })
 
-  grunt.registerTask('injectLoader', 'inject loader.js into index.html', function () {
+  grunt.registerTask('signVersion', 'inject loader.js into index.html, sign version to service-worker.js', function () {
     // run after htmlmin, concat scripts
     var fs = require('fs')
+    var md5 = require('md5')
     var html = fs.readFileSync('dist/index.html', {encoding: 'utf-8'})
     grunt.log.writeln('index.html loaded!')
+    var serviceWorkerJS = fs.readFileSync('app/service-worker.js', {encoding: 'utf-8'})
+    grunt.log.writeln('service-worker.js loaded!')
     var loader = fs.readFileSync('dist/scripts/loader.js', {encoding: 'utf-8'})
     grunt.log.writeln('loader.js loaded!')
     var loads = loader
@@ -217,24 +234,25 @@ module.exports = function (grunt) {
       })
       .forEach(function (load) {
         var content = fs.readFileSync('dist/' + load, {encoding: 'utf-8'})
-        var md5 = require('md5')
         var hash = md5(content)
         loader = loader.replace(new RegExp('"' + load + '@@version"'), '"' + hash + '"')
         grunt.log.success(load + ' loaded with hash ' + hash)
       })
     html = html.replace('<loader></loader>', `<script>${loader}</script>`)
     fs.writeFileSync('dist/index.html', html, {encoding: 'utf-8'})
+    serviceWorkerJS = serviceWorkerJS.replace(/^.*\/\/ @ version declaration/, 'var version = \'' + md5(html) + '\' // @ version declaration')
+    fs.writeFileSync('app/service-worker.js', serviceWorkerJS, {encoding: 'utf-8'})
   })
 
   grunt.registerTask('p0', [
     'clean:dist',
     'htmlmin', 'concat:css',
-    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader'
+    'concat:controllers', 'ngtemplates', 'concat:allAppJS', 'concat:vendorJS', 'uglify:loader', 'copy:serviceWorker'
   ])
 
   grunt.registerTask('p1', [
-    'injectLoader', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
-    'clean:serverRoot', 'copy:toServer'
+    'signVersion', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
+    'clean:serverRoot',  'copy:toServer', 'copy:manifest', 'copy:serviceWorker'
   ])
 
   grunt.registerTask('dev', ['p0', 'p1'])
