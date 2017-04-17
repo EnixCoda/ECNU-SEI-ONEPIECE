@@ -1,4 +1,4 @@
-var version = '9ea1ae01a3ff998a3a3308f20fefa253' // @ version declaration
+var version = '6f94a41eab01fd1088be00a58cbe5849' // @ version declaration
 
 var extractVersion = function(key) {
   return key.substr(key.lastIndexOf('-v-') + '-v-'.length)
