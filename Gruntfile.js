@@ -1,4 +1,4 @@
-module.exports = function (grunt) {
+module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-htmlmin')
   grunt.loadNpmTasks('grunt-contrib-cssmin')
   grunt.loadNpmTasks('grunt-contrib-uglify')
@@ -50,7 +50,7 @@ module.exports = function (grunt) {
         // stripBanners: true,
         // Replace all 'use strict' statements in the code with a single one at the top
         // banner: "'use strict';\n",
-        // process: function (src, filepath) {
+        // process: function(src, filepath) {
         //   return '// Source: ' + filepath + '\n' + src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
         //   // return src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
         // }
@@ -213,11 +213,11 @@ module.exports = function (grunt) {
     }
   })
 
-  grunt.event.on('watch', function (action, path, target) {
+  grunt.event.on('watch', function(action, path, target) {
     grunt.log.writeln(target + ': ' + path + ' has ' + action)
   })
 
-  grunt.registerTask('signVersion', 'inject loader.js into index.html, sign version to service-worker.js', function () {
+  grunt.registerTask('signVersion', 'inject loader.js into index.html, sign version to service-worker.js', function() {
     // run after htmlmin, concat scripts
     var fs = require('fs')
     var md5 = require('md5')
@@ -229,10 +229,10 @@ module.exports = function (grunt) {
     grunt.log.writeln('loader.js loaded!')
     var loads = loader
       .match(/\w+\("(\/assets.*?)"/g)
-      .map(function (cur) {
+      .map(function(cur) {
         return cur.replace(/\w+\("(.*?)"/, '$1').split('/').pop()
       })
-      .forEach(function (load) {
+      .forEach(function(load) {
         var content = fs.readFileSync('dist/' + load, {encoding: 'utf-8'})
         var hash = md5(content)
         loader = loader.replace(new RegExp('"' + load + '@@version"'), '"' + hash + '"')
@@ -240,7 +240,7 @@ module.exports = function (grunt) {
       })
     html = html.replace('<loader></loader>', `<script>${loader}</script>`)
     fs.writeFileSync('dist/index.html', html, {encoding: 'utf-8'})
-    serviceWorkerJS = serviceWorkerJS.replace(/^.*\/\/ @ version declaration/, 'var version = \'' + md5(html) + '\' // @ version declaration')
+    serviceWorkerJS = serviceWorkerJS.replace(/^.*\/\/ @ version declaration/, 'const version = \'' + md5(html) + '\' // @ version declaration')
     fs.writeFileSync('app/service-worker.js', serviceWorkerJS, {encoding: 'utf-8'})
   })
 
