@@ -2,7 +2,7 @@ angular.module('onepiece')
   .component('commentInput', {
     template: `
       <need-login></need-login>
-      <div ng-show="user.status === 'ONLINE'" class="user-comment-panel md-whiteframe-4dp">
+      <div ng-show="user.state === 'ONLINE'" class="user-comment-panel md-whiteframe-4dp">
         <div layout layout-wrap>
           <md-input-container flex class="no-margin">
             <label for="comment">你的评论</label>

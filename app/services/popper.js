@@ -1,15 +1,15 @@
 angular.module('onepiece')
   .factory('popper',
     ($mdDialog, $mdPanel, $mdMedia, $injector) => {
-      let status = null
+      let state = null
 
       const popper = {}
 
       popper.hide = target => {
-        (!target || target === status) && $mdDialog.hide()
+        (!target || target === state) && $mdDialog.hide()
       }
       popper.showUserCenter = (e) => {
-        status = 'user center'
+        state = 'user center'
         $mdDialog.show({
           controller: 'UserCenterController',
           templateUrl: 'user_center.html',
@@ -17,11 +17,11 @@ angular.module('onepiece')
           locals: {},
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
-          onRemoving: () => status = null
+          onRemoving: () => state = null
         })
       }
       popper.showUpload = (e) => {
-        status = 'upload'
+        state = 'upload'
         $mdDialog.show({
           controller: 'UploadController',
           templateUrl: 'upload.html',
@@ -33,11 +33,11 @@ angular.module('onepiece')
           onComplete: $scope => {
             $scope.QUploader = Qiniu.uploader($scope.QUploaderConfig)
           },
-          onRemoving: () => status = null
+          onRemoving: () => state = null
         })
       }
       popper.showRanking = (e) => {
-        status = 'ranking'
+        state = 'ranking'
         $mdDialog.show({
           controller: 'RankingController',
           templateUrl: 'ranking.html',
@@ -45,22 +45,22 @@ angular.module('onepiece')
           targetEvent: e,
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
-          onRemoving: () => status = null
+          onRemoving: () => state = null
         })
       }
       popper.showAbout = (e) => {
-        status = 'about'
+        state = 'about'
         $mdDialog.show({
           controller: 'AboutController',
           templateUrl: 'about.html',
           targetEvent: e,
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
-          onRemoving: () => status = null
+          onRemoving: () => state = null
         })
       }
       popper.showFileDetail = (file, e) => {
-        status = 'file detail'
+        state = 'file detail'
         $mdDialog.show({
           controller: 'FilePreviewController',
           templateUrl: 'file_detail.html',
@@ -73,12 +73,12 @@ angular.module('onepiece')
           onRemoving(/* element, promise */) {
             // use $injector to avoid bi-direction dep
             $injector.get('explorer').goBack()
-            status = null
+            state = null
           }
         })
       }
       popper.showLessonPreview = (lesson, e) => {
-        status = 'lesson preview'
+        state = 'lesson preview'
         $mdDialog.show({
           controller: 'LessonPreviewController',
           templateUrl: 'lesson_preview.html',
@@ -88,11 +88,11 @@ angular.module('onepiece')
           },
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
-          onRemoving: () => status = null
+          onRemoving: () => state = null
         })
       }
       popper.showEdit = (item, e) => {
-        status = 'edit'
+        state = 'edit'
         $mdDialog.show({
           controller: 'EditController',
           templateUrl: 'edit.html',
@@ -102,7 +102,7 @@ angular.module('onepiece')
           },
           fullscreen: $mdMedia('xs'),
           clickOutsideToClose: true,
-          onRemoving: () => status = null
+          onRemoving: () => state = null
         })
       }
       popper.showPreviewPanel = ($e, file) => {

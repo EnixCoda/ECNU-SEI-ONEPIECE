@@ -8,19 +8,19 @@ angular.module('onepiece')
         lessonLoader.parse(indexLoader.index)
         explorer.setIndex(indexLoader.index)
         $timeout(() => {
-          indexLoader.status = indexLoader.statuses[1]
+          indexLoader.state = indexLoader.states[1]
         }, 400)
       }
 
       const fail = () => {
-        indexLoader.status = indexLoader.statuses[2]
+        indexLoader.state = indexLoader.states[2]
       }
 
       // TODO: cache with localStorage and timestamp
       const indexLoader = {}
-      indexLoader.statuses = ['LOADING', 'SUCCESS', 'FAILED']
+      indexLoader.states = ['LOADING', 'SUCCESS', 'FAILED']
+      indexLoader.state = indexLoader.states[0]
       indexLoader.index = []
-      indexLoader.status = indexLoader.statuses[0]
       indexLoader.load = () => {
         Index.get(
           {},

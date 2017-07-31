@@ -4,24 +4,24 @@ angular.module('onepiece')
       $scope.user = user
       $scope.popper = popper
 
-      $scope.statuses = ['STANDBY', 'CONNECTING', 'SUCCESS', 'FAIL']
-      $scope.status = $scope.statuses[0]
+      $scope.states = ['STANDBY', 'CONNECTING', 'SUCCESS', 'FAIL']
+      $scope.state = $scope.states[0]
 
       const getRanking = () => {
-        $scope.status = $scope.statuses[1]
+        $scope.state = $scope.states[1]
         $http.get('ranking')
           .then((response) => {
             const responseData = response.data
             if (responseData['res_code'] === 0) {
               $scope.ranking = responseData['data']['ranking']
               $scope.userRanking = responseData['data']['userRanking']
-              $scope.status = $scope.statuses[2]
+              $scope.state = $scope.states[2]
             } else {
-              $scope.status = $scope.statuses[3]
+              $scope.state = $scope.states[3]
             }
           }, () => {
             toast.show('无法获取排行', 'error')
-            $scope.status = $scope.statuses[3]
+            $scope.state = $scope.states[3]
           })
       }
 

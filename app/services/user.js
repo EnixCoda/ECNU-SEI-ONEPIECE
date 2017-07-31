@@ -7,10 +7,10 @@ angular.module('onepiece')
         name: null,
         anonymous: false
       }
-      user.statuses = ['OFFLINE', 'CONNECTING', 'ONLINE']
-      user.status = user.statuses[0]
+      user.states = ['OFFLINE', 'CONNECTING', 'ONLINE']
+      user.state = user.states[0]
       user.logOut = () => {
-        user.status = user.statuses[0]
+        user.state = user.states[0]
         user.cademy = null
         user.id = null
         user.name = null
@@ -18,23 +18,23 @@ angular.module('onepiece')
         toast.show('您已登出')
       }
       user.login = data => {
-        user.status = user.statuses[1]
+        user.state = user.states[1]
         $http.post('login', data)
           .then(response => {
             const responseData = response.data
             if (responseData['res_code'] === 0) {
               const userData = responseData['data']
-              user.status = user.statuses[2]
+              user.state = user.states[2]
               user.name = userData['username']
               user.alia = userData['alia']
               toast.show(responseData['msg'], 'success', true, 'top left')
               popper.hide('user center')
             } else {
-              user.status = user.statuses[0]
+              user.state = user.states[0]
               toast.show(responseData['msg'], 'error', true)
             }
           }, () => {
-            user.status = user.statuses[0]
+            user.state = user.states[0]
             toast.show('无法连接到服务器', 'error')
           })
       }

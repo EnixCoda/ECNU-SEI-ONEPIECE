@@ -16,7 +16,7 @@
         * 注：目前不支持Edge浏览器/iOS版Safari浏览器访问时上传文件。<br>
       </div>
       <md-divider></md-divider>
-      <div ng-show="user.status === 'ONLINE'">
+      <div ng-show="user.state === 'ONLINE'">
         <div layout layout-align="space-between center">
           <div layout="column">
             <div>
@@ -66,7 +66,7 @@
           </md-button>
         </div>
       </div>
-      <need-login ng-if="user.status !== 'ONLINE'"></need-login>
+      <need-login ng-if="user.state !== 'ONLINE'"></need-login>
     </md-content>
   </md-dialog-content>
 </md-dialog>

@@ -79,7 +79,7 @@ angular.module('onepiece')
             else file.preview.raw = response.data
             if (file.preview.pageNumber === fetch.pageNumber) paint(response.data)
           }, err => {
-            if (err.status === 595 || err.status === 400) {
+            if (err.state === 595 || err.state === 400) {
               file.preview.maxPageNumber = file.preview.pageNumber - 1
             } else {
               file.preview.msg = parseArrayBuffer(err.data)

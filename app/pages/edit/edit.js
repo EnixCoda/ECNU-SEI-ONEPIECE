@@ -8,26 +8,26 @@ angular.module('onepiece')
 
       $scope.original = explorer.path.slice(1).concat([target]).map(cur => cur.name).join('/')
 
-      $scope.statuses = ['STANDBY', 'CONNECTING', 'SUCCESS', 'FAIL']
-      $scope.getEditsStatus = $scope.statuses[0]
-      $scope.sendEditsStatus = $scope.statuses[0]
+      $scope.states = ['STANDBY', 'CONNECTING', 'SUCCESS', 'FAIL']
+      $scope.getEditsState = $scope.states[0]
+      $scope.sendEditsState = $scope.states[0]
 
       const getEdit = () => {
-        $scope.getEditsStatus = $scope.statuses[1]
+        $scope.getEditsState = $scope.states[1]
         Edit.get(
           { path: $scope.original },
           response => {
             if (response['res_code'] === 0) {
               $scope.edits = response['data']['edits']
-              $scope.getEditsStatus = $scope.statuses[2]
+              $scope.getEditsState = $scope.states[2]
             } else {
               toast.show(response['msg'], 'error')
-              $scope.getEditsStatus = $scope.statuses[3]
+              $scope.getEditsState = $scope.states[3]
             }
           },
           () => {
             toast.show('无法连接到服务器', 'error')
-            $scope.getEditsStatus = $scope.statuses[3]
+            $scope.getEditsState = $scope.states[3]
           })
       }
 
@@ -75,11 +75,11 @@ angular.module('onepiece')
           data.edit = edit
         }
         toast.show('正在提交')
-        $scope.sendEditsStatus = $scope.statuses[1]
+        $scope.sendEditsState = $scope.states[1]
         Edit.save(
           data,
           response => {
-            $scope.sendEditsStatus = $scope.statuses[0]
+            $scope.sendEditsState = $scope.states[0]
             if (response['res_code'] === 0) {
               getEdit()
               toast.show(response['msg'] + '，正在刷新文件目录…')
@@ -90,7 +90,7 @@ angular.module('onepiece')
             }
           },
           () => {
-            $scope.sendEditsStatus = $scope.statuses[0]
+            $scope.sendEditsState = $scope.states[0]
             toast.show('无法连接到服务器', 'error')
           })
       }

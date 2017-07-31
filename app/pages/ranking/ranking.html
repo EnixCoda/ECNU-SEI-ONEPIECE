@@ -25,7 +25,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-if="status==='CONNECTING'">
+        <tr ng-if="state==='CONNECTING'">
           <td colspan="5">
             <div layout layout-align="center center">
               <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
@@ -33,7 +33,7 @@
             </div>
           </td>
         </tr>
-        <tr ng-if="status==='FAIL'">
+        <tr ng-if="state==='FAIL'">
           <td colspan="5">
             获取数据失败
           </td>
@@ -48,7 +48,7 @@
         <tr class="header-row">
           <td colspan="5">你的数据</td>
         </tr>
-        <tr ng-if="status==='CONNECTING'">
+        <tr ng-if="state==='CONNECTING'">
           <td colspan="5">
             <div layout layout-align="center center">
               <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
@@ -56,12 +56,12 @@
             </div>
           </td>
         </tr>
-        <tr ng-if="user.status === 'ONLINE' && status === 'FAIL'">
+        <tr ng-if="user.state === 'ONLINE' && state === 'FAIL'">
           <td colspan="5">
             获取数据失败
           </td>
         </tr>
-        <tr ng-if="user.status === 'ONLINE' && status === 'SUCCESS'">
+        <tr ng-if="user.state === 'ONLINE' && state === 'SUCCESS'">
           <td>{{userRanking.pos}}</td>
           <td>{{userRanking.name}}</td>
           <td>{{userRanking.upload}}</td>

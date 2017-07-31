@@ -8,7 +8,7 @@ angular.module('onepiece')
         <div flex class="left-offset-10 file-name-in-list" ng-class="getContentNameStyle(content)">
           <p class="no-margin">{{content.name}}</p>
         </div>
-        <md-button ng-if="user.status === 'ONLINE' && !content.content && explorer.path.length > 1" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
+        <md-button ng-if="user.state === 'ONLINE' && !content.content && explorer.path.length > 1" class="md-icon-button" ng-click="downloadFile(content)" layout layout-align="center center">
           <md-tooltip md-direction="left">
             {{content.gettingDownloadLink?'正在获取下载链接':formatFileSize(content)}}
           </md-tooltip>
@@ -27,7 +27,7 @@ angular.module('onepiece')
           </md-button>
           <md-menu-content width="3">
             <md-menu-item>
-              <md-button ng-click="showEdit(content, $event)" ng-disabled="user.status !== 'ONLINE'">
+              <md-button ng-click="showEdit(content, $event)" ng-disabled="user.state !== 'ONLINE'">
                 <md-icon class="material-icons color-primary">mode_edit</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>修改文件</p>
@@ -62,14 +62,14 @@ angular.module('onepiece')
               </md-button>
             </md-menu-item>
             <md-menu-item ng-if="content.isLesson">
-              <md-button ng-click="downloadLesson(content)" ng-disabled="user.status !== 'ONLINE'">
+              <md-button ng-click="downloadLesson(content)" ng-disabled="user.state !== 'ONLINE'">
                 <md-icon class="material-icons color-primary">file_download</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>打包下载</p>
               </md-button>
             </md-menu-item>
             <md-menu-item>
-              <md-button ng-click="showEdit(content, $event)" ng-disabled="user.status !== 'ONLINE'">
+              <md-button ng-click="showEdit(content, $event)" ng-disabled="user.state !== 'ONLINE'">
                 <md-icon class="material-icons color-primary">mode_edit</md-icon>
                 <div flex></div>
                 <p md-menu-align-target>修改文件夹</p>
