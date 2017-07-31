@@ -1,6 +1,6 @@
 angular.module('onepiece')
   .factory('indexLoader',
-    ($resource, $timeout, lessonLoader, explorer) => {
+    ($resource, $timeout, lessonLoader, explorer, toast) => {
       const Index = $resource('index', {}, {})
 
       const success = (data) => {
@@ -16,7 +16,6 @@ angular.module('onepiece')
         indexLoader.state = indexLoader.states[2]
       }
 
-      // TODO: cache with localStorage and timestamp
       const indexLoader = {}
       indexLoader.states = ['LOADING', 'SUCCESS', 'FAILED']
       indexLoader.state = indexLoader.states[0]
@@ -26,13 +25,27 @@ angular.module('onepiece')
           {},
           (response) => {
             if (response['res_code'] === 0) {
-              success(response['data']['index'])
+              const indexData = response['data']['index']
+              success(indexData)
+              try {
+                localStorage.setItem('index', JSON.stringify(indexData))
+              } catch (err) {}
             } else {
               fail()
             }
           },
           () => {
-            fail()
+            try {
+              const cachedIndex = localStorage.getItem('index')
+              if (cachedIndex) {
+                success(JSON.parse(cachedIndex))
+                toast.show('更新目录失败，正在使用本地副本', 'warning')
+              } else {
+                fail()
+              }
+            } catch (err) {
+              fail()
+            }
           })
       }
 
