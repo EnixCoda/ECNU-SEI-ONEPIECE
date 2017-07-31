@@ -1,16 +1,16 @@
 {
   "name": "ecnuseionepiece",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "repository": "github.com/ExinCoda/ECNU-SEI-ONEPIECE",
-  "main": "index.js",
-  "devDependencies": {
-    "eslint": "^3.13.1"
-  },
+  "main": "",
   "scripts": {
+    "start": "grunt dev && grunt watch",
+    "dev": "grunt dev",
+    "deploy": "grunt deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Enix",
   "license": "ISC",
   "dependencies": {
     "angular": "1.5.8",
@@ -19,7 +19,10 @@
     "angular-material": "1.1.0-rc.5",
     "angular-resource": "1.5.8",
     "plupload": "^2.2.0",
-    "tbs-qiniu-js": "^1.0.1-7.1",
+    "tbs-qiniu-js": "^1.0.1-7.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.13.1",
     "babel-preset-es2015": "^6.13.2",
     "grunt": "^0.4.5",
     "grunt-angular-templates": "^1.1.0",
