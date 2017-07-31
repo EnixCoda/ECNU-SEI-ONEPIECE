@@ -2,28 +2,29 @@ angular.module('onepiece')
   .factory('toast',
     ($mdToast, $timeout) => {
       const toast = {}
-      const minimumToastDuration = 1600
       const toastBuffer = []
+      const MINIMUM_TOAST_DURATION = 1600
       let lastToastTime = 0
       let toastPromise
 
       const show = () => {
-        if (lastToastTime + minimumToastDuration <= new Date()) {
+        const now = +new Date()
+        if (lastToastTime + MINIMUM_TOAST_DURATION <= now) {
           toastPromise && toastPromise.then(() => $mdToast.hide())
-          lastToastTime = +new Date()
+          lastToastTime = now
           toastPromise = $mdToast.show(toastBuffer.shift())
         } else {
-          $timeout(show, lastToastTime + minimumToastDuration - new Date())
+          $timeout(show, lastToastTime + MINIMUM_TOAST_DURATION - now)
         }
       }
 
-      toast.show = (text, type, stayLong, position) => {
+      toast.show = (text, type = 'success', stayLong, position = 'top right') => {
         toastBuffer.push(
           $mdToast
             .simple()
             .textContent(text)
-            .position(position || 'top right')
-            .theme((type || 'success') + '-toast')
+            .position(position)
+            .theme(type + '-toast')
             .hideDelay(stayLong ? 4500 : 1500)
         )
         show()

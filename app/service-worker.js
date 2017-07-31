@@ -1,4 +1,4 @@
-const version = '6f94a41eab01fd1088be00a58cbe5849' // @ version declaration
+const version = '7934ad53cc259a6dac17699577b7c5d0' // @ version declaration
 
 // we are using localStorage for the first 3 ones
 const essentialAssetKeys = [
@@ -58,18 +58,12 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       caches
         .match(e.request)
-        .then((response) => {
-          return response
-        })
     )
   } else if (cachePaths.includes(path)) {
     console.log('caught fetching cachePaths', e.request.url)
     e.respondWith(
       caches
         .match(e.request)
-        .then((response) => {
-          return response
-        })
     )
   } else {
     console.log('caught fetching', e.request.url)

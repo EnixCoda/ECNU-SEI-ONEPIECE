@@ -62,10 +62,10 @@ angular.module('onepiece')
           FilesAdded(up, files) {
             plupload.each(files, (file) => {
               file.key = explorer.path.slice(1).map(
-                  (cur) => {
-                    return cur.name
-                  }
-                ).concat([file.name]).join('/')
+                (cur) => {
+                  return cur.name
+                }
+              ).concat([file.name]).join('/')
             })
             $scope.$apply()
           },
@@ -84,7 +84,7 @@ angular.module('onepiece')
               filePath: info['key']
             }
             $http.post('uploaded', data)
-                .then(() => indexLoader.load())
+              .then(() => indexLoader.load())
             up.removeFile(file)
             file.success = true
             uploadManager.doneFiles.push(file)
