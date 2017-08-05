@@ -36,9 +36,9 @@
   }
 
   /**
-   * remove remained assets in oldAssetsIndex, call this after calling all load()
+   * remove remaining assets in oldAssetsIndex, call this after calling all load()
    */
-  function clearRemainedAssets() {
+  function clearRemainingAssets() {
     for (var key in oldAssetsIndex) localStorage.removeItem('assets(' + key + ').content')
   }
 
@@ -82,7 +82,7 @@
   load('/assets/app.js', 'app.js@@version')
 
   setItem('assetsIndex', JSON.stringify(assetsIndex))
-  clearRemainedAssets()
+  clearRemainingAssets()
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker
