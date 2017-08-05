@@ -19,20 +19,18 @@ angular.module('onepiece')
           fetchPage(file)
         }, 0)
       }
-
-      $scope.prevPage = ($e) => {
+      $scope.shiftPage = (file, shift) => {
         if (!file.preview.multiPage) return
-        downloader.previewFilePageUp(file)
+        downloader.previewFileShiftPage(file, shift)
         fetchPage(file)
+      }
+      $scope.prevPage = ($e) => {
+        $scope.shiftPage(file, -1)
         $e.stopPropagation()
-        $e.preventDefault()
       }
       $scope.nextPage = ($e) => {
-        if (!file.preview.multiPage) return
-        downloader.previewFilePageDown(file)
-        fetchPage(file)
+        $scope.shiftPage(file, 1)
         $e.stopPropagation()
-        $e.preventDefault()
       }
       $scope.overflow = () => {
         return file.preview.pageNumber > file.preview.maxPageNumber
@@ -56,9 +54,9 @@ angular.module('onepiece')
 
       const paint = (rawImage) => {
         if (!rawImage) return
-        const parsed = parseArrayBuffer(rawImage)
-        const b64 = btoa(parsed)
-        const dataURL = 'data:image/jpeg;base64,' + b64
+        const parsedArrayBuffer = parseArrayBuffer(rawImage)
+        const base64Image = btoa(parsedArrayBuffer)
+        const dataURL = 'data:image/jpeg;base64,' + base64Image
         const ele = document.querySelector('#file-preview-image')
         if (ele) ele.style.background = `url(${dataURL})`
       }
@@ -72,15 +70,15 @@ angular.module('onepiece')
           file.preview.complete = true
           paint(file.preview.raw)
         } else {
-          const fetch = downloader.fetchPreviewPage(file)
-          fetch.$promise.then(response => {
+          const {promise, pageNumber} = downloader.fetchPreviewPage(file)
+          promise.then(response => {
             file.preview.complete = true
-            if (file.preview.raws) file.preview.raws[fetch.pageNumber] = response.data
+            if (file.preview.raws) file.preview.raws[pageNumber] = response.data
             else file.preview.raw = response.data
-            if (file.preview.pageNumber === fetch.pageNumber) paint(response.data)
+            if (file.preview.pageNumber === pageNumber) paint(response.data)
           }, err => {
-            if (err.state === 595 || err.state === 400) {
-              file.preview.maxPageNumber = file.preview.pageNumber - 1
+            if (err.status === 595 || err.status === 400) {
+              file.preview.maxPageNumber = pageNumber - 1
             } else {
               file.preview.msg = parseArrayBuffer(err.data)
               file.preview.fail = true

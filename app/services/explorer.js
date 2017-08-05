@@ -3,7 +3,7 @@ angular.module('onepiece')
     ($timeout, $window, $location, $document, $compile, $rootScope, popper, toast) => {
       const targetInDirectory = (target, dir) => {
         if (dir.content) {
-          let i = dir.content.map(cur => cur.name).indexOf(target.name)
+          const i = dir.content.map(cur => cur.name).indexOf(target.name)
           return i > -1 ? i : false
         }
         return false
@@ -16,19 +16,16 @@ angular.module('onepiece')
           .concat(extra ? [extra] : [])
           .map(cur => cur.name)
       }
-
       const savePathToStorage = () => {
         localStorage.setItem('lastPath', JSON.stringify(generatePathURIArr()))
       }
 
       const loadPath = (rawPath) => {
         if (rawPath) {
-          const path = rawPath.map(cur => {
-            return {
-              name: cur,
-              content: []
-            }
-          })
+          const path = rawPath.map(cur => ({
+            name: cur,
+            content: []
+          }))
           while (path.length) explorer.goTo(path.shift())
           return explorer.peak().name === rawPath.slice(-1)[0] || explorer.focusedFile
         }

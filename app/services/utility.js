@@ -44,7 +44,7 @@ angular.module('onepiece')
             color = '#607d8b'
             break
           }
-          return {color: color}
+          return {color}
         }
       }
       Utility.getFileIcon = (file) => {

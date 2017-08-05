@@ -64,32 +64,29 @@ angular.module('onepiece')
             throw false
           })
       }
-      Downloader.previewFilePageUp = (file) => {
-        if (file.preview.multiPage && file.preview.pageNumber > 1) {
-          file.preview.previewLink = file.preview.previewLink.replace(/page_number=\d+/, 'page_number=' + --file.preview.pageNumber) 
+      Downloader.previewFileShiftPage = (file, shift) => {
+        const toPageNumber = file.preview.pageNumber + shift
+        if (file.preview.multiPage) {
+          if (toPageNumber >= 1 && !(toPageNumber > file.preview.maxPageNumber)) {
+            file.preview.pageNumber = toPageNumber
+            file.preview.previewLink = file.preview.previewLink.replace(/page_number=\d+/, 'page_number=' + file.preview.pageNumber)
+          }
         }
       }
-      Downloader.previewFilePageDown = (file) => {
-        if (file.preview.multiPage && !(file.preview.pageNumber >= file.preview.maxPageNumber)) {
-          file.preview.previewLink = file.preview.previewLink.replace(/page_number=\d+/, 'page_number=' + ++file.preview.pageNumber)
-        }
-      }
-      Downloader.fetchPreviewPage = (file) => {
-        return {
-          $promise: $http({
-            responseType: 'arraybuffer',
-            method: 'get',
-            url: file.preview.previewLink
-          }),
-          pageNumber: file.preview.pageNumber
-        }
-      }
+      Downloader.fetchPreviewPage = (file) => ({
+        promise: $http({
+          responseType: 'arraybuffer',
+          method: 'get',
+          url: file.preview.previewLink
+        }),
+        pageNumber: file.preview.pageNumber
+      })
       Downloader.downloadLesson = (lesson) => {
         DownloadServer.downloadLesson({
-          type: 'lesson',
-          key: lesson.name,
-          action: 'download'
-        },
+            type: 'lesson',
+            key: lesson.name,
+            action: 'download'
+          },
           (response) => {
             if (response['res_code'] === 0) {
               window.location = response['data']['link']
@@ -99,7 +96,8 @@ angular.module('onepiece')
           },
           () => {
             toast.show('下载课程文件失败', 'error', false)
-          })
+          }
+        )
       }
 
       return Downloader

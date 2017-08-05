@@ -4,7 +4,7 @@ angular.module('onepiece')
     sjax.run = (method, url, data, success, fail, error) => {
       const xmlHttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP')
       let postfix = ''
-      for (let key in data) {
+      for (const key in data) {
         if (data.hasOwnProperty(key)) {
           if (postfix) postfix += '&'
           else postfix += '?'
