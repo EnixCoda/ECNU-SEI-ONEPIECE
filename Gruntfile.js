@@ -203,6 +203,12 @@ module.exports = function(grunt) {
         files: {
           '<%= config.serverRoot %>/manifest.json': ['app/manifest.json']
         }
+      },
+      icons: {
+        files: {
+          '<%= config.serverRoot %>/onepiece-icon-512.png': ['app/onepiece-icon-512.png'],
+          '<%= config.serverRoot %>/onepiece-icon-192.png': ['app/onepiece-icon-192.png']
+        }
       }
     },
     watch: {
@@ -252,7 +258,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('p1', [
     'signVersion', 'copy:fonts', 'copy:qiniuMap', 'clean:midFile',
-    'clean:serverRoot',  'copy:toServer', 'copy:manifest', 'copy:serviceWorker'
+    'clean:serverRoot',  'copy:toServer', 'copy:manifest', 'copy:serviceWorker', 'copy:icons',
   ])
 
   grunt.registerTask('dev', ['p0', 'p1'])

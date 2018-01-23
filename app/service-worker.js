@@ -1,4 +1,4 @@
-const version = '7934ad53cc259a6dac17699577b7c5d0' // @ version declaration
+const version = 'b5c659cdb9f109bc6a5354575cef8e0d' // @ version declaration
 
 // we are using localStorage for the first 3 ones
 const essentialAssetKeys = [

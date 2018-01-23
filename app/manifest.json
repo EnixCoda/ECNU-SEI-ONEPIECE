@@ -1,9 +1,20 @@
 {
   "name": "ECNU SCSSE Onepiece",
   "short_name": "Onepiece",
-  "icons": [],
   "start_url": "/",
   "display": "standalone",
   "background_color": "#2196F3",
-  "theme_color": "#2196F3"
+  "theme_color": "#2196F3",
+  "icons": [
+    {
+      "src": "onepiece-icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "onepiece-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
 }
