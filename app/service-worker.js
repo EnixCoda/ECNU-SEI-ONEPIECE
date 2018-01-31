@@ -1,4 +1,4 @@
-const version = 'b5c659cdb9f109bc6a5354575cef8e0d' // @ version declaration
+const version = '2b059e7f58e6778ec6d385a28d16c966' // @ version declaration
 
 // we are using localStorage for the first 3 ones
 const essentialAssetKeys = [
@@ -52,20 +52,23 @@ self.addEventListener('activate', (e) => {
 })
 
 self.addEventListener('fetch', (e) => {
-  const path = e.request.url.replace(/https?:\/\/.*?\/(#\/)?/, '/')
-  if (essentialAssetKeys.includes(path)) {
-    console.log('caught fetching essential asset', e.request.url)
-    e.respondWith(
-      caches
-        .match(e.request)
-    )
-  } else if (cachePaths.includes(path)) {
-    console.log('caught fetching cachePaths', e.request.url)
-    e.respondWith(
-      caches
-        .match(e.request)
-    )
-  } else {
-    console.log('caught fetching', e.request.url)
+  const r = /(https?:\/\/[^/]+)(\/(.*))?/
+  const [host, path] = e.request.url.match(r) || []
+  if (host === self.origin) {
+    if (essentialAssetKeys.includes(path)) {
+      console.log('caught fetching essential asset', e.request.url)
+      e.respondWith(
+        caches
+          .match(e.request)
+      )
+    } else if (cachePaths.includes(path)) {
+      console.log('caught fetching cachePaths', e.request.url)
+      e.respondWith(
+        caches
+          .match(e.request)
+      )
+    } else {
+      console.log('caught fetching', e.request.url)
+    }
   }
 })
