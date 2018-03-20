@@ -80,7 +80,12 @@ export default angular.module('onepiece')
             else $scope.canceling = false
           },
           FileUploaded(up, file, info) {
-            info = JSON.parse(info)
+            if (typeof info === 'string') {
+              try {
+                info = JSON.parse(info)
+              } catch(e) {}
+            }
+            if (info === null || typeof info !== 'object') console.error('invalid response')
             const data = {
               fileId: info['etag'],
               filePath: info['key']
