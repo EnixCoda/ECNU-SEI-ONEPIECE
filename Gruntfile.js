@@ -183,7 +183,7 @@ module.exports = function(grunt) {
         files: [
           {
             expand: true,
-            cwd: 'vendors/fonts/',
+            cwd: 'assets/fonts/',
             src: ['*'],
             dest: 'dist/'
           }
@@ -206,8 +206,8 @@ module.exports = function(grunt) {
       },
       icons: {
         files: {
-          '<%= config.serverRoot %>/onepiece-icon-512.png': ['app/onepiece-icon-512.png'],
-          '<%= config.serverRoot %>/onepiece-icon-192.png': ['app/onepiece-icon-192.png']
+          '<%= config.serverRoot %>/onepiece-icon-512.png': ['assets/onepiece-icon-512.png'],
+          '<%= config.serverRoot %>/onepiece-icon-192.png': ['assets/onepiece-icon-192.png']
         }
       }
     },
