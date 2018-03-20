@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .component('fileList', {
     template: `
       <div class="protect-overflow flex">

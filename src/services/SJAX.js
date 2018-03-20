@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .factory('SJAX', () => {
     const sjax = {}
     sjax.run = (method, url, data, success, fail, error) => {

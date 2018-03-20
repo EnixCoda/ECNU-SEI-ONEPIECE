@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .factory('explorer',
     ($timeout, $window, $location, $document, $compile, $rootScope, popper, toast) => {
       const targetInDirectory = (target, dir) => {

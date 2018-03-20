@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .factory('popper',
     ($mdDialog, $mdPanel, $mdMedia, $injector) => {
       let state = null

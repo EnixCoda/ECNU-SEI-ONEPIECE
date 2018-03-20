@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .controller('PreviewPanelController', 
     function($scope, $timeout, mdPanelRef, file, downloader, user) {
       $scope.file = file

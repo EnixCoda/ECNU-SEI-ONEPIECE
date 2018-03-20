@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .component('dummyExplorer', {
     template: `
       <div layout layout-wrap layout-align="start center">

@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .component('item', {
     template: `
       <md-list-item ng-click="explorer.goTo(content, $event)">

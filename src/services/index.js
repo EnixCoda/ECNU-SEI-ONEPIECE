@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .factory('indexLoader',
     ($resource, $timeout, lessonLoader, explorer, toast) => {
       const Index = $resource('index', {}, {})

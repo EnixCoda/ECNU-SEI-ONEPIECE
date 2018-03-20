@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .component('sign', {
     template: `
       <div layout layout-align="start center">

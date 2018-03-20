@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .controller('EditController',
     ($scope, $resource, indexLoader, target, explorer, user, toast, popper) => {
       const Edit = $resource('edit', {}, {})

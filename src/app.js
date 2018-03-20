@@ -1,4 +1,15 @@
-angular.module('onepiece', ['ngMaterial', 'ngResource'])
+import angular from 'angular'
+import 'angular-animate'
+import 'angular-aria'
+import 'angular-material'
+import 'angular-resource'
+import 'plupload'
+import 'tbs-qiniu-js'
+
+import components from './components'
+import controllers from './controllers'
+
+export default angular.module('onepiece', ['ngMaterial', 'ngResource'])
   .config($mdThemingProvider => {
     $mdThemingProvider.theme('default')
       .primaryPalette('blue')

@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .controller('RankingController',
     ($scope, $mdBottomSheet, $http, user, toast, popper) => {
       $scope.user = user

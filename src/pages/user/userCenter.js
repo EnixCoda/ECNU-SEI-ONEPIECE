@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .controller('UserCenterController',
     ($scope, $http, user, popper) => {
       $scope.user = user

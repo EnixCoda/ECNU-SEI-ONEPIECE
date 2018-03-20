@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .factory('comment',
     ($resource, toast, user) => {
       const Comment = $resource('/:type/:key/comment', {}, {})

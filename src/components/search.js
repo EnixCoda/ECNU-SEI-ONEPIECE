@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .component('search', {
     template: `
       <form ng-submit="$event.preventDefault()">

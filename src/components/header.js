@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .component('onepieceHeader', {
     template: `
       <div class="top-banner md-whiteframe-3dp light-background-color" layout layout-align="space-between center">

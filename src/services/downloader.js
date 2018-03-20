@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .factory('downloader',
     ($resource, $http, user, toast) => {
       const DownloadServer = $resource('/:type/:key/:action', {}, {

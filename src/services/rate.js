@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .factory('rate',
     ($resource, toast) => {
       const Rate = $resource('/:type/:key/score', {}, {})

@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .component('mobileMenu', {
     template: `
       <md-menu md-position-mode="target-right target">

@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .controller('FilePreviewController',
     ($scope, file, user, comment, explorer, rate, utility, downloader, popper) => {
       $scope.user = user

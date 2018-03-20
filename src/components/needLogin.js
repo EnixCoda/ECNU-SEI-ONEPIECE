@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .component('needLogin', {
     template: `
       <div ng-if="user.state !== 'ONLINE'" class="center-text">

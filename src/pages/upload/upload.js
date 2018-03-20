@@ -1,4 +1,6 @@
-angular.module('onepiece')
+import angular from 'angular'
+
+export default angular.module('onepiece')
   .controller('UploadController',
     ($scope,  $http, uploadManager, indexLoader, user, explorer, toast, popper, SJAX) => {
       $scope.user = user
