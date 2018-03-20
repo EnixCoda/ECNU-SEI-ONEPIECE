@@ -10,7 +10,7 @@ const essentialAssetKeys = [
 ]
 
 // when fetching cachePaths, always return from cache
-// but the cache would be updated everytime app is launched
+// but the cache would be updated every time app is launched
 const cachePaths = [
   '/',
   // '/index',
