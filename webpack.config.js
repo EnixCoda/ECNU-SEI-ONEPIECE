@@ -1,6 +1,7 @@
 const path = require('path')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
 const LocalStorageLoaderPlugin = require('./LocalStorageLoaderPlugin')
 
@@ -18,6 +19,11 @@ const plugins = [
     inlineSource: 'loading\.css$',
   }),
   new HtmlWebpackInlineSourcePlugin(),
+  new CopyWebpackPlugin([
+    path.resolve(src, 'service-worker.js'),
+    path.resolve(src, 'manifest.json'),
+    { from: '**/onepiece-icon-*', flatten: true },
+  ]),
   ExtractTextWebpackPluginLoading,
   ExtractTextWebpackPluginApp,
   new LocalStorageLoaderPlugin({
@@ -73,7 +79,15 @@ module.exports = {
         exclude: path.resolve(src, 'loading.css')
       },
       { test: /\.html$/, use: 'raw-loader' },
-      { test: /\.woff2?$/, use: 'file-loader' },
+      {
+        test: /\.woff2?$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+          },
+        },
+      },
     ],
   },
   plugins,

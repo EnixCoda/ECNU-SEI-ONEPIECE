@@ -14,3 +14,7 @@ import './controllers'
 import './components'
 import './pages'
 import './services'
+
+// PWA
+import './service-worker'
+import './manifest.json'
