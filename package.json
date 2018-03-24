@@ -5,10 +5,8 @@
   "repository": "github.com/ExinCoda/ECNU-SEI-ONEPIECE",
   "main": "",
   "scripts": {
-    "start": "grunt dev && grunt watch",
-    "dev": "grunt dev",
-    "deploy": "grunt deploy",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack --watch",
+    "deploy": "NODE_ENV=production webpack"
   },
   "author": "Enix",
   "license": "ISC",
@@ -27,13 +25,18 @@
     "babel-preset-env": "^1.6.1",
     "css-loader": "^0.28.11",
     "eslint": "^3.13.1",
-    "extract-text-webpack-plugin": "^4.0.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
+    "html-webpack-inline-source-plugin": "^0.0.10",
     "html-webpack-plugin": "^3.0.7",
+    "md5": "^2.2.1",
+    "minimize": "^2.2.0",
     "raw-loader": "^0.5.1",
     "style-loader": "^0.20.3",
+    "uglify-js": "^3.3.16",
     "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.12"
+    "webpack-cli": "^2.0.12",
+    "webpack-sources": "^1.1.0"
   },
   "eslintConfig": {
     "parserOptions": {

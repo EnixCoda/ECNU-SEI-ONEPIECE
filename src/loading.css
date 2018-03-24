@@ -1,0 +1,34 @@
+.flex-center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.round {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.zoom {
+  animation: zoom infinite 1.5s;
+}
+@keyframes zoom {
+  10% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(0.9);
+  }
+}
+.static {
+  animation: static infinite 1.5s;
+}
+.static .round {
+  background: #f44336 !important;
+}
+@keyframes static {
+  0% {
+    transform: scale(1);
+  }
+}

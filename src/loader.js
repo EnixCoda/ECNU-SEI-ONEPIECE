@@ -1,5 +1,5 @@
 /* eslint-env */
-(function() {
+module.exports = function localStorageLoader(assets) {
   var oldAssetsIndex = JSON.parse(localStorage.getItem('assetsIndex')) || {}, assetsIndex = {}
   var progress = 0, goal = 0, DOMNodeCache = []
 
@@ -67,7 +67,7 @@
     } else {
       var request = new XMLHttpRequest()
       request.onload = function(/* event */) {
-        const content = request.responseText
+        var content = request.responseText
         appendNode(type, content, index)
         setItem(contentKey, content)
       }
@@ -76,21 +76,9 @@
     }
   }
 
-  // load('path/to/source', 'filename@@version')
-  load('/assets/app.css', 'app.css@@version')
-  load('/assets/vendor.js', 'vendor.js@@version')
-  load('/assets/app.js', 'app.js@@version')
-
+  assets.forEach(function(/* [path, version] */) {
+    load.apply(undefined, arguments[0])
+  })
   setItem('assetsIndex', JSON.stringify(assetsIndex))
   clearRemainingAssets()
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-      .register('/service-worker.js')
-      .then(function() {
-        console.log('service worker registered')
-      }, function(e) {
-        console.log('service worker register failed', e)
-      })
-  }
-})()
+}

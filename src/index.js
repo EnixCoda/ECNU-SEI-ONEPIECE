@@ -7,6 +7,7 @@ import 'angular-resource'
 import 'plupload'
 import 'qiniu-js'
 
+import './loading.css'
 import './app.css'
 import './app'
 import './controllers'

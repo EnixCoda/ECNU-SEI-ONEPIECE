@@ -1,9 +1,30 @@
 const path = require('path')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
+const LocalStorageLoaderPlugin = require('./LocalStorageLoaderPlugin')
 
 const src = path.resolve(__dirname, 'src')
 const dist = path.resolve(__dirname, 'dist')
+
+const ExtractTextWebpackPluginLoading = new ExtractTextWebpackPlugin('loading.css')
+const ExtractTextWebpackPluginApp = new ExtractTextWebpackPlugin('app.css')
+
+const production = process.env.NODE_ENV === 'production'
+ 
+const plugins = [
+  new HTMLWebpackPlugin({
+    template: path.resolve(src, 'index.html'),
+    inlineSource: 'loading\.css$',
+  }),
+  new HtmlWebpackInlineSourcePlugin(),
+  ExtractTextWebpackPluginLoading,
+  ExtractTextWebpackPluginApp,
+  new LocalStorageLoaderPlugin({
+    exclude: /loading.css/,
+    minimize: production,
+  }),
+]
 
 module.exports = {
   entry: {
@@ -12,7 +33,7 @@ module.exports = {
   output: {
     path: dist,
     publicPath: '/assets/',
-    filename: '[name].[hash].js',
+    // filename: '[name].[hash].js',
   },
   module: {
     rules: [
@@ -30,20 +51,30 @@ module.exports = {
         include: src,
       },
       {
-        test: /\.css$/,
-        use: ExtractTextWebpackPlugin.extract({
+        test: /loading\.css$/,
+        use: ExtractTextWebpackPluginLoading.extract({
           fallback: 'style-loader',
-          use: 'css-loader',
+          use: {
+            loader: 'css-loader',
+            options: { minimize: production },
+          },
         }),
+        include: path.resolve(src, 'loading.css')
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextWebpackPluginApp.extract({
+          fallback: 'style-loader',
+          use: {
+            loader: 'css-loader',
+            options: { minimize: production },
+          },
+        }),
+        exclude: path.resolve(src, 'loading.css')
       },
       { test: /\.html$/, use: 'raw-loader' },
       { test: /\.woff2?$/, use: 'file-loader' },
     ],
   },
-  plugins: [
-    new HTMLWebpackPlugin({
-      template: path.resolve(src, 'index.html'),
-    }),
-    new ExtractTextWebpackPlugin('app.css'),
-  ],
+  plugins,
 }
