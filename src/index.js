@@ -12,9 +12,5 @@ import './app.css'
 import './app'
 import './controllers'
 import './components'
-import './pages'
 import './services'
-
-// PWA
-import './service-worker'
-import './manifest.json'
+import './pages'

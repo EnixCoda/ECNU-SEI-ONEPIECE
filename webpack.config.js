@@ -1,6 +1,6 @@
 const path = require('path')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
 const LocalStorageLoaderPlugin = require('./LocalStorageLoaderPlugin')
@@ -8,15 +8,18 @@ const LocalStorageLoaderPlugin = require('./LocalStorageLoaderPlugin')
 const src = path.resolve(__dirname, 'src')
 const dist = path.resolve(__dirname, 'dist')
 
-const ExtractTextWebpackPluginLoading = new ExtractTextWebpackPlugin('loading.css')
-const ExtractTextWebpackPluginApp = new ExtractTextWebpackPlugin('app.css')
+const extractTextWebpackPlugins = {
+  loading: new ExtractTextWebpackPlugin('loading.css'),
+  app: new ExtractTextWebpackPlugin('app.css'),
+  angularMaterial: new ExtractTextWebpackPlugin('vendor.css'),
+}
 
 const production = process.env.NODE_ENV === 'production'
- 
+
 const plugins = [
   new HTMLWebpackPlugin({
     template: path.resolve(src, 'index.html'),
-    inlineSource: 'loading\.css$',
+    inlineSource: 'loading.css$',
   }),
   new HtmlWebpackInlineSourcePlugin(),
   new CopyWebpackPlugin([
@@ -24,8 +27,9 @@ const plugins = [
     path.resolve(src, 'manifest.json'),
     { from: '**/onepiece-icon-*', flatten: true },
   ]),
-  ExtractTextWebpackPluginLoading,
-  ExtractTextWebpackPluginApp,
+  extractTextWebpackPlugins.loading,
+  extractTextWebpackPlugins.app,
+  extractTextWebpackPlugins.angularMaterial,
   new LocalStorageLoaderPlugin({
     exclude: /loading.css/,
     minimize: production,
@@ -36,10 +40,20 @@ module.exports = {
   entry: {
     app: src,
   },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          // name: 'vendor',
+          chunks: 'all',
+        },
+      },
+    },
+  },
   output: {
     path: dist,
     publicPath: '/assets/',
-    // filename: '[name].[hash].js',
   },
   module: {
     rules: [
@@ -58,25 +72,36 @@ module.exports = {
       },
       {
         test: /loading\.css$/,
-        use: ExtractTextWebpackPluginLoading.extract({
+        use: extractTextWebpackPlugins.loading.extract({
           fallback: 'style-loader',
           use: {
             loader: 'css-loader',
             options: { minimize: production },
           },
         }),
-        include: path.resolve(src, 'loading.css')
+        include: path.resolve(src, 'loading.css'),
       },
       {
         test: /\.css$/,
-        use: ExtractTextWebpackPluginApp.extract({
+        use: extractTextWebpackPlugins.app.extract({
           fallback: 'style-loader',
           use: {
             loader: 'css-loader',
             options: { minimize: production },
           },
         }),
-        exclude: path.resolve(src, 'loading.css')
+        include: path.resolve(src, 'app.css'),
+      },
+      {
+        test: /\.css$/,
+        use: extractTextWebpackPlugins.angularMaterial.extract({
+          fallback: 'style-loader',
+          use: {
+            loader: 'css-loader',
+            options: { minimize: production },
+          },
+        }),
+        exclude: [path.resolve(src, 'app.css'), path.resolve(src, 'loading.css')],
       },
       { test: /\.html$/, use: 'raw-loader' },
       {
@@ -91,4 +116,5 @@ module.exports = {
     ],
   },
   plugins,
+  mode: production ? 'production' : 'development',
 }
