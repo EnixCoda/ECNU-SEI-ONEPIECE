@@ -7,12 +7,12 @@
   "theme_color": "#2196F3",
   "icons": [
     {
-      "src": "onepiece-icon-192.png",
+      "src": "assets/onepiece-icon-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "onepiece-icon-512.png",
+      "src": "assets/onepiece-icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
