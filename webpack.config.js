@@ -63,8 +63,7 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: {
-              presets: ['env'],
-              plugins: ['angularjs-annotate'],
+              presets: ['env', 'react'],
             },
           },
         ],
