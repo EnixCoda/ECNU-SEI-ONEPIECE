@@ -1,5 +1,4 @@
 const MD5 = require('md5')
-const WebpackSource = require('webpack-sources')
 const Minimize = require('minimize')
 const UglifyJS = require('uglify-js')
 
@@ -10,10 +9,11 @@ module.exports = class LocalStorageLoaderPlugin {
 
   apply(compiler) {
     debugger
+    const { exclude, minimize, disable } = this.options
+    if (disable) return
 
     compiler.hooks.emit.tap('LocalStorageLoaderPluginHooks', compilation => {
       const { publicPath } = compilation.options.output
-      const { exclude, minimize } = this.options
       const loaderEntries = []
       const indexHTML = compilation.assets['index.html']
       if (!indexHTML) return
@@ -24,11 +24,9 @@ module.exports = class LocalStorageLoaderPlugin {
           const path = `${publicPath}${file}`
           const assetMD5 = MD5(compilation.assets[file].source())
           loaderEntries.push([path, assetMD5])
-          const style =`<link href="${path}" rel="stylesheet">`
+          const style = `<link href="${path}" rel="stylesheet">`
           const script = `<script type="text/javascript" src="${path}"></script>`
-          modifiedHTML = modifiedHTML
-            .replace(style, '')
-            .replace(script, '')
+          modifiedHTML = modifiedHTML.replace(style, '').replace(script, '')
         })
       })
       const loader = require('./src/loader')
