@@ -11,7 +11,7 @@ const dist = path.resolve(__dirname, 'dist')
 const extractTextWebpackPlugins = {
   loading: new ExtractTextWebpackPlugin('loading.css'),
   app: new ExtractTextWebpackPlugin('app.css'),
-  angularMaterial: new ExtractTextWebpackPlugin('vendor.css'),
+  materialUI: new ExtractTextWebpackPlugin({ filename: 'vendor.css', disable: !production }),
 }
 
 const production = process.env.NODE_ENV === 'production'
@@ -29,7 +29,7 @@ const plugins = [
   ]),
   extractTextWebpackPlugins.loading,
   extractTextWebpackPlugins.app,
-  extractTextWebpackPlugins.angularMaterial,
+  extractTextWebpackPlugins.materialUI,
   new LocalStorageLoaderPlugin({
     exclude: /loading.css/,
     minimize: production,
@@ -93,7 +93,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: extractTextWebpackPlugins.angularMaterial.extract({
+        use: extractTextWebpackPlugins.materialUI.extract({
           fallback: 'style-loader',
           use: {
             loader: 'css-loader',
