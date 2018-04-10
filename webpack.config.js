@@ -8,13 +8,13 @@ const LocalStorageLoaderPlugin = require('./LocalStorageLoaderPlugin')
 const src = path.resolve(__dirname, 'src')
 const dist = path.resolve(__dirname, 'dist')
 
+const production = process.env.NODE_ENV === 'production'
+
 const extractTextWebpackPlugins = {
-  loading: new ExtractTextWebpackPlugin('loading.css'),
-  app: new ExtractTextWebpackPlugin('app.css'),
+  loading: new ExtractTextWebpackPlugin({ filename: 'loading.css', disable: !production }),
+  app: new ExtractTextWebpackPlugin({ filename: 'app.css', disable: !production }),
   materialUI: new ExtractTextWebpackPlugin({ filename: 'vendor.css', disable: !production }),
 }
-
-const production = process.env.NODE_ENV === 'production'
 
 const plugins = [
   new HTMLWebpackPlugin({
@@ -33,12 +33,13 @@ const plugins = [
   new LocalStorageLoaderPlugin({
     exclude: /loading.css/,
     minimize: production,
+    disable: !production,
   }),
 ]
 
 module.exports = {
   entry: {
-    app: src,
+    app: ['regenerator-runtime/runtime', src],
   },
   optimization: {
     splitChunks: {
@@ -58,12 +59,16 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         use: [
           {
             loader: 'babel-loader',
             options: {
               presets: ['env', 'react'],
+              plugins: [
+                'react-hot-loader/babel',
+                'transform-object-rest-spread',
+              ],
             },
           },
         ],
@@ -115,5 +120,27 @@ module.exports = {
     ],
   },
   plugins,
+  devtool: 'eval-source-map',
+  devServer: {
+    port: 8000,
+    publicPath: '/assets/',
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/$/, to: '/assets/index.html' },
+        { from: /./, to: '/assets/index.html' },
+      ],
+    },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:9001',
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
+    },
+    watchOptions: {
+      ignored: [/node_modules/, dist],
+    },
+  },
   mode: production ? 'production' : 'development',
 }
