@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh" class="flex-center">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
@@ -13,13 +13,8 @@
   <link rel="apple-touch-startup-image" href="/assets/onepiece-icon-512.png">
   <link rel="manifest" href="/assets/manifest.json">
 </head>
-<body ng-cloak ng-app="onepiece" ng-controller="MainController" class="flex-center" style="background:#fafafa;margin:0;">
-  <div class="loading-placeholder zoom" ng-class="{'static': indexLoader.state === 'FAILED', 'hidden': indexLoader.state === 'SUCCESS'}">
-    <div class="round flex-center" style="background:#2196f3;box-sizing:border-box;">
-      <div class="round" style="transform:scale(0.8);background:#fafafa;">
-      </div>
-    </div>
-  </div>
+<body>
+  <div id="app"></div>
   <noscript>
     <h4>This site must rely on JavaScript. Please enable it before accessing!</h4>
   </noscript>
