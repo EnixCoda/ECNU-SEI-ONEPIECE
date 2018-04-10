@@ -1,0 +1,23 @@
+{
+  "extends": "standard",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "semi": ["error", "never"],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "comma-dangle": "off",
+    "space-before-function-paren": "off",
+    "generator-star-spacing":"off",
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error"
+  },
+  "plugins": ["import", "react"],
+  "env": {
+    "browser": true
+  }
+}

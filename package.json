@@ -35,24 +35,5 @@
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.12",
     "webpack-sources": "^1.1.0"
-  },
-  "eslintConfig": {
-    "parserOptions": {
-      "ecmaVersion": 6
-    },
-    "rules": {
-      "semi": [
-        "error",
-        "never"
-      ],
-      "indent": [
-        "error",
-        2
-      ]
-    },
-    "env": {
-      "browser": true,
-      "es6": true
-    }
   }
 }
