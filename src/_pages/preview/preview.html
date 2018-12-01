@@ -1,0 +1,20 @@
+<div class="panel-body-guard" ng-click="close()">
+  <div class="panel-body" layout="column">
+    <div ng-if="file.preview.multiPage" class="pager" layout layout-align="space-between center">
+      <md-button class="md-raised" ng-disabled="file.preview.pageNumber === 1" ng-click="prevPage($event)">上一页</md-button>
+      <span class="page-number" ng-bind="file.preview.pageNumber"></span>
+      <md-button class="md-raised" ng-disabled="lastPage() || overflow()" ng-click="nextPage($event)">下一页</md-button>
+    </div>
+    <div class="loading" ng-show="!file.preview.complete && !overflow() && !file.preview.fail" flex layout layout-align="center center">
+      <md-progress-circular md-diameter="20" class="color-white"></md-progress-circular>
+      <span class="color-white left-offset-10">服务器正在努力转码，请稍候</span>
+    </div>
+    <div class="end" ng-show="overflow()" flex layout layout-align="center center">
+      <span class="color-white">翻到底了哦</span>
+    </div>
+    <div class="fail" ng-show="!file.preview.complete && file.preview.fail" flex layout layout-align="center center">
+      <span class="color-white">{{file.preview.msg}}</span>
+    </div>
+    <div id="file-preview-image" class="image" ng-show="file.preview.complete" flex layout layout-align="center center" md-swipe-left="nextPage($event)" md-swipe-right="prevPage($event)"></div>
+  </div>
+</div>

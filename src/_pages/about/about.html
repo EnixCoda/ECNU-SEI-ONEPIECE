@@ -1,0 +1,22 @@
+<md-dialog class="about-dialog">
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h4 flex>关于本站</h4>
+      <md-button class="md-icon-button" ng-click="popper.hide()">
+        <i class="material-icons color-white">close</i>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <md-tabs md-dynamic-height md-border-bottom>
+      <md-tab ng-repeat="tab in tabs" label="{{tab.label}}">
+        <md-content layout-padding>
+          <div ng-repeat="note in tab.notes track by $index">
+            <h3 ng-bind="note.title"></h3>
+            <p ng-repeat="content in note.content track by $index" ng-bind="content"><div></div></p>
+          </div>
+        </md-content>
+      </md-tab>
+    </md-tabs>
+  </md-dialog-content>
+</md-dialog>

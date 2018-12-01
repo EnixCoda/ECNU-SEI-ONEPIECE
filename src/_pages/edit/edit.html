@@ -1,0 +1,118 @@
+<md-dialog class="upload-dialog">
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2 flex>修改文件或文件夹</h2>
+      <md-button class="md-icon-button" ng-click="popper.hide()">
+        <md-icon class="material-icons color-white ">close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <md-content layout-padding>
+      <div>
+        * 在此你可以为站内文件作出修改：<br>
+        * 为文件或文件夹进行重命名、移动、“删除”等操作。<br>
+        * “删除”操作不会将文件从站点删除，而是移入对应课程下的“压缩空间”目录。<br>
+        * “压缩空间”中存储的文件均为过期/无用文件，为避免不当使用，该目录仅对贡献度较高的用户开放。<br>
+        * 为了站内文件的有序性，请仔细阅读根目录的“文件规则.txt”后根据规则进行操作。<br>
+        * 你提交的修改可能不会立即生效，为防止不当使用，当一定数量的用户提交了同样的修改意见后控制台才会执行对应修改操作。<br>
+      </div>
+      <div ng-if="getEditsState !== 'FAIL'">
+        <div ng-if="getEditsState==='CONNECTING'">
+          <md-progress-circular md-mode="indeterminate" md-diameter="20"></md-progress-circular>
+        </div>
+        <div ng-if="getEditsState==='SUCCESS'">
+          <md-list>
+            <md-subheader>
+              已提交的修改意见统计：
+            </md-subheader>
+            <md-list-item ng-repeat="move in edits.MOVE">
+              <p>移动为"{{move[0]}}"</p>
+              <md-button class="md-raised md-secondary md-icon-button" ng-click="submit('MOVE', move[0])">
+                {{move[1]}}/{{edits.LIMIT}}
+                <md-tooltip md-direction="left">+1</md-tooltip>
+              </md-button>
+            </md-list-item>
+            <md-list-item ng-repeat="rename in edits.RENAME">
+              <p>重命名为"{{rename[0]}}"</p>
+              <md-button class="md-raised md-secondary md-icon-button" ng-click="submit('RENAME', rename[0])">
+                {{rename[1]}}/{{edits.LIMIT}}
+                <md-tooltip md-direction="left">+1</md-tooltip>
+              </md-button>
+            </md-list-item>
+            <md-list-item ng-if="edits.TRASH > 0">
+              <p>删除</p>
+              <md-button class="md-raised md-secondary md-icon-button" ng-click="submit('TRASH', '')">
+                {{edits.TRASH}}/{{edits.LIMIT}}
+                <md-tooltip md-direction="left">+1</md-tooltip>
+              </md-button>
+            </md-list-item>
+            <md-list-item ng-if="edits.TRASH === 0 && edits.MOVE.length === 0 && edits.RENAME.length === 0">
+              <p>暂无</p>
+            </md-list-item>
+          </md-list>
+        </div>
+        <div ng-if="getEditsState==='FAIL'">
+          获取修改意见失败
+        </div>
+      </div>
+      <md-divider></md-divider>
+      <div>
+        将要{{actionName}}的是：{{original}}
+      </div>
+      <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="移动" ng-click="nameAction('移动')">
+          <md-content layout-padding>
+            <div layout layout-align="space-between center">
+              <div layout="column">
+                <div>
+                  * 使用说明：<br>
+                  * 假设你需要将“专业必修课程”下的“C++语言程序设计”移动至“专业选修课程”下<br>
+                  * 则应在下方菜单中选择 "ONEPIECE", "专业选修课程"<br>
+                  * 不需要再次建立“C++语言程序设计”文件夹<br>
+                </div>
+                <md-divider layout-padding></md-divider>
+                <div>目标位置：</div>
+                <dummy-explorer></dummy-explorer>
+              </div>
+            </div>
+            <div layout layout-align="end center">
+              <md-button class="md-raised" ng-class="explorer.path.length < 3 ? '':'md-primary'" ng-disabled="explorer.path.length < 3 || sendEditsState !== 'STANDBY'" ng-click="submit('MOVE')">提交
+              </md-button>
+            </div>
+          </md-content>
+        </md-tab>
+        <md-tab label="删除" ng-click="nameAction('删除')">
+          <md-content layout-padding>
+            <div>
+              * 请确认{{item.content?"该文件夹内的文件都":"该文件"}}至少满足以下条件之一:<br>
+              * - 资料过时/已有替代品<br>
+              * - 资料质量过低<br>
+              * - 不适用于学习用途<br>
+            </div>
+            <div layout layout-align="end center">
+              <md-button class="md-raised md-warn" ng-disabled="sendEditsState !== 'STANDBY'" ng-click="submit('TRASH')">提交
+              </md-button>
+            </div>
+          </md-content>
+        </md-tab>
+        <md-tab label="重命名" ng-click="nameAction('重命名')">
+          <md-content layout-padding>
+            <div layout layout-align="center center">
+              <md-input-container aria-label="new name">
+                <label for="newDirNameInput">
+                  新名称
+                </label>
+                <input id="newDirNameInput" ng-model="newName" ng-pattern='/^[^\\/:?<>*"|]+$/' md-no-asterisk required>
+              </md-input-container>
+            </div>
+            <div layout layout-align="end center">
+              <md-button class="md-raised md-primary" ng-disabled="!newName || sendEditsState !== 'STANDBY'" ng-click="submit('RENAME')">提交
+              </md-button>
+            </div>
+          </md-content>
+        </md-tab>
+      </md-tabs>
+    </md-content>
+  </md-dialog-content>
+</md-dialog>

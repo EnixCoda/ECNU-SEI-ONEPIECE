@@ -1,0 +1,79 @@
+<md-dialog class="about-dialog hide-overflow">
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h4 flex>积分排行</h4>
+      <md-button class="md-icon-button" ng-click="popper.hide()">
+        <i class="material-icons color-white">close</i>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <table class="ranking-table" cellspacing="0">
+      <thead class="header-row">
+        <tr>
+          <th>名次</th>
+          <th>用户名</th>
+          <th>
+            <span>上传</span>
+            <md-tooltip md-direction="top">上传一个文件+10，并合计该文件所得评分</md-tooltip>
+          </th>
+          <th>
+            <span>评价</span>
+            <md-tooltip md-direction="top">为文件评分+1，评价+3</md-tooltip>
+          </th>
+          <th>总分</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="state==='CONNECTING'">
+          <td colspan="5">
+            <div layout layout-align="center center">
+              <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
+              </md-progress-circular>
+            </div>
+          </td>
+        </tr>
+        <tr ng-if="state==='FAIL'">
+          <td colspan="5">
+            获取数据失败
+          </td>
+        </tr>
+        <tr ng-repeat="ranking in ranking">
+          <td>{{$index + 1}}</td>
+          <td>{{ranking.name}}</td>
+          <td>{{ranking.upload}}</td>
+          <td>{{ranking.rc}}</td>
+          <td>{{ranking.total}}</td>
+        </tr>
+        <tr class="header-row">
+          <td colspan="5">你的数据</td>
+        </tr>
+        <tr ng-if="state==='CONNECTING'">
+          <td colspan="5">
+            <div layout layout-align="center center">
+              <md-progress-circular class="spinner-primary" md-mode="indeterminate" md-diameter="20">
+              </md-progress-circular>
+            </div>
+          </td>
+        </tr>
+        <tr ng-if="user.state === 'ONLINE' && state === 'FAIL'">
+          <td colspan="5">
+            获取数据失败
+          </td>
+        </tr>
+        <tr ng-if="user.state === 'ONLINE' && state === 'SUCCESS'">
+          <td>{{userRanking.pos}}</td>
+          <td>{{userRanking.name}}</td>
+          <td>{{userRanking.upload}}</td>
+          <td>{{userRanking.rc}}</td>
+          <td>{{userRanking.total}}</td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <need-login></need-login>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </md-dialog-content>
+</md-dialog>

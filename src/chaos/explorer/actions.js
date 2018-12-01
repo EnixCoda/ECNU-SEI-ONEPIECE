@@ -5,7 +5,8 @@ export const asyncTypes = promisifyTypes({
 })
 
 export const syncTypes = {
-  actNode: `ACT_NODE`,
+  focusNode: `FOCUS_NODE`,
+  blurNode: `BLUR_NODE`,
 }
 
 export const types = {
@@ -17,7 +18,12 @@ export const loadTree = promisifyActionCreator(types.loadTree, {
   success: root => ({ root }),
 })
 
-export const actNode = node => ({
-  type: types.actNode,
+export const focusNode = node => ({
+  type: types.focusNode,
+  payload: { node },
+})
+
+export const blurNode = node => ({
+  type: types.blurNode,
   payload: { node },
 })

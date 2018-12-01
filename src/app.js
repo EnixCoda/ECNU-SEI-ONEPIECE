@@ -7,11 +7,13 @@ import './app.css'
 
 // import Loader from './components/Loader'
 import Explorer from './components/Explorer'
+import FileDialog from './components/FileDialog'
 // import Test from './components/Test'
 
 function App() {
   return (
     <div>
+      <FileDialog />
       <Explorer />
     </div>
   )

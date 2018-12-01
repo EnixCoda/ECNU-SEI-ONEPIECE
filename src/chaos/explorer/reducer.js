@@ -9,19 +9,19 @@ const initialState = {
     content: null,
   },
   location: [],
-  focus: null,
-  /* {
-    item: {},
-    comment: {
+  focus: {
+    activated: false,
+    item: null,
+    comment: null || {
       content: '',
       name: '',
       anonymous: false,
     },
     data: {
-      score: 0 || null,
-      comments: [{}],
+      score: null || 0,
+      comments: null || [{}],
     },
-  } */
+  },
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -38,19 +38,29 @@ export default (state = initialState, { type, payload }) => {
       })
     }
 
-    case types.actNode: {
+    case types.focusNode: {
       return produce(state, baseState => {
         const { node } = payload
-        if (!baseState.focus) {
-          baseState.focus = {
+        if (!node.content) {
+          // it's a file
+          Object.assign(baseState.focus, {
             item: node,
-            score: NaN,
+            score: null,
             comment: null,
-          }
+            activated: true,
+          })
         } else {
+          // it's a folder
           baseState.location.push(node)
           baseState.peak = node
         }
+        return baseState
+      })
+    }
+
+    case types.blurNode: {
+      return produce(state, baseState => {
+        baseState.focus.activated = false
         return baseState
       })
     }
